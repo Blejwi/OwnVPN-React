@@ -1,9 +1,14 @@
 import * as SERVER from '../constants/servers';
 
-export default (state = {}, action) => {
+const DEFAULT_STATE = {
+    list: [{id: 1, name: 'Server 1'}, {id: 2, name: 'Server 2'}]
+};
+
+export default (state = DEFAULT_STATE, action) => {
     switch (action.type) {
         case SERVER.ADD:
-            return state;
+            const list = [].concat(state.list, action.payload);
+            return {list};
         case SERVER.EDIT:
             return state;
         case SERVER.FETCH:

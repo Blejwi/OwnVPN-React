@@ -1,12 +1,17 @@
 import React from 'react';
-import {Menu} from 'semantic-ui-react';
+import {connect} from 'react-redux';
+import ServerList from '../../components/servers/ServerList';
 
-export default class ServerMenu extends React.Component {
+class ServerMenu extends React.Component {
     render() {
         return (
-            <Menu secondary>
-                <Menu.Item name={"Server 1"} />
-            </Menu>
+            <ServerList servers={this.props.servers} />
         )
     }
 }
+
+const mapStateToProps = state => ({
+    servers: state.servers.list
+});
+
+export default connect(mapStateToProps)(ServerMenu);
