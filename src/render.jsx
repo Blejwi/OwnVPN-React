@@ -20,7 +20,7 @@ const combinedReducers = combineReducers({
 });
 const logger = createLogger();
 const store = createStore(combinedReducers, applyMiddleware(logger));
-const history = syncHistoryWithStore(browserHistory, store)
+const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render(
     <Provider store={store}>
@@ -30,6 +30,7 @@ ReactDOM.render(
                     <Route path="add" component={ServerAdd}/>
                 </Route>
             </Route>
+            <Route path="*" component={Dashboard}/>
         </Router>
     </Provider>,
     document.getElementById("main")

@@ -6,8 +6,12 @@ const options = {
     module: {
         loaders: [{
             test: /\.js(x|)$/,
-            loaders: ['babel-loader'],
-            exclude: /node_modules/
+            // loader: 'babel-loader',
+            exclude: /node_modules/,
+            loader: 'babel-loader',
+            query: {
+                presets: ['es2015', 'es2016', 'stage-0', 'react', 'react-hmre']
+            }
         }, {
             test: /\.json$/,
             loaders: ['json-loader']

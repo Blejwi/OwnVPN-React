@@ -10,8 +10,11 @@ class ServerMenu extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({
-    servers: state.servers.list
-});
+const mapStateToProps = state => {
+    console.log(state.servers.list.toJS());
+    return ({
+        servers: state.servers.list.toArray()
+    });
+};
 
 export default connect(mapStateToProps)(ServerMenu);

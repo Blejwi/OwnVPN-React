@@ -11,6 +11,6 @@ class ServerAdd extends React.Component {
 
 const mapDispatchToProps = dispatch => ({
     onSubmit: server => dispatch(add(server))
-})
+});
 
 export default connect(null, mapDispatchToProps)(ServerAdd);
