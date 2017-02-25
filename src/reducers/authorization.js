@@ -1,4 +1,4 @@
-import * as AUTH from '../constants/auth';
+import * as AUTH from '../constants/authorization';
 
 export default (state = {}, action) => {
     switch (action.type) {

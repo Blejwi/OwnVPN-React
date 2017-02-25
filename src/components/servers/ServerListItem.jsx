@@ -4,6 +4,6 @@ import {Menu} from 'semantic-ui-react';
 
 export default ({server}) => (
     <Menu.Item>
-        <Link to={`/server/${server.id}`}>{server.name}</Link>
+        <Link to={`/server/show/${server.id}`}>{server.name}</Link>
     </Menu.Item>
 );
