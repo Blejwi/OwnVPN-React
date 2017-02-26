@@ -1,5 +1,7 @@
 import NodeSSH from 'node-ssh';
 import {map} from 'lodash';
+import {add as addLog} from '../actions/logs';
+import * as LOG from "../constants/logs";
 
 const cert_directory = '~/openvpn-ca';
 const vars_file = `${cert_directory}/vars`;
@@ -16,7 +18,8 @@ const copy_keys = `cd ${cert_directory}/keys && sudo cp ca.crt ca.key server.crt
 const conf_file = `/etc/openvpn/server.conf`;
 
 export default class SSH {
-    constructor(server) {
+    constructor(dispatch, server) {
+        this.dispatch = dispatch;
         this.server = server;
         this._ssh = new NodeSSH();
 
@@ -24,59 +27,68 @@ export default class SSH {
             host: server.ipAddress,
             username: server.username,
             privateKey: server.privateKey
-        }).catch(this.defaultError);
+        }).catch((e) => this.defaultError(e));
+    }
+
+    log(msg, level) {
+        this.dispatch(addLog(msg, level, 'SSH'));
     }
 
     setup() {
-       this.connection
-           // .then(() => this.aptGetUpdate())
-           // .then(() => this.aptGetInstall())
-           // .then(() => this.makeCADir())
-           // .then(() => this.configureCAVars())
-           // .then(() => this.cleanAll())
-           // .then(() => this.buildCA())
-           // .then(() => this.buildKeyServer())
-           // .then(() => this.buildDH())
-           // .then(() => this.buildHMAC())
-           .then(() => this.copyKeys())
-           .then(() => this.prepareConfig())
-           .then(() => this.ls())
-           .catch((e) => {
-               console.error('Something failed...');
-               console.error(e);
-           })
+        this.log('Starting setup', LOG.LEVEL.INFO);
+
+        return new Promise((resolve, reject) => {
+            this.connection
+                // .then(() => this.aptGetUpdate())
+                // .then(() => this.aptGetInstall())
+                // .then(() => this.makeCADir())
+                // .then(() => this.configureCAVars())
+                // .then(() => this.cleanAll())
+                // .then(() => this.buildCA())
+                // .then(() => this.buildKeyServer())
+                // .then(() => this.buildDH())
+                // .then(() => this.buildHMAC())
+                .then(() => this.copyKeys())
+                .then(() => this.prepareConfig())
+                .then(() => this.ls())
+                .then(resolve)
+                .catch((e) => {
+                    this.log('Something failed...', LOG.LEVEL.ERROR);
+                    this.log(e, LOG.LEVEL.ERROR);
+                    reject(e);
+                });
+        });
     }
 
     defaultError(e) {
-        console.error(e);
+        this.log(e, LOG.LEVEL.ERROR);
         return e;
     }
 
-
-    defaultSuccess(response, error_on_non_zero=true) {
+    defaultSuccess(response, error_on_non_zero = true) {
         if (error_on_non_zero && response.code !== 0) {
             return Promise.reject(response)
         }
 
         if (response.code !== 0) {
-            console.warn(response);
+            this.log(e, LOG.LEVEL.WARNING);
         } else {
-            console.log(response);
+            this.log(e, LOG.LEVEL.INFO);
         }
 
         return response;
     }
 
-    _runCommand(command, params={}, error_on_non_zero=true) {
+    _runCommand(command, params = {}, error_on_non_zero = true) {
         let log_time = (t0) => {
             let time = (performance.now() - t0) / 1000;
-            console.log(`${command} has finished, took: ${time} seconds`);
+            this.log(`${command} has finished, took: ${time} seconds`, LOG.LEVEL.INFO);
             return time;
         };
 
         let t0 = performance.now();
 
-        console.log(`${command} has started`);
+        this.log(`${command} has started`, LOG.LEVEL.INFO);
         return this._ssh.execCommand(command, params).then((response) => {
             response.command = command;
             response.command_time = log_time(t0);
@@ -104,7 +116,7 @@ export default class SSH {
             if (response.code === 0) {
                 return response;
             } else if (response.code === 1 && response.stdout.includes('openvpn-ca exists')) {
-                console.log(`Directory ${cert_directory} exists, omitting`);
+                this.log(`Directory ${cert_directory} exists, omitting`, LOG.LEVEL.INFO);
                 return response;
             } else {
                 return Promise.reject(response);
@@ -165,11 +177,11 @@ export default class SSH {
         return this._runCommand(
             `gunzip -c /usr/share/doc/openvpn/examples/sample-config-files/server.conf.gz | sudo tee ${conf_file}`
         ).then((r) => this._runCommand(`sudo sed -i 's/;tls-auth ta\.key 0/tls-auth ta\.key 0/' ${conf_file}`))
-        .then((r) => this._runCommand(`echo 'key-direction 0' | sudo tee -a ${conf_file}`))
-        .then((r) => this._runCommand(`sudo sed -i 's/;cipher AES-128-CBC/cipher AES-128-CBC/' ${conf_file}`))
-        .then((r) => this._runCommand(`echo 'auth SHA256' | sudo tee -a ${conf_file}`))
-        .then((r) => this._runCommand(`sudo sed -i 's/;user nobody/user nobody/' ${conf_file}`))
-        .then((r) => this._runCommand(`sudo sed -i 's/;group nogroup/group nogroup/' ${conf_file}`));
+            .then((r) => this._runCommand(`echo 'key-direction 0' | sudo tee -a ${conf_file}`))
+            .then((r) => this._runCommand(`sudo sed -i 's/;cipher AES-128-CBC/cipher AES-128-CBC/' ${conf_file}`))
+            .then((r) => this._runCommand(`echo 'auth SHA256' | sudo tee -a ${conf_file}`))
+            .then((r) => this._runCommand(`sudo sed -i 's/;user nobody/user nobody/' ${conf_file}`))
+            .then((r) => this._runCommand(`sudo sed -i 's/;group nogroup/group nogroup/' ${conf_file}`));
     }
 
 }

@@ -2,6 +2,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Container, Grid} from 'semantic-ui-react'
 import ServerMenu from '../servers/ServerMenu';
+import Logs from '../../components/logs/Logs';
+import {getLogsArray} from "../../selectors/logs";
 
 
 class Dashboard extends React.Component {
@@ -15,10 +17,17 @@ class Dashboard extends React.Component {
                     <Grid.Column width="12">
                         {this.props.children}
                     </Grid.Column>
+                    <Grid.Column width="16">
+                        <Logs logs={this.props.logs}/>
+                    </Grid.Column>
                 </Grid>
             </Container>
         )
     }
 }
 
-export default connect()(Dashboard);
+const mapStateToProps = state => ({
+    logs: getLogsArray(state)
+});
+
+export default connect(mapStateToProps)(Dashboard);

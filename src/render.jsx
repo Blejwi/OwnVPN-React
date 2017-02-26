@@ -1,4 +1,5 @@
 import React from 'react';
+import ReduxThunk from 'redux-thunk'
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import {createStore, combineReducers, applyMiddleware} from 'redux';
@@ -17,15 +18,17 @@ import NewFile from './containers/authorization/NewFile';
 import OpenFile from './containers/authorization/OpenFile';
 import ServerAdd from './containers/servers/ServerAdd';
 import ServerShow from './containers/servers/ServerShow';
+import logs from "./reducers/logs";
 
 const combinedReducers = combineReducers({
     auth,
     servers,
     routing,
-    form
+    form,
+    logs
 });
 const logger = createLogger();
-const store = createStore(combinedReducers, applyMiddleware(logger));
+const store = createStore(combinedReducers, applyMiddleware(logger, ReduxThunk));
 const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render(
