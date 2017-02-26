@@ -13,8 +13,8 @@ import servers from './reducers/servers';
 import Dashboard from './containers/dashboard/Dashboard';
 import SelectSource from './components/authorization/SelectSource';
 import Authorization from './components/authorization/Authorization';
-import NewFile from './components/authorization/NewFile';
-import OpenFile from './components/authorization/OpenFile';
+import NewFile from './containers/authorization/NewFile';
+import OpenFile from './containers/authorization/OpenFile';
 import ServerAdd from './containers/servers/ServerAdd';
 import ServerShow from './containers/servers/ServerShow';
 
