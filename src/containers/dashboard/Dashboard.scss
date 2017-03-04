@@ -1,0 +1,9 @@
+.main {
+  height: 100%;
+  > div.grid {
+    height: 100%;
+    .logs {
+      padding: 14px 0!important;
+    }
+  }
+}
