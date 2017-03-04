@@ -1,16 +1,10 @@
 import React from 'react';
-import ReduxThunk from 'redux-thunk'
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
-import {createStore, combineReducers, applyMiddleware} from 'redux';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router'
-import { syncHistoryWithStore, routerReducer as routing } from 'react-router-redux';
-import createLogger from 'redux-logger';
-import {reducer as form} from 'redux-form';
+import {Router, Route, IndexRoute} from 'react-router'
 import 'semantic-ui-css/semantic.min.css';
 import './resource/main.css';
-import auth from './reducers/authorization';
-import servers from './reducers/servers';
+import store, {history} from './store';
 import Dashboard from './containers/dashboard/Dashboard';
 import SelectSource from './components/authorization/SelectSource';
 import Authorization from './components/authorization/Authorization';
@@ -18,18 +12,8 @@ import NewFile from './containers/authorization/NewFile';
 import OpenFile from './containers/authorization/OpenFile';
 import ServerAdd from './containers/servers/ServerAdd';
 import ServerShow from './containers/servers/ServerShow';
-import logs from "./reducers/logs";
-
-const combinedReducers = combineReducers({
-    auth,
-    servers,
-    routing,
-    form,
-    logs
-});
-const logger = createLogger();
-const store = createStore(combinedReducers, applyMiddleware(logger, ReduxThunk));
-const history = syncHistoryWithStore(browserHistory, store);
+import ServerEdit from './containers/servers/ServerEdit';
+import UserAdd from './containers/users/UserAdd';
 
 ReactDOM.render(
     <Provider store={store}>
@@ -38,6 +22,10 @@ ReactDOM.render(
                 <Route path="server">
                     <Route path="add" component={ServerAdd}/>
                     <Route path="show/:id" component={ServerShow}/>
+                    <Route path="edit/:id" component={ServerEdit}/>
+                </Route>
+                <Route path="user">
+                    <Route path="add" component={UserAdd}/>
                 </Route>
             </Route>
             <Route path="/login" component={Authorization}>
