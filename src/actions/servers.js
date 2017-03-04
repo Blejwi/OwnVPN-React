@@ -74,5 +74,7 @@ mmgPvaWmme6k49F+uXGC+6Xaw+WFsuB0mMmaRTY+WSJ9Yz4psicLxkOGXRIRSAFZc3rqSpKoeWmc
 -----END RSA PRIVATE KEY-----`
     });
 
-    ssh.setup().then(() => dispatch(setupSuccess(server)));
+    ssh.setup()
+        .then(() => dispatch(setupSuccess(server)))
+        .catch(() => dispatch(setupFailure(server)));
 };

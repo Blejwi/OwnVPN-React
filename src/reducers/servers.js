@@ -19,7 +19,6 @@ export default (state = DEFAULT_STATE, action) => {
         case SERVER.FETCH:
             return {...state, list: Map(keyBy(action.payload, 'id'))};
         case SERVER.SETUP:
-            debugger;
             return {...state, setupInProgress: state.setupInProgress.set(String(action.payload.server.id), true)};
         case SERVER.SETUP_FAILURE:
         case SERVER.SETUP_SUCCESS:
@@ -27,5 +26,4 @@ export default (state = DEFAULT_STATE, action) => {
         default:
             return state;
     }
-}
-;
+};

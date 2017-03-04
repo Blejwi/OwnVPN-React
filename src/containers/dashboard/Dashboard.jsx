@@ -5,11 +5,12 @@ import ServerMenu from '../servers/ServerMenu';
 import Logs from '../../components/logs/Logs';
 import {getLogsArray} from "../../selectors/logs";
 
+import './Dashboard.scss';
 
 class Dashboard extends React.Component {
     render() {
         return (
-            <Container fluid>
+            <Container fluid className="main">
                 <Grid padded={true}>
                     <Grid.Column width="4">
                         <ServerMenu/>
@@ -17,7 +18,7 @@ class Dashboard extends React.Component {
                     <Grid.Column width="12">
                         {this.props.children}
                     </Grid.Column>
-                    <Grid.Column width="16">
+                    <Grid.Column width="16" className="logs">
                         <Logs logs={this.props.logs}/>
                     </Grid.Column>
                 </Grid>

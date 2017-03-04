@@ -22,12 +22,13 @@ export default class SSH {
         this.dispatch = dispatch;
         this.server = server;
         this._ssh = new NodeSSH();
-
         this.connection = this._ssh.connect({
             host: server.ipAddress,
             username: server.username,
             privateKey: server.privateKey
-        }).catch((e) => this.defaultError(e));
+        }).catch((e) => {
+            return Promise.reject(this.defaultError(e));
+        });
     }
 
     log(msg, level) {
@@ -39,24 +40,26 @@ export default class SSH {
 
         return new Promise((resolve, reject) => {
             this.connection
-                // .then(() => this.aptGetUpdate())
-                // .then(() => this.aptGetInstall())
-                // .then(() => this.makeCADir())
-                // .then(() => this.configureCAVars())
-                // .then(() => this.cleanAll())
-                // .then(() => this.buildCA())
-                // .then(() => this.buildKeyServer())
-                // .then(() => this.buildDH())
-                // .then(() => this.buildHMAC())
-                .then(() => this.copyKeys())
-                .then(() => this.prepareConfig())
-                .then(() => this.ls())
-                .then(resolve)
-                .catch((e) => {
-                    this.log('Something failed...', LOG.LEVEL.ERROR);
-                    this.log(e, LOG.LEVEL.ERROR);
-                    reject(e);
-                });
+                .then(() => {
+                    return this.aptGetUpdate()
+                        .then(() => this.aptGetInstall())
+                        .then(() => this.makeCADir())
+                        .then(() => this.configureCAVars())
+                        .then(() => this.cleanAll())
+                        .then(() => this.buildCA())
+                        .then(() => this.buildKeyServer())
+                        .then(() => this.buildDH())
+                        .then(() => this.buildHMAC())
+                        .then(() => this.copyKeys())
+                        .then(() => this.prepareConfig())
+                        .then(() => this.ls())
+                        .then(resolve)
+                        .catch((e) => {
+                            this.log('Something failed...', LOG.LEVEL.ERROR);
+                            this.log(e, LOG.LEVEL.ERROR);
+                            reject(e);
+                        });
+                })
         });
     }
 
