@@ -1,0 +1,40 @@
+.logs-container {
+  position: absolute;
+  bottom: 0;
+  background: #2b303b;
+  color: #fff;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 10px;
+
+  div.list {
+    height: 100%;
+    margin: 0;
+    > div {
+      &:before {
+        content: "$ ";
+      }
+      > span {
+        &.level {
+          &.ERROR {
+            color: red;
+          }
+          &.WARNING {
+            color: orange;
+          }
+        }
+        &.time {
+          color: #92e6ff;
+        }
+        &.module {
+          color: #62e63b;
+        }
+        &.message {
+          color: #fff;
+        }
+      }
+
+    }
+  }
+}
