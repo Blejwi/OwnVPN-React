@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {Container, Grid} from 'semantic-ui-react'
+import {Container, Grid, Menu} from 'semantic-ui-react'
 import ServerMenu from '../servers/ServerMenu';
 import Logs from '../../components/logs/Logs';
 import {getLogsArray} from "../../selectors/logs";
@@ -11,7 +11,10 @@ class Dashboard extends React.Component {
     render() {
         return (
             <Container fluid className="main">
-                <Grid padded={true}>
+                <Menu attached="top" inverted>
+                    <Menu.Item header>OwnVPN</Menu.Item>
+                </Menu>
+                <Grid padded={true} divided={true}>
                     <Grid.Column width="4">
                         <ServerMenu/>
                     </Grid.Column>

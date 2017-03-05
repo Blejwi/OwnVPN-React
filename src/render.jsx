@@ -24,10 +24,10 @@ ReactDOM.render(
                     <Route path="add" component={ServerAdd}/>
                     <Route path="show/:id" component={ServerShow}/>
                     <Route path="edit/:id" component={ServerEdit}/>
-                    <Route path=":serverId">
+                    <Route path=":id">
                         <Route path="user">
                             <Route path="add" component={UserAdd}/>
-                            <Route path="edit/:id" component={UserEdit}/>
+                            <Route path="edit/:name" component={UserEdit}/>
                         </Route>
                     </Route>
                 </Route>
