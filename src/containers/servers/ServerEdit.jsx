@@ -15,7 +15,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    onSubmit: server => dispatch(edit(server.id, server))
+    onSubmit: server => dispatch(edit(server))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServerEdit);

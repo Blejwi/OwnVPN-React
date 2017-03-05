@@ -182,7 +182,7 @@ export default class SSH {
         ).then((r) => this._runCommand(`sudo sed -i 's/;tls-auth ta\.key 0/tls-auth ta\.key 0/' ${conf_file}`))
             .then((r) => this._runCommand(`echo 'key-direction 0' | sudo tee -a ${conf_file}`))
             .then((r) => this._runCommand(`sudo sed -i 's/;cipher AES-128-CBC/cipher AES-128-CBC/' ${conf_file}`))
-            .then((r) => this._runCommand(`echo 'auth SHA256' | sudo tee -a ${conf_file}`))
+            .then((r) => this._runCommand(`echo 'auth ${this.server.config.auth_algorithm}' | sudo tee -a ${conf_file}`))
             .then((r) => this._runCommand(`sudo sed -i 's/;user nobody/user nobody/' ${conf_file}`))
             .then((r) => this._runCommand(`sudo sed -i 's/;group nogroup/group nogroup/' ${conf_file}`));
     }
