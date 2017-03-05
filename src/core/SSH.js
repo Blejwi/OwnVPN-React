@@ -129,15 +129,15 @@ export default class SSH {
 
     configureCAVars() {
         let command = (command) => this._runCommand(command);
+        let server = this.server;
 
-        return this._runCommand(`ls`) // placeholder TODO remove
-            .then((r) => command(`sed -i 's/KEY_NAME=".*"/KEY_NAME="server"/' ${vars_file}`))
-            .then((r) => command(`sed -i 's/KEY_COUNTRY=".*"/KEY_COUNTRY="PL"/' ${vars_file}`))
-            .then((r) => command(`sed -i 's/KEY_PROVINCE=".*"/KEY_PROVINCE="CA"/' ${vars_file}`))
-            .then((r) => command(`sed -i 's/KEY_CITY=".*"/KEY_CITY="POZNAN"/' ${vars_file}`))
-            .then((r) => command(`sed -i 's/KEY_ORG=".*"/KEY_ORG="PUT"/' ${vars_file}`))
-            .then((r) => command(`sed -i 's/KEY_EMAIL=".*"/KEY_EMAIL="example@example.com"/' ${vars_file}`))
-            .then((r) => command(`sed -i 's/KEY_OU=".*"/KEY_OU="MyOrganizationalUnit"/' ${vars_file}`));
+        return this._runCommand(`sed -i 's/KEY_NAME=".*"/KEY_NAME="server"/' ${vars_file}`)
+            .then((r) => command(`sed -i 's/KEY_COUNTRY=".*"/KEY_COUNTRY="${server.country}"/' ${vars_file}`))
+            .then((r) => command(`sed -i 's/KEY_PROVINCE=".*"/KEY_PROVINCE="${server.province}"/' ${vars_file}`))
+            .then((r) => command(`sed -i 's/KEY_CITY=".*"/KEY_CITY="${server.city}"/' ${vars_file}`))
+            .then((r) => command(`sed -i 's/KEY_ORG=".*"/KEY_ORG="${server.org}"/' ${vars_file}`))
+            .then((r) => command(`sed -i 's/KEY_EMAIL=".*"/KEY_EMAIL="${server.email}"/' ${vars_file}`))
+            .then((r) => command(`sed -i 's/KEY_OU=".*"/KEY_OU="${server.ou}"/' ${vars_file}`));
     }
 
     cleanAll() {
@@ -186,5 +186,4 @@ export default class SSH {
             .then((r) => this._runCommand(`sudo sed -i 's/;user nobody/user nobody/' ${conf_file}`))
             .then((r) => this._runCommand(`sudo sed -i 's/;group nogroup/group nogroup/' ${conf_file}`));
     }
-
 }
