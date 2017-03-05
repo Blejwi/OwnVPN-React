@@ -10,6 +10,7 @@ const OpenFile = ({onSubmit, submitting, pristine, reset, handleSubmit}) => (
     <Grid padded="vertically" columns={1}>
         <Grid.Column>
             <Form onSubmit={handleSubmit(onSubmit)}>
+                <Field component={Input} name="filename" label="Filename" type="file" required/>
                 <Field component={Input} name="password" label="Password" type="password" required/>
                 <Actions submitting={submitting} pristine={pristine} reset={reset}/>
             </Form>
@@ -18,7 +19,7 @@ const OpenFile = ({onSubmit, submitting, pristine, reset, handleSubmit}) => (
 );
 
 const mapDispatchToProps = dispatch => ({
-    handleSubmit: file => dispatch(openFile(file))
+    onSubmit: file => dispatch(openFile(file))
 });
 
 export default connect(null, mapDispatchToProps)(reduxForm({

@@ -5,6 +5,7 @@ import {Router, Route, IndexRoute} from 'react-router'
 import 'semantic-ui-css/semantic.min.css';
 import './resource/main.css';
 import store, {history} from './store';
+import {isFileOpened} from './selectors/authorization';
 import Dashboard from './containers/dashboard/Dashboard';
 import SelectSource from './components/authorization/SelectSource';
 import Authorization from './components/authorization/Authorization';
@@ -16,10 +17,16 @@ import ServerEdit from './containers/servers/ServerEdit';
 import UserAdd from './containers/users/UserAdd';
 import UserEdit from './containers/users/UserEdit';
 
+const requireFile = (next, replace) => {
+    if (!isFileOpened(store.getState())) {
+        replace('/login');
+    }
+};
+
 ReactDOM.render(
     <Provider store={store}>
         <Router history={history}>
-            <Route path="/" component={Dashboard}>
+            <Route path="/" component={Dashboard} onEnter={requireFile}>
                 <Route path="server">
                     <Route path="add" component={ServerAdd}/>
                     <Route path="show/:id" component={ServerShow}/>

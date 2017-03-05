@@ -1,7 +1,8 @@
 import React from 'react';
 import {reduxForm, Field} from 'redux-form';
 import {connect} from 'react-redux';
-import {Grid, Form} from 'semantic-ui-react';
+import {Grid, Form, Button} from 'semantic-ui-react';
+import {Link} from 'react-router';
 import Actions from '../../components/form/Actions';
 import Input from '../../components/form/Input';
 import {newFile} from '../../actions/authorization';
@@ -13,14 +14,16 @@ const NewFile = ({onSubmit, submitting, pristine, reset, handleSubmit}) => (
                 <Field component={Input} name="name" label="Filename" required/>
                 <Field component={Input} name="password" label="Password" type="password" required/>
                 <Field component={Input} name="duplicatedPassword" label="Duplicate password" type="password" required/>
-                <Actions submitting={submitting} pristine={pristine} reset={reset}/>
+                <Actions submitting={submitting} pristine={pristine} reset={reset}>
+                    <Link to="/login/open"><Button>Open file</Button></Link>
+                </Actions>
             </Form>
         </Grid.Column>
     </Grid>
 );
 
 const mapDispatchToProps = dispatch => ({
-    handleSubmit: file => dispatch(newFile(file))
+    onSubmit: file => dispatch(newFile(file))
 });
 
 export default connect(null, mapDispatchToProps)(reduxForm({
