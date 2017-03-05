@@ -14,6 +14,7 @@ import ServerAdd from './containers/servers/ServerAdd';
 import ServerShow from './containers/servers/ServerShow';
 import ServerEdit from './containers/servers/ServerEdit';
 import UserAdd from './containers/users/UserAdd';
+import UserEdit from './containers/users/UserEdit';
 
 ReactDOM.render(
     <Provider store={store}>
@@ -23,9 +24,12 @@ ReactDOM.render(
                     <Route path="add" component={ServerAdd}/>
                     <Route path="show/:id" component={ServerShow}/>
                     <Route path="edit/:id" component={ServerEdit}/>
-                </Route>
-                <Route path="user">
-                    <Route path="add" component={UserAdd}/>
+                    <Route path=":id">
+                        <Route path="user">
+                            <Route path="add" component={UserAdd}/>
+                            <Route path="edit/:name" component={UserEdit}/>
+                        </Route>
+                    </Route>
                 </Route>
             </Route>
             <Route path="/login" component={Authorization}>

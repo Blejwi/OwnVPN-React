@@ -3,7 +3,7 @@ import {isUndefined, keyBy} from 'lodash';
 import {Map} from 'immutable';
 
 const DEFAULT_STATE = {
-    list: Map(keyBy([{'id': 1, 'name': 'Server 1'}], 'id')),
+    list: Map(keyBy([{'id': 1, 'name': 'Server 1', 'host': '127.0.0.1'}], 'id')),
     setupInProgress: Map()
 };
 
