@@ -2,6 +2,8 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const autoprefixer = require('autoprefixer');
+
 const options = {
     module: {
         loaders: [{
@@ -18,6 +20,9 @@ const options = {
         }, {
             test: /\.css$/,
             loader: "style-loader!css-loader"
+        }, {
+            test: /\.scss$/,
+            loaders: ['style-loader', 'css-loader', 'sass-loader']
         }, {
             test: /\.(png|woff|woff2|eot|ttf|svg)$/,
             loader: 'url-loader'
@@ -44,5 +49,16 @@ const options = {
         })
     ]
 };
+
+/**
+ * PostCSS
+ * Reference: https://github.com/postcss/autoprefixer-core
+ * Add vendor prefixes to your css
+ */
+options.postcss = [
+    autoprefixer({
+        browsers: ['last 2 version']
+    })
+];
 
 module.exports = options;
