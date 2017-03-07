@@ -5,7 +5,7 @@ import {Router, Route, IndexRoute} from 'react-router'
 import 'semantic-ui-css/semantic.min.css';
 import './resource/main.css';
 import store, {history} from './store';
-import {isFileOpened} from './selectors/authorization';
+import {isFileOpen} from './selectors/authorization';
 import Dashboard from './containers/dashboard/Dashboard';
 import SelectSource from './components/authorization/SelectSource';
 import Authorization from './components/authorization/Authorization';
@@ -18,7 +18,7 @@ import UserAdd from './containers/users/UserAdd';
 import UserEdit from './containers/users/UserEdit';
 
 const requireFile = (next, replace) => {
-    if (!isFileOpened(store.getState())) {
+    if (!isFileOpen(store.getState())) {
         replace('/login');
     }
 };

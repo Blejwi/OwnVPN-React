@@ -12,7 +12,6 @@ const NewFile = ({onSubmit, submitting, pristine, reset, handleSubmit}) => (
         <Grid.Column>
             <Header as="h1">New file</Header>
             <Form onSubmit={handleSubmit(onSubmit)}>
-                <Field component={Input} name="name" label="Filename" required/>
                 <Field component={Input} name="password" label="Password" type="password" required/>
                 <Field component={Input} name="duplicatedPassword" label="Duplicate password" type="password" required/>
                 <Actions submitting={submitting} pristine={pristine} reset={reset}>

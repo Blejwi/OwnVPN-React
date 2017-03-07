@@ -12,6 +12,6 @@ export const isFileDirty = createSelector([
     getFileMap
 ], isFile('dirty'));
 
-export const isFileOpened = createSelector([
+export const isFileOpen = createSelector([
     getFileMap
-], isFile('opened'));
+], isFile('open'));

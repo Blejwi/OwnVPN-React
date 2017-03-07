@@ -1,3 +1,5 @@
+import {remote} from 'electron';
+import {push} from 'react-router-redux';
 import * as AUTH from '../constants/authorization';
 
 export const encrypt = () => ({
@@ -10,12 +12,30 @@ export const decrypt = () => ({
     payload: null
 });
 
-export const newFile = (payload) => ({
-    type: AUTH.NEW,
-    payload
-});
+export const newFile = file => dispatch => {
+    remote.dialog.showSaveDialog(remote.getCurrentWindow(), filename => {
+        dispatch({
+            type: AUTH.NEW,
+            payload: {...file, filename}
+        });
 
-export const openFile = (payload) => ({
-    type: AUTH.OPEN,
-    payload
-});
+        // TODO: create file
+
+        dispatch(push('/'));
+    });
+};
+
+export const openFile = file => dispatch => {
+    remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
+        properties: ['openFile']
+    }, filename => {
+        dispatch({
+            type: AUTH.OPEN,
+            payload: {...file, filename}
+        });
+
+        // TODO: read file then decrypt
+
+        dispatch(push('/'));
+    });
+};

@@ -8,7 +8,7 @@ const DEFAULT_STATE = {
         decrypted: false,
         password: '',
         dirty: false,
-        opened: false
+        open: false
     })
 };
 
