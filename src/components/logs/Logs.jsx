@@ -7,7 +7,7 @@ import './Logs.scss';
 export default ({logs}) => (
     <pre className="logs-container">
         <List divided={true} inverted={true}>
-                {map(logs, ({message, level, module, time}, key) => (
+                {map([...logs].reverse(), ({message, level, module, time}, key) => (
                     <ListItem key={key}>
                         <span className={`level ${level}`}>{`[${level}]`}</span>
                         <span className="module">{`[${module}]`}</span>

@@ -46,9 +46,8 @@ const setupFailure = (server) =>  ({
 
 export const setup = (server) => dispatch => {
     dispatch({type: SERVER.SETUP, payload: {server}});
-
-    let ssh = new SSH(dispatch, {
-        ipAddress: 'ec2-35-162-83-152.us-west-2.compute.amazonaws.com',
+    let _server = {...server, ...{
+        ipAddress: 'ec2-52-36-196-2.us-west-2.compute.amazonaws.com',
         username: 'ubuntu',
         privateKey: `-----BEGIN RSA PRIVATE KEY-----
 MIIEogIBAAKCAQEArNpF2GgS9APl3nxAQnr+te5eOGtj3Fbr7zTSMnbGOf28b+in5f+T0oH0pKnT
@@ -73,7 +72,8 @@ X0ElD3o8T3migYKm6hD6wCU3D9jlvSrBiJvslsaLATlhAoGAFHb3thtyStNSWV7Vl3cTYQEWpbWd
 mmgPvaWmme6k49F+uXGC+6Xaw+WFsuB0mMmaRTY+WSJ9Yz4psicLxkOGXRIRSAFZc3rqSpKoeWmc
 5GtiPBGAJX5vE3ICzjfKTjUn4/jNl+t7R/x7oIubYpXX26Jhp4+nwlDETfqPH+akR4g=
 -----END RSA PRIVATE KEY-----`
-    });
+    }};
+    let ssh = new SSH(dispatch, _server);
 
     ssh.setup()
         .then(() => dispatch(setupSuccess(server)))
