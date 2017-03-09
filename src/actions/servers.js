@@ -1,5 +1,7 @@
 import * as SERVER from '../constants/servers';
 import SSH from "../core/SSH";
+import {add as addLog} from '../actions/logs';
+import * as LOG from "../constants/logs";
 
 export const fetch = () => ({
     type: SERVER.FETCH,
@@ -46,6 +48,7 @@ const setupFailure = (server) =>  ({
 
 export const setup = (server) => dispatch => {
     dispatch({type: SERVER.SETUP, payload: {server}});
+    debugger;
     let _server = {...server, ...{
         ipAddress: 'ec2-52-36-196-2.us-west-2.compute.amazonaws.com',
         username: 'ubuntu',
@@ -75,7 +78,13 @@ mmgPvaWmme6k49F+uXGC+6Xaw+WFsuB0mMmaRTY+WSJ9Yz4psicLxkOGXRIRSAFZc3rqSpKoeWmc
     }};
     let ssh = new SSH(dispatch, _server);
 
-    ssh.setup()
-        .then(() => dispatch(setupSuccess(server)))
-        .catch(() => dispatch(setupFailure(server)));
+    ssh.setup_server()
+        .then(() => {
+            dispatch(addLog(`Server setup success`, LOG.LEVEL.INFO, 'SERVER'));
+            return dispatch(setupSuccess(server));
+        })
+        .catch(() => {
+            dispatch(addLog(`Server setup failure`, LOG.LEVEL.ERROR, 'SERVER'));
+            return dispatch(setupFailure(server));
+        });
 };

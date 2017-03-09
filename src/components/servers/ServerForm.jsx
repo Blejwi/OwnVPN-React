@@ -123,9 +123,7 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset}) => {
                     name="config.max_clients"
                     label="Openvpn max clients"
                     type="number"
-                    help_message="
-                        The maximum number of concurrently connected clients we want to allow."
-                    required
+                    help_message="The maximum number of concurrently connected clients we want to allow."
                 />
 
                 <Field

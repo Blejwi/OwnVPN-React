@@ -9,7 +9,15 @@ const DEFAULT_STATE = {
         host: '127.0.0.1',
         country: 'PL',
         config: {
-            port: 1194
+            port: '1194',
+            protocol: 'udp',
+            dev: 'tun',
+            tls_auth: true,
+            user_privilege: 'nobody',
+            group_privilege: 'nogroup',
+            max_clients: '',
+            auth_algorithm: 'BF-CBC',
+            cipher_algorithm: 'SHA256',
         }
     }], 'id')),
     setupInProgress: Map()

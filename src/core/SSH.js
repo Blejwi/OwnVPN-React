@@ -15,7 +15,12 @@ const build_dh = `${cert_begin} && ${cert_directory}/build-dh`;
 const build_hmac = `openvpn --genkey --secret ${cert_directory}/keys/ta.key`;
 const copy_keys = `cd ${cert_directory}/keys && sudo cp ca.crt ca.key server.crt server.key ta.key dh2048.pem /etc/openvpn`;
 
+
+const generate_client_key = `${cert_directory}/pkitool --batch`;
 const conf_file = `/etc/openvpn/server.conf`;
+const client_conf_base_file = `~/client-configs/base.conf`;
+const client_keys_dir = `~/openvpn-ca/keys`;
+const client_output_dir = `~/client-configs/files`;
 
 export default class SSH {
     constructor(dispatch, server) {
@@ -35,8 +40,8 @@ export default class SSH {
         this.dispatch(addLog(msg, level, 'SSH'));
     }
 
-    setup() {
-        this.log('Starting setup', LOG.LEVEL.INFO);
+    setup_server() {
+        this.log('Starting setup_server', LOG.LEVEL.INFO);
 
         return new Promise((resolve, reject) => {
             this.connection
@@ -45,16 +50,17 @@ export default class SSH {
                         .then(() => this.aptGetInstall())
                         .then(() => this.makeCADir())
                         .then(() => this.configureCAVars())
-                        .then(() => this.cleanAll())
-                        .then(() => this.buildCA())
-                        .then(() => this.buildKeyServer())
-                        .then(() => this.buildDH())
-                        .then(() => this.buildHMAC())
+                        // .then(() => this.cleanAll())
+                        // .then(() => this.buildCA())
+                        // .then(() => this.buildKeyServer())
+                        // .then(() => this.buildDH())
+                        // .then(() => this.buildHMAC())
                         .then(() => this.copyKeys())
-                        .then(() => this.uploadConfig())
+                        .then(() => this.uploadServerConfig())
                         .then(() => this.enable_ip_forward())
                         .then(() => this.configure_firewall())
                         .then(() => this.start_openvpn())
+                        .then(() => this.setup_client_infrastructure())
                         .then(resolve)
                         .catch((e) => {
                             this.log('Something failed...', LOG.LEVEL.ERROR);
@@ -63,6 +69,60 @@ export default class SSH {
                         });
                 })
         });
+    }
+
+    setup_client() {
+        this.log('Starting setup_client', LOG.LEVEL.INFO);
+
+        let client_name = 'client1';
+
+        return new Promise((resolve, reject) => {
+            this.connection
+                .then(() => {
+                    return this._runCommand(`ls ${client_keys_dir}/${client_name}.key`, {}, false)
+                        .then((response) => {
+                            if (response.code === 0) {
+                                // Cert with given name exists
+                                this.log(`Key with name ${client_name} already exists`, LOG.LEVEL.ERROR);
+                                throw response;
+                            } else if (response.code === 2) {
+                                return this.generateClientKey(client_name)
+                                    .then(() => this.generateClientFile(client_name));
+                            } else {
+                                throw response;
+                            }
+                        })
+                })
+                .then(resolve)
+                .catch((e) => {
+                    this.log('Something failed...', LOG.LEVEL.ERROR);
+                    debugger;
+                    this.log(e, LOG.LEVEL.ERROR);
+                    reject(e);
+                });
+        });
+    }
+
+    generateClientKey(client_name) {
+        return this._runCommand(
+            `${cert_begin} && ${generate_client_key} ${client_name}`
+        );
+    }
+
+    generateClientFile(client_name) {
+        return this._runCommand(
+            `cat ${client_conf_base_file} \
+            <(echo -e '<ca>') \
+            ${client_keys_dir}/ca.crt \
+            <(echo -e '</ca>\n<cert>') \
+            ${client_keys_dir}/${client_name}.crt \
+            <(echo -e '</cert>\n<key>') \
+            ${client_keys_dir}/${client_name}.key \
+            <(echo -e '</key>\n<tls-auth>') \
+            ${client_keys_dir}/ta.key \
+            <(echo -e '</tls-auth>') \
+            > ${client_output_dir}/${client_name}.ovpn`
+        );
     }
 
     defaultError(e) {
@@ -216,10 +276,22 @@ export default class SSH {
             .then(() => this._runCommand(`sudo systemctl enable openvpn@server`));
     }
 
-    uploadConfig() {
+    setup_client_infrastructure() {
+        return this._runCommand(`mkdir -p ~/client-configs/files && chmod 700 ~/client-configs/files`)
+            .then(() => this.uploadClientBaseConfig());
+    }
+
+    uploadServerConfig() {
         let config_content = this._generate_server_config();
         return this._runCommand(
             `echo "${config_content}" | sudo tee ${conf_file}`
+        );
+    }
+
+    uploadClientBaseConfig() {
+        let config_content = this._generate_client_base_config();
+        return this._runCommand(
+            `echo "${config_content}" | sudo tee ${client_conf_base_file}`
         );
     }
 
@@ -228,7 +300,7 @@ export default class SSH {
         let config = this.server.config;
         return `${disabled(config.local_ip_address)}local ${config.local_ip_address}
 port ${config.port}
-proto ${config.protocol}
+proto ${config.dev}
 dev ${config.protocol}
 ${disabled(config.dev_node)}dev-node ${config.dev_node}
 ca ca.crt
@@ -268,6 +340,44 @@ verb 3
 ;mute 20
 key-direction 0
 auth ${config.auth_algorithm}`;
+    }
+
+    _generate_client_base_config() {
+        let disabled = (x) => !x ? ';' : '';
+        let server = this.server;
+        let config = this.server.config;
+        return `client
+dev ${config.dev}
+${disabled(config.dev_node)}dev-node ${config.dev_node}
+proto ${config.protocol}
+remote ${server.host} ${config.port}
+;remote my-server-2 1194
+;remote-random
+resolv-retry infinite
+nobind
+${disabled(config.user_privilege)}user ${config.user_privilege}
+${disabled(config.group_privilege)}group ${config.group_privilege}
+persist-key
+persist-tun
+;http-proxy-retry
+;http-proxy [proxy server] [proxy port
+;mute-replay-warnings
+#ca ca.crt # we place tese in ovpn file
+#cert client.crt
+#key client.key
+remote-cert-tls server
+${disabled(config.tls_auth)}tls-auth ta.key 1
+cipher ${config.cipher_algorithm}
+comp-lzo
+verb 3
+;mute 20
+key-direction 1
+auth ${config.auth_algorithm}
+
+# Uncomment these lines on linux machine
+# script-security 2
+# up /etc/openvpn/update-resolv-conf
+# down /etc/openvpn/update-resolv-conf`;
     }
 }
 

@@ -11,7 +11,19 @@ class ServerEdit extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-    initialValues: getServer(state, ownProps)
+    initialValues: {
+        config: {
+            port: '1194',
+            protocol: 'udp',
+            dev: 'tun',
+            tls_auth: true,
+            user_privilege: 'nobody',
+            group_privilege: 'nogroup',
+            max_clients: '',
+            auth_algorithm: 'BF-CBC',
+            cipher_algorithm: 'SHA256',
+        }
+    }
 });
 
 const mapDispatchToProps = dispatch => ({
