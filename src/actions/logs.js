@@ -19,6 +19,10 @@ export const add = (message, level, module='APP') => {
     if (isObject(message)) {
         if (message.message) {
             message = message.message;
+        } else if (message.command) {
+            message = JSON.stringify(message, null, 2);
+        } else {
+            console.error(message);
         }
     }
 
