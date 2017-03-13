@@ -28,9 +28,11 @@ export default class SSH {
         this.server = server;
         this._ssh = new NodeSSH();
         this.connection = this._ssh.connect({
-            host: server.ipAddress,
+            host: server.host,
+            port: server.port,
             username: server.username,
-            privateKey: server.privateKey
+            password: server.password,
+            privateKey: server.key
         }).catch((e) => {
             return Promise.reject(this.defaultError(e));
         });
@@ -50,6 +52,7 @@ export default class SSH {
                         .then(() => this.aptGetInstall())
                         .then(() => this.makeCADir())
                         .then(() => this.configureCAVars())
+                        // TODO add modal with question fi we should regenerate certs/keys
                         // .then(() => this.cleanAll())
                         // .then(() => this.buildCA())
                         // .then(() => this.buildKeyServer())
@@ -71,10 +74,9 @@ export default class SSH {
         });
     }
 
-    setup_client() {
+    setup_client(client) {
         this.log('Starting setup_client', LOG.LEVEL.INFO);
-
-        let client_name = 'client1';
+        let client_name = client.id;
 
         return new Promise((resolve, reject) => {
             this.connection
@@ -96,7 +98,6 @@ export default class SSH {
                 .then(resolve)
                 .catch((e) => {
                     this.log('Something failed...', LOG.LEVEL.ERROR);
-                    debugger;
                     this.log(e, LOG.LEVEL.ERROR);
                     reject(e);
                 });

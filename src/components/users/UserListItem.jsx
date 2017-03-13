@@ -1,5 +1,6 @@
 import React from "react";
 import {TableRow, TableCell, Button} from "semantic-ui-react";
+import Spinner from 'react-spinkit';
 
 export default ({user, server, index, handleSetupClient, setupInProgress}) => (
     <TableRow>
