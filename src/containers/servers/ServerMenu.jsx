@@ -1,22 +1,17 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {Header} from 'semantic-ui-react';
 import ServerList from '../../components/servers/ServerList';
 import {getServerArray} from '../../selectors/servers';
 
 class ServerMenu extends React.Component {
     render() {
-        return (
-            <div>
-                <Header as="h1">Servers</Header>
-                <ServerList servers={this.props.servers} />
-            </div>
-        )
+        return <ServerList servers={this.props.servers} activeMenuItem={this.props.activeMenuItem} />;
     }
 }
 
 const mapStateToProps = state => ({
-    servers: getServerArray(state)
+    servers: getServerArray(state),
+    activeMenuItem: state.menu.sidebar_active
 });
 
 export default connect(mapStateToProps)(ServerMenu);
