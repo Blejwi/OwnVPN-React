@@ -71,7 +71,6 @@ export default class Encryption {
     }
 
     save(data, flag='w') {
-        debugger;
         const deferred = $q.defer();
         fs.writeFile(this.filepath, this.encrypt(data), {encoding: 'utf8', flag: flag}, (error) => {
             if (error) {

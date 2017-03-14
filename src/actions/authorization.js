@@ -3,23 +3,63 @@ import {push} from 'react-router-redux';
 import * as AUTH from '../constants/authorization';
 import Encryption from "../core/Encryption";
 import {toastr} from 'react-redux-toastr';
+import store from '../store/index';
+import {fetch} from "./servers";
 
-export const encrypt = () => ({
-    type: AUTH.ENCRYPT,
-    payload: null
-});
+export const save = () => (dispatch) => {
 
-export const decrypt = () => ({
-    type: AUTH.DECRYPT,
-    payload: null
-});
+    // Get all necessary data from store
+    let file = store.getState().auth.file;
+    let servers = store.getState().servers.list.toArray();
+    let encryption = new Encryption(file.filename, file.password);
+
+    // Save data object to file
+    encryption.save({
+        servers
+    }).then(() => {
+        toastr.success('Authorization', `Successfully saved file`);
+        dispatch({
+            type: AUTH.SAVE_SUCCESS,
+            payload: null
+        });
+    }).catch(e => {
+        toastr.error('Authorization', `Problem during file save: ${e}`);
+        dispatch({
+            type: AUTH.SAVE_FAILURE,
+            payload: null
+        });
+    });
+};
+
+export const load = (file, filename) => (dispatch)=> {
+    // Try to open selected file and load it
+    try {
+        let encryption = new Encryption(filename, file.password);
+        encryption.read().then((data) => {
+            dispatch(fetch(data.servers));
+            dispatch({
+                type: AUTH.LOAD_SUCCESS,
+                payload: null
+            });
+
+            toastr.success('Authorization', 'Successfully loaded data');
+            dispatch(push('/'));
+        }).catch(e => {throw e;});
+    } catch (e) {
+        dispatch({
+            type: AUTH.LOAD_FAILURE,
+            payload: null
+        });
+        toastr.error('Authorization', `Problem during file opening: ${e}`);
+    }
+};
 
 export const newFile = file => dispatch => {
     remote.dialog.showSaveDialog(remote.getCurrentWindow(), filename => {
         let encryption = new Encryption(filename, file.password, false);
 
-        // Create actual file
-        encryption.save([], 'w').then(() => {
+        // Create actual file and save initial encrypted empty json
+        encryption.save({}, 'w').then(() => {
             dispatch({
                 type: AUTH.NEW,
                 payload: {...file, filename}
@@ -37,16 +77,10 @@ export const openFile = file => dispatch => {
     remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
         properties: ['openFile']
     }, filename => {
-        try {
-            let encryption = new Encryption(file, file.password);
-            dispatch({
-                type: AUTH.OPEN,
-                payload: {...file, filename}
-            });
-            toastr.error('Authorization', 'Successfully created opened file');
-            dispatch(push('/'));
-        } catch (e) {
-            toastr.error('Authorization', `Problem during file opening: ${e}`);
-        }
+        dispatch({
+            type: AUTH.OPEN,
+            payload: {...file, filename: filename[0]}
+        });
+        dispatch(load(file, filename[0]));
     });
 };

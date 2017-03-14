@@ -2,30 +2,37 @@ import * as SERVER from '../constants/servers';
 import SSH from "../core/SSH";
 import {add as addLog} from '../actions/logs';
 import * as LOG from "../constants/logs";
+import {save} from "./authorization";
 
-export const fetch = () => ({
+export const fetch = (servers) => ({
     type: SERVER.FETCH,
-    payload: null
+    payload: servers
 });
 
-const addSuccess = server => ({
-    type: SERVER.ADD_SUCCESS,
-    payload: {
-        server
-    }
-});
+const addSuccess = server => dispatch => {
+    dispatch({
+        type: SERVER.ADD_SUCCESS,
+        payload: {
+            server
+        }
+    });
+    dispatch(save());
+};
 
 export const add = server => dispatch => {
     // TODO: check connection via ssh, if failure show modal
     dispatch(addSuccess(server));
 };
 
-const editSuccess = (server) =>  ({
-    type: SERVER.EDIT_SUCCESS,
-    payload: {
-        server
-    }
-});
+const editSuccess = (server) => dispatch => {
+    dispatch({
+        type: SERVER.EDIT_SUCCESS,
+        payload: {
+            server
+        }
+    });
+    dispatch(save());
+};
 
 export const edit = (server) => dispatch => {
     // TODO: check connection via ssh, if failure show modal
