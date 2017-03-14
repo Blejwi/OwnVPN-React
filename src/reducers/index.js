@@ -5,6 +5,7 @@ import auth from './authorization';
 import servers from './servers';
 import logs from './logs';
 import users from './users';
+import {reducer as toastrReducer} from 'react-redux-toastr'
 
 export default combineReducers({
     auth,
@@ -12,5 +13,6 @@ export default combineReducers({
     routing,
     form,
     logs,
-    users
+    users,
+    toastr: toastrReducer
 });
