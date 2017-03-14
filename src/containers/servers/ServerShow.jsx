@@ -4,6 +4,7 @@ import {getServer, getSetupInProgress} from '../../selectors/servers';
 import {getUsersArray} from '../../selectors/users';
 import {setup} from '../../actions/servers';
 import ServerShowContent from '../../components/servers/ServerShowContent';
+import {setupClient} from "../../actions/users";
 
 class ServerShow extends React.Component {
     render() {
@@ -18,7 +19,8 @@ const mapStateToProps = (state, ownProp) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    handleSetup: server => dispatch(setup(server))
+    handleSetup: server => dispatch(setup(server)),
+    handleSetupClient: (server, user) => dispatch(setupClient(user)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServerShow);
