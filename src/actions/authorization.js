@@ -7,10 +7,10 @@ import store from '../store/index';
 import {fetch} from "./servers";
 
 export const save = () => (dispatch) => {
-
+    const state = store.getState();
     // Get all necessary data from store
-    let file = store.getState().auth.file;
-    let servers = store.getState().servers.list.toArray();
+    let file = state.auth.file;
+    let servers = state.servers.list.toArray();
     let encryption = new Encryption(file.filename, file.password);
 
     // Save data object to file

@@ -24,7 +24,7 @@ export const add = server => dispatch => {
     dispatch(addSuccess(server));
 };
 
-const editSuccess = (server) => dispatch => {
+const editSuccess = server => dispatch => {
     dispatch({
         type: SERVER.EDIT_SUCCESS,
         payload: {
@@ -34,26 +34,26 @@ const editSuccess = (server) => dispatch => {
     dispatch(save());
 };
 
-export const edit = (server) => dispatch => {
+export const edit = server => dispatch => {
     // TODO: check connection via ssh, if failure show modal
     dispatch(editSuccess(server));
 };
 
-const setupSuccess = (server) =>  ({
+const setupSuccess = server =>  ({
     type: SERVER.SETUP_SUCCESS,
     payload: {
         server
     }
 });
 
-const setupFailure = (server) =>  ({
+const setupFailure = server =>  ({
     type: SERVER.SETUP_FAILURE,
     payload: {
         server
     }
 });
 
-export const setup = (server) => dispatch => {
+export const setup = server => dispatch => {
     dispatch({type: SERVER.SETUP, payload: {server}});
     let ssh = new SSH(dispatch, server);
 
