@@ -16,7 +16,8 @@ export default ({ input, label, input_type, options, help_message, type, require
     let input_element = null;
     switch (input_type) {
         case 'textarea':
-            input_element = <Form.TextArea {...input} placeholder={label} required={required}/>;
+            input_element = <Form.TextArea {...input} placeholder={label} label={label_element} required={required}/>;
+            label_element = null;
             break;
         case 'select':
             input_element = (
@@ -26,7 +27,8 @@ export default ({ input, label, input_type, options, help_message, type, require
             );
             break;
         default:
-            input_element = <Form.Input {...input} placeholder={label} type={type} required={required} />;
+            input_element = <Form.Input {...input} placeholder={label} label={label_element} type={type} required={required} />;
+            label_element = null;
     }
 
     return (
