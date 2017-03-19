@@ -20,7 +20,7 @@ const mapStateToProps = (state, ownProp) => ({
 
 const mapDispatchToProps = dispatch => ({
     handleSetup: server => dispatch(setup(server)),
-    handleSetupClient: (server, user) => dispatch(setupClient(user)),
+    handleSetupClient: (server, user) => dispatch(setupClient(server, user)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServerShow);
