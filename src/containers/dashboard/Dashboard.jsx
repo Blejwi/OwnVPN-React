@@ -11,14 +11,14 @@ class Dashboard extends React.Component {
     render() {
         return (
             <Container fluid className="main">
-                <Menu attached="top" inverted>
+                <Menu attached="top" inverted className="top-menu">
                     <Menu.Item header>OwnVPN</Menu.Item>
                 </Menu>
                 <Grid padded={true} divided={true}>
-                    <Grid.Column width="4">
+                    <Grid.Column width="3" className="sidebar-menu">
                         <ServerMenu/>
                     </Grid.Column>
-                    <Grid.Column width="12">
+                    <Grid.Column width="13">
                         {this.props.children}
                     </Grid.Column>
                     <Grid.Column width="16" className="logs">

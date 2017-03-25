@@ -1,11 +1,9 @@
 import React from 'react';
-import {Menu, Button} from 'semantic-ui-react';
+import {Menu, Icon} from 'semantic-ui-react';
 import {Link} from 'react-router';
 
-export default () => (
-    <Menu.Item>
-        <Link to="/server/add">
-            <Button>Add Server</Button>
-        </Link>
+export default ({active}) => (
+    <Menu.Item active={active} link as={Link} to="/server/add">
+        <Icon name="add" /> Add Server
     </Menu.Item>
 );

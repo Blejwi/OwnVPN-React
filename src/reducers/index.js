@@ -1,11 +1,13 @@
 import {combineReducers} from 'redux';
 import {routerReducer as routing} from 'react-router-redux';
 import {reducer as form} from 'redux-form';
+import {reducer as toastrReducer} from 'react-redux-toastr';
+
 import auth from './authorization';
 import servers from './servers';
 import logs from './logs';
 import users from './users';
-import {reducer as toastrReducer} from 'react-redux-toastr'
+import menu from './menu';
 
 export default combineReducers({
     auth,
@@ -14,5 +16,6 @@ export default combineReducers({
     form,
     logs,
     users,
+    menu,
     toastr: toastrReducer
 });

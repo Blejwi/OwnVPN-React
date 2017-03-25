@@ -36,7 +36,7 @@ export const setupClient = (server, user) => dispatch => {
     dispatch({type: USER.SETUP, payload: {server, user}});
     let ssh = new SSH(dispatch, server);
 
-    ssh.setup_client()
+    ssh.setup_client(user)
         .then(() => {
             dispatch(addLog(`Client setup success`, LOG.LEVEL.INFO, 'USER'));
             return dispatch(setupSuccess(server));

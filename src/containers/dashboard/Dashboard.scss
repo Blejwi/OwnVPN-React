@@ -1,9 +1,16 @@
 .main {
-  height: calc(100% - 40px);
+  height: calc(100% - 41px);
   > div.grid {
     height: 100%;
     .logs {
       padding: 14px 0!important;
+    }
+    .sidebar-menu {
+      padding: 0!important;
+      > .menu {
+        border-radius: 0;
+        height: 100%;
+      }
     }
   }
   .button-spinner {
@@ -11,5 +18,9 @@
     height: 15px;
     vertical-align: middle;
     display: inline-block;
+  }
+  .top-menu {
+    border-radius: 0!important;
+    border-bottom: 1px solid #2d2e2f!important;
   }
 }
