@@ -13,6 +13,14 @@ export const edit = user => ({
     payload: user
 });
 
+export const remove = (server, user) => ({
+    type: USER.REMOVE,
+    payload: {
+        serverId: server.id,
+        userName: user.name
+    }
+});
+
 export const download = user => ({
     type: USER.DOWNLOAD,
     payload: user

@@ -9,7 +9,7 @@ const UserForm = ({handleSubmit, onSubmit, submitting, pristine, reset}) => (
         <Header as="h1">User Form</Header>
         <Header as="h2">User information</Header>
         <Field component={Input} name="name" label="Name" required/>
-        <Field component={Input} name="address" label="IP Address" required/>
+        <Field component={Input} name="ipAddress" label="IP Address" required/>
         <Actions submitting={submitting} pristine={pristine} reset={reset}/>
     </Form>
 );

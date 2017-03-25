@@ -1,12 +1,22 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {push} from 'react-router-redux';
 import {add} from '../../actions/users';
 import UserForm from '../../components/users/UserForm';
 
 const UserAdd = props => <UserForm {...props}/>;
 
-const mapDispatchToProps = dispatch => ({
-    onSubmit: user => dispatch(add(user))
+const mapStateToProps = (state, ownProps) => ({
+   initialValues: {
+       serverId: ownProps.params.id
+   }
 });
 
-export default connect(null, mapDispatchToProps)(UserAdd);
+const mapDispatchToProps = dispatch => ({
+    onSubmit: user => {
+        dispatch(add(user));
+        dispatch(push(`/server/show/${user.serverId}`));
+    }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserAdd);

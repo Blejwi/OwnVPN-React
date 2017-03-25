@@ -21,6 +21,7 @@ const conf_file = `/etc/openvpn/server.conf`;
 const client_conf_base_file = `~/client-configs/base.conf`;
 const client_keys_dir = `~/openvpn-ca/keys`;
 const client_output_dir = `~/client-configs/files`;
+let ccd_dir = '/etc/openvpn/ccd'; // it should be able to reassigned by server configuration
 
 export default class SSH {
     constructor(dispatch, server) {
@@ -74,22 +75,22 @@ export default class SSH {
         });
     }
 
-    setup_client(client) {
+    setup_client({name, ipAddress}) {
         this.log('Starting setup_client', LOG.LEVEL.INFO);
-        let client_name = client.id;
 
         return new Promise((resolve, reject) => {
             this.connection
                 .then(() => {
-                    return this._runCommand(`ls ${client_keys_dir}/${client_name}.key`, {}, false)
+                    return this._runCommand(`ls ${client_keys_dir}/${name}.key`, {}, false)
                         .then((response) => {
                             if (response.code === 0) {
                                 // Cert with given name exists
-                                this.log(`Key with name ${client_name} already exists`, LOG.LEVEL.ERROR);
+                                this.log(`Key with name ${name} already exists`, LOG.LEVEL.ERROR);
                                 throw response;
                             } else if (response.code === 2) {
-                                return this.generateClientKey(client_name)
-                                    .then(() => this.generateClientFile(client_name));
+                                return this.generateClientKey(name)
+                                    .then(() => this.generateClientConfigFiles(name)
+                                        .then(() => this.bindClientIp(name, ipAddress)));
                             } else {
                                 throw response;
                             }
@@ -110,7 +111,7 @@ export default class SSH {
         );
     }
 
-    generateClientFile(client_name) {
+    generateClientConfigFiles(client_name) {
         return this._runCommand(
             `cat ${client_conf_base_file} \
             <(echo -e '<ca>') \
@@ -124,6 +125,18 @@ export default class SSH {
             <(echo -e '</tls-auth>') \
             > ${client_output_dir}/${client_name}.ovpn`
         );
+    }
+
+    bindClientIp(name, ipAddress) {
+        return this._runCommand(
+            `touch ${ccd_dir}/${name} & echo "${ipAddress} ${this.nextIpAddress(ipAddress)}" > ${ccd_dir}/${name}`
+        );
+    }
+
+    static nextIpAddress(ipAddress) {
+        const sections = ipAddress.split('.');
+        sections[3] = +(sections[3])++;
+        return sections.join('.');
     }
 
     defaultError(e) {

@@ -1,17 +1,46 @@
 import React from "react";
-import {TableRow, TableCell, Button} from "semantic-ui-react";
-import Spinner from 'react-spinkit';
+import {Link} from 'react-router';
+import {TableRow, TableCell, Button, Popup} from "semantic-ui-react";
 
-export default ({user, server, index, handleSetupClient, setupInProgress}) => (
+export default ({user, server, index, handleSetupClient, handleRemoveClient, setupInProgress}) => (
     <TableRow>
         <TableCell>{index + 1}</TableCell>
         <TableCell>{user.name}</TableCell>
         <TableCell>{user.ipAddress}</TableCell>
         <TableCell>
-            <Button primary disabled={setupInProgress} onClick={() => handleSetupClient(server, user)}>
-                { setupInProgress ? <Spinner spinnerName="circle" className="button-spinner" /> : null }
-                Setup
-            </Button>
+            <Button.Group>
+                <Popup
+                    trigger={(
+                        <Button
+                            primary
+                            disabled={setupInProgress}
+                            loading={setupInProgress}
+                            onClick={() => handleSetupClient(server, user)}
+                            icon="configure"
+                        />
+                    )}
+                    content={`Setup ${user.name}`}
+                />
+                <Popup
+                    trigger={(
+                        <Link to={`/server/${server.id}/user/edit/${user.name}`}>
+                            <Button
+                                icon="write"
+                            />
+                        </Link>
+                    )}
+                    content={`Edit ${user.name}`}
+                />
+                <Popup
+                    trigger={(
+                        <Button
+                            icon="delete"
+                            onClick={() => handleRemoveClient(server, user)}
+                        />
+                    )}
+                    content={`Remove ${user.name}`}
+                />
+            </Button.Group>
         </TableCell>
     </TableRow>
 );
