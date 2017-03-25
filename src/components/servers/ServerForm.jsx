@@ -25,7 +25,7 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset}) => (
         <Field component={Input} name="username" label="Username"
                required validate={[required]}
         />
-        <Field component={Input} input_type="textarea" name="key" label="RSA private key"/>
+        <Field component={Input} input_type="textarea" name="key" label="RSA public key"/>
 
         <Header as="h2">Certificate information</Header>
         <Field component={Input} name="country" label="Country" help_message="Country code, for example: PL, US"/>
@@ -35,7 +35,7 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset}) => (
         <Field component={Input} name="email" label="E-mail" type="email" validate={[email]}/>
         <Field component={Input} name="ou" label="Organizational unit"/>
 
-        <Header as="h2">Configuration options</Header>
+        <Header as="h2">VPN Configuration</Header>
         <Field
             component={Input}
             name="config.local_ip_address"
@@ -46,7 +46,7 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset}) => (
             component={Input}
             name="config.port"
             type="number"
-            label="Openvpn listen port"
+            label="Listen port"
             help_message="Which TCP/UDP port should OpenVPN listen on?"
             min="1" max="65535" required
             validate={[required, minValue(1), maxValue(65535)]}
@@ -56,7 +56,7 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset}) => (
             input_type="select"
             name="config.protocol"
             options={PROTOCOL_OPTIONS}
-            label="Openvpn protocol"
+            label="Protocol"
             help_message="TCP or UDP server?"
             required
             validate={[required]}
@@ -66,7 +66,7 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset}) => (
             input_type="select"
             name="config.dev"
             options={DEV_OPTIONS}
-            label="Openvpn dev"
+            label="Dev"
             help_message='"dev tun" will create a routed IP tunnel,
                         "dev tap" will create an ethernet tunnel.
                         Use "dev tap0" if you are ethernet bridging
@@ -84,11 +84,10 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset}) => (
             required
             validate={[required]}
         />
-
         <Field
             component={Input}
             name="config.dev_node"
-            label="Openvpn dev-node"
+            label="Dev-node"
             help_message='Windows needs the TAP-Win32 adapter name
                         from the Network Connections panel if you
                         have more than one.  On XP SP2 or higher,
@@ -96,13 +95,12 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset}) => (
                         Windows firewall for the TAP adapter.
                         Non-Windows systems usually dont need this.'
         />
-
         <Field
             component={Input}
             input_type="select"
             options={YES_NO_OPTIONS}
             name="config.tls_auth"
-            label="Openvpn tls-auth"
+            label="TLS-Auth"
             help_message='
                         For extra security beyond that provided
                         by SSL/TLS, create an "HMAC firewall"
@@ -110,35 +108,31 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset}) => (
             required
             validate={[required]}
         />
-
         <Field
             component={Input}
             name="config.user_privilege"
-            label="Openvpn user privilege"
+            label="User privilege"
             help_message="
                         It's a good idea to reduce the OpenVPN
                         daemon's privileges after initialization.
                         You can set this on non-Windows systems."
         />
-
         <Field
             component={Input}
             name="config.group_privilege"
-            label="Openvpn group privilege"
+            label="Group privilege"
             help_message="
                         It's a good idea to reduce the OpenVPN
                         daemon's privileges after initialization.
                         You can set this on non-Windows systems."
         />
-
         <Field
             component={Input}
             name="config.max_clients"
-            label="Openvpn max clients"
+            label="Max clients"
             type="number"
             help_message="The maximum number of concurrently connected clients we want to allow."
         />
-
         <Field
             component={Input}
             input_type="select"
@@ -159,7 +153,6 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset}) => (
             required
             validate={[required]}
         />
-
         <Actions submitting={submitting} pristine={pristine} reset={reset}/>
     </Form>
 );

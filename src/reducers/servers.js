@@ -7,6 +7,7 @@ const DEFAULT_STATE = {
         id: '1',
         name:'Server 1',
         country: 'PL',
+        province: 'WLKP',
         host: 'ec2-52-36-196-2.us-west-2.compute.amazonaws.com',
         port: 22,
         username: 'ubuntu',
