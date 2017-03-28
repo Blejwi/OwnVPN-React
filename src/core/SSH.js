@@ -14,7 +14,9 @@ const build_key_server = `${cert_begin} && ${cert_directory}/pkitool --batch --s
 
 const build_dh = `${cert_begin} && ${cert_directory}/build-dh`;
 const build_hmac = `openvpn --genkey --secret ${cert_directory}/keys/ta.key`;
-const copy_keys = `cd ${cert_directory}/keys && sudo cp ca.crt ca.key server.crt server.key ta.key dh2048.pem /etc/openvpn`;
+const all_keys = `ca.crt ca.key server.crt server.key ta.key dh2048.pem`;
+const copy_keys = `cd ${cert_directory}/keys && sudo cp ${all_keys} /etc/openvpn`;
+const check_keys = `cd ${cert_directory}/keys && ls ${all_keys}`;
 
 
 const generate_client_key = `${cert_directory}/pkitool --batch`;
@@ -54,12 +56,7 @@ export default class SSH {
                         .then(() => this.aptGetInstall())
                         .then(() => this.makeCADir())
                         .then(() => this.configureCAVars())
-                        // TODO add modal with question fi we should regenerate certs/keys
-                        // .then(() => this.cleanAll())
-                        // .then(() => this.buildCA())
-                        // .then(() => this.buildKeyServer())
-                        // .then(() => this.buildDH())
-                        // .then(() => this.buildHMAC())
+                        .then(() => this.generateServerKeys())
                         .then(() => this.copyKeys())
                         .then(() => this.uploadServerConfig())
                         .then(() => this.enable_ip_forward())
@@ -110,6 +107,27 @@ export default class SSH {
                     reject(e);
                 });
         });
+    }
+
+    generateServerKeys() {
+        return this._runCommand(`${check_keys}`, {}, false).then((response) => {
+            if (response.code === 0) {
+                if (confirm('Server keys already exists. Do you want to regenerate them?')) {
+                    return this._generateServerKeys();
+                } else {
+                    return;
+                }
+            }
+            return this._generateServerKeys();
+        });
+    }
+
+    _generateServerKeys() {
+        return this.cleanAll()
+            .then(() => this.buildCA())
+            .then(() => this.buildKeyServer())
+            .then(() => this.buildDH())
+            .then(() => this.buildHMAC());
     }
 
     generateClientKey(id) {
