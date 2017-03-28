@@ -39,6 +39,7 @@ mmgPvaWmme6k49F+uXGC+6Xaw+WFsuB0mMmaRTY+WSJ9Yz4psicLxkOGXRIRSAFZc3rqSpKoeWmc
             protocol: 'udp',
             dev: 'tun',
             tls_auth: true,
+            ccd: true,
             user_privilege: 'nobody',
             group_privilege: 'nogroup',
             max_clients: '',

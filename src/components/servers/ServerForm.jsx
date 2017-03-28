@@ -159,6 +159,16 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset}) => (
             required
             validate={[required]}
         />
+        <Field
+            component={Input}
+            input_type="select"
+            name="config.ccd"
+            options={YES_NO_OPTIONS}
+            label="Client config directory"
+            help_message='To assign specific IP addresses to specific clients or if a connecting client has a private subnet behind it that should also have VPN access, use the subdirectory "ccd" for client-specific configuration files (see man page for more info).'
+            required
+            validate={[required]}
+        />
 
         <Actions submitting={submitting} pristine={pristine} reset={reset}/>
     </Form>

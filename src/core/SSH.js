@@ -3,6 +3,7 @@ import {map} from 'lodash';
 import {add as addLog} from '../actions/logs';
 import * as LOG from "../constants/logs";
 
+
 const cert_directory = '~/openvpn-ca';
 const vars_file = `${cert_directory}/vars`;
 const cert_begin = `cd ${cert_directory} && source ${vars_file}`;
@@ -75,22 +76,28 @@ export default class SSH {
         });
     }
 
-    setup_client({name, ipAddress}) {
+    setup_client({id, ipAddress}) {
         this.log('Starting setup_client', LOG.LEVEL.INFO);
 
         return new Promise((resolve, reject) => {
             this.connection
                 .then(() => {
-                    return this._runCommand(`ls ${client_keys_dir}/${name}.key`, {}, false)
+                    return this._runCommand(`ls ${client_keys_dir}/${id}.key`, {}, false)
                         .then((response) => {
                             if (response.code === 0) {
                                 // Cert with given name exists
-                                this.log(`Key with name ${name} already exists`, LOG.LEVEL.ERROR);
+                                this.log(`Key with name ${id} already exists`, LOG.LEVEL.ERROR);
+                                if (confirm(`Key with name ${id} already exists. Do you want to regenerate it?`)) {
+                                    return this._runCommand(`rm ${client_keys_dir}/${id}.key`)
+                                        .then(() => this.generateClientKey(id))
+                                        .then(() => this.generateClientConfigFiles(id)
+                                        .then(() => this.bindClientIp(id, ipAddress)));
+                                }
                                 throw response;
                             } else if (response.code === 2) {
-                                return this.generateClientKey(name)
-                                    .then(() => this.generateClientConfigFiles(name)
-                                        .then(() => this.bindClientIp(name, ipAddress)));
+                                return this.generateClientKey(id)
+                                    .then(() => this.generateClientConfigFiles(id)
+                                    .then(() => this.bindClientIp(id, ipAddress)));
                             } else {
                                 throw response;
                             }
@@ -105,35 +112,35 @@ export default class SSH {
         });
     }
 
-    generateClientKey(client_name) {
+    generateClientKey(id) {
         return this._runCommand(
-            `${cert_begin} && ${generate_client_key} ${client_name}`
+            `${cert_begin} && ${generate_client_key} ${id}`
         );
     }
 
-    generateClientConfigFiles(client_name) {
+    generateClientConfigFiles(id) {
         return this._runCommand(
             `cat ${client_conf_base_file} \
             <(echo -e '<ca>') \
             ${client_keys_dir}/ca.crt \
             <(echo -e '</ca>\n<cert>') \
-            ${client_keys_dir}/${client_name}.crt \
+            ${client_keys_dir}/${id}.crt \
             <(echo -e '</cert>\n<key>') \
-            ${client_keys_dir}/${client_name}.key \
+            ${client_keys_dir}/${id}.key \
             <(echo -e '</key>\n<tls-auth>') \
             ${client_keys_dir}/ta.key \
             <(echo -e '</tls-auth>') \
-            > ${client_output_dir}/${client_name}.ovpn`
+            > ${client_output_dir}/${id}.ovpn`
         );
     }
 
-    bindClientIp(name, ipAddress) {
+    bindClientIp(id, ipAddress) {
         return this._runCommand(
-            `touch ${ccd_dir}/${name} & echo "${ipAddress} ${this.nextIpAddress(ipAddress)}" > ${ccd_dir}/${name}`
+            `sudo mkdir -p ${ccd_dir} && sudo touch ${ccd_dir}/${id} && echo "${ipAddress} ${this.nextIpAddress(ipAddress)}" | sudo tee ${ccd_dir}/${id}`
         );
     }
 
-    static nextIpAddress(ipAddress) {
+    nextIpAddress(ipAddress) {
         const sections = ipAddress.split('.');
         sections[3] = +(sections[3])++;
         return sections.join('.');
@@ -328,9 +335,8 @@ ifconfig-pool-persist ipp.txt
 ;server-bridge
 ;push "route 192.168.10.0 255.255.255.0"
 ;push "route 192.168.20.0 255.255.255.0"
-;client-config-dir ccd
+${disabled(config.ccd)}client-config-dir ccd
 ;route 192.168.40.128 255.255.255.248
-;client-config-dir ccd
 ;route 10.9.0.0 255.255.255.252
 ;learn-address ./script
 ;push "redirect-gateway def1 bypass-dhcp"
