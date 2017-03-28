@@ -1,4 +1,5 @@
 import NodeSSH from 'node-ssh';
+import fs from 'fs';
 import {map} from 'lodash';
 import {add as addLog} from '../actions/logs';
 import * as LOG from "../constants/logs";
@@ -24,6 +25,7 @@ const client_output_dir = `~/client-configs/files`;
 
 export default class SSH {
     constructor(dispatch, server) {
+        debugger;
         this.dispatch = dispatch;
         this.server = server;
         this._ssh = new NodeSSH();
@@ -32,7 +34,7 @@ export default class SSH {
             port: server.port,
             username: server.username,
             password: server.password,
-            privateKey: server.key
+            privateKey: fs.readFileSync(server.key, 'utf-8', 'r')
         }).catch((e) => {
             return Promise.reject(this.defaultError(e));
         });
