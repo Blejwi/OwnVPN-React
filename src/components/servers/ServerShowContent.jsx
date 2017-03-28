@@ -3,6 +3,7 @@ import {Button, Header, Table, TableBody} from 'semantic-ui-react';
 import {Link} from 'react-router';
 import Spinner from 'react-spinkit';
 import UserList from '../users/UserList';
+import UserWarning from '../users/UserWarning';
 import ServerShowContentRow from './ServerShowContentRow';
 
 export default ({server, setupInProgress, handleSetup, handleSetupClient, users}) => (
@@ -14,6 +15,7 @@ export default ({server, setupInProgress, handleSetup, handleSetupClient, users}
                 <ServerShowContentRow label="Host address" value={server.host}/>
                 <ServerShowContentRow label="Port" value={server.port}/>
                 <ServerShowContentRow label="Username" value={server.username}/>
+                <ServerShowContentRow label="SSH private key path" value={server.key}/>
             </TableBody>
         </Table>
         <Header as="h1">Certificate information</Header>
@@ -45,6 +47,7 @@ export default ({server, setupInProgress, handleSetup, handleSetupClient, users}
             </TableBody>
         </Table>
         <Header as="h1">Users</Header>
+        <UserWarning show={server.config.dev !== 'tun'}/>
         <UserList users={users} server={server} handleSetupClient={handleSetupClient} setupInProgress={setupInProgress}/>
         <Link to={`/server/edit/${server.id}`}><Button>Edit</Button></Link>
         <Button primary disabled={setupInProgress} onClick={() => handleSetup(server)}>

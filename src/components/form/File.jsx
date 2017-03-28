@@ -1,8 +1,10 @@
 import React from 'react';
-import {Button} from 'semantic-ui-react';
+import {Button, Dropdown} from 'semantic-ui-react';
 import {remote} from 'electron';
 import {isEmpty} from 'lodash';
 import Input from './Input';
+
+const clearFile = (change, name) => change(name, '');
 
 const selectFile = (change, name) => {
     remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
@@ -11,7 +13,7 @@ const selectFile = (change, name) => {
         if (!isEmpty(filename)) {
             change(name, filename[0]);
         } else {
-            change(name, '');
+            clearFile(change, name);
         }
     });
 };
@@ -22,9 +24,22 @@ export default ({change, ...props}) => (
         type="text"
         readOnly
         action={(
-            <Button onClick={() => selectFile(change, props.input.name)} type="button">
-                Select file
-            </Button>
+            <Button.Group>
+                <Button onClick={() => selectFile(change, props.input.name)} type="button">
+                    Select file
+                </Button>
+                <Dropdown
+                    button
+                    inline
+                    compact
+                    text=" "
+                    closeOnChange
+                    options={[
+                        {key: 'clear', icon: 'delete', text: 'Clear'}
+                    ]}
+                    onChange={() => clearFile(change, props.input.name)}
+                />
+            </Button.Group>
         )}
     />
 );
