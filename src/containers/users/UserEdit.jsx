@@ -9,7 +9,6 @@ const UserEdit = props => <UserForm {...props}/>;
 
 const mapStateToProps = (state, ownProps) => {
     const user = getUser(state, ownProps);
-    user.prevName = user.name;
     user.serverId = ownProps.params.id;
 
     return {

@@ -58,7 +58,7 @@ export default (state = DEFAULT_STATE, action) => {
                 return state;
             }
             if (isUndefined(action.payload.server.id)) {
-                action.payload.server.id = Math.random().toString(36).substring(7);
+                action.payload.server.id = Math.random().toString(36).substring(20);
             }
             const list = state.list.set(action.payload.server.id, action.payload.server);
             return {...state, list};
