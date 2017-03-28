@@ -25,7 +25,6 @@ const client_output_dir = `~/client-configs/files`;
 
 export default class SSH {
     constructor(dispatch, server) {
-        debugger;
         this.dispatch = dispatch;
         this.server = server;
         this._ssh = new NodeSSH();
