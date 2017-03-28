@@ -1,5 +1,5 @@
 import {Map} from 'immutable';
-import {omit} from 'lodash';
+import {omit, isUndefined, forIn} from 'lodash';
 import * as USER from '../constants/users';
 
 const DEFAULT_STATE = {
@@ -31,6 +31,15 @@ export default (state = DEFAULT_STATE, {type, payload}) => {
                 ...state,
                 list: state.list.removeIn([payload.serverId, payload.id])
             };
+        case USER.FETCH:
+            let new_list = Map();
+            forIn(payload, (users, server_id) => {
+                forIn(users, (user, user_id) => {
+                    new_list = new_list.setIn([server_id, user_id], user);
+                })
+            });
+
+            return {...state, list: new_list};
         default:
             return state;
     }

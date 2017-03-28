@@ -1,17 +1,24 @@
 import * as USER from '../constants/users';
 import SSH from "../core/SSH";
 import {add as addLog} from '../actions/logs';
+import {save} from './authorization';
 import * as LOG from "../constants/logs";
 
-export const add = user => ({
-    type: USER.ADD,
-    payload: user
-});
+export const add = user => dispatch => {
+    dispatch({
+        type: USER.ADD,
+        payload: user
+    });
+    dispatch(save());
+};
 
-export const edit = user => ({
-    type: USER.EDIT,
-    payload: user
-});
+export const edit = user => dispatch => {
+    dispatch({
+        type: USER.EDIT,
+        payload: user
+    });
+    dispatch(save());
+};
 
 export const remove = (server, user) => ({
     type: USER.REMOVE,
@@ -54,3 +61,8 @@ export const setupClient = (server, user) => dispatch => {
             return dispatch(setupFailure(server));
         });
 };
+
+export const fetch = (servers) => ({
+    type: USER.FETCH,
+    payload: servers
+});

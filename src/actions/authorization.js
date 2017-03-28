@@ -5,17 +5,24 @@ import Encryption from "../core/Encryption";
 import {toastr} from 'react-redux-toastr';
 import store from '../store/index';
 import {fetch} from "./servers";
+import {fetch as fetch_users} from "./users";
 
 export const save = () => (dispatch) => {
     const state = store.getState();
     // Get all necessary data from store
     let file = state.auth.file;
     let servers = state.servers.list.toArray();
+
+    let users = {};
+    if (state.users.list) {
+        users = state.users.list.toJS();
+    }
+
     let encryption = new Encryption(file.filename, file.password);
 
     // Save data object to file
     encryption.save({
-        servers
+        servers, users
     }).then(() => {
         toastr.success('Authorization', `Successfully saved file`);
         dispatch({
@@ -37,11 +44,11 @@ export const load = (file, filename) => (dispatch)=> {
         let encryption = new Encryption(filename, file.password);
         encryption.read().then((data) => {
             dispatch(fetch(data.servers));
+            dispatch(fetch_users(data.users));
             dispatch({
                 type: AUTH.LOAD_SUCCESS,
                 payload: null
             });
-
             toastr.success('Authorization', 'Successfully loaded data');
             dispatch(push('/'));
         }).catch(e => {throw e;});
