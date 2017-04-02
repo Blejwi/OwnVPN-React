@@ -1,4 +1,5 @@
 import NodeSSH from 'node-ssh';
+import fs from 'fs';
 import {map} from 'lodash';
 import {add as addLog} from '../actions/logs';
 import * as LOG from "../constants/logs";
@@ -32,7 +33,7 @@ export default class SSH {
             port: server.port,
             username: server.username,
             password: server.password,
-            privateKey: server.key
+            privateKey: fs.readFileSync(server.key, 'utf-8', 'r')
         }).catch((e) => {
             return Promise.reject(this.defaultError(e));
         });
@@ -315,10 +316,8 @@ ifconfig-pool-persist ipp.txt
 ;server-bridge
 ;push "route 192.168.10.0 255.255.255.0"
 ;push "route 192.168.20.0 255.255.255.0"
-;client-config-dir ccd
+${disabled(config.dev === 'tun')}client-config-dir ccd
 ;route 192.168.40.128 255.255.255.248
-;client-config-dir ccd
-;route 10.9.0.0 255.255.255.252
 ;learn-address ./script
 ;push "redirect-gateway def1 bypass-dhcp"
 ;push "dhcp-option DNS 208.67.222.222"

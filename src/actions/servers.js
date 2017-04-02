@@ -1,3 +1,4 @@
+import {push} from 'react-router-redux';
 import * as SERVER from '../constants/servers';
 import SSH from "../core/SSH";
 import {add as addLog} from '../actions/logs';
@@ -20,8 +21,10 @@ const addSuccess = server => dispatch => {
 };
 
 export const add = server => dispatch => {
+    server.id = Math.random().toString(36).substring(7);
     // TODO: check connection via ssh, if failure show modal
     dispatch(addSuccess(server));
+    dispatch(push(`/server/show/${server.id}`));
 };
 
 const editSuccess = server => dispatch => {
@@ -34,9 +37,10 @@ const editSuccess = server => dispatch => {
     dispatch(save());
 };
 
-export const edit = server => dispatch => {
+export const edit = (server) => dispatch => {
     // TODO: check connection via ssh, if failure show modal
     dispatch(editSuccess(server));
+    dispatch(push(`/server/show/${server.id}`));
 };
 
 const setupSuccess = server =>  ({
