@@ -62,5 +62,6 @@ export default ({server, setupInProgress, handleSetup, handleSetupClient, handle
             handleRemoveClient={handleRemoveClient}
             setupInProgress={setupInProgress}
         />
+        <Link to={`/server/${server.id}/user/add`}><Button>Add User</Button></Link>
     </div>
 );

@@ -32,13 +32,22 @@ export default class SSH {
         this.dispatch = dispatch;
         this.server = server;
         this._ssh = new NodeSSH();
-        this.connection = this._ssh.connect({
+
+        let config = {
             host: server.host,
             port: server.port,
-            username: server.username,
-            password: server.password,
-            privateKey: fs.readFileSync(server.key, 'utf-8', 'r')
-        }).catch((e) => {
+            username: server.username
+        };
+
+        if (server.key) {
+            config.privateKey = fs.readFileSync(server.key, 'utf-8', 'r');
+        }
+
+        if (server.password) {
+            config.password = server.password;
+        }
+
+        this.connection = this._ssh.connect(config).catch((e) => {
             return Promise.reject(this.defaultError(e));
         });
     }
@@ -71,6 +80,7 @@ export default class SSH {
                             reject(e);
                         });
                 })
+                .catch((e) => reject(e));
         });
     }
 
