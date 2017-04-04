@@ -1,4 +1,5 @@
 import {Map} from 'immutable';
+import uuid from 'uuid';
 import {omit, isUndefined, forIn} from 'lodash';
 import * as USER from '../constants/users';
 
@@ -10,7 +11,7 @@ export default (state = DEFAULT_STATE, {type, payload}) => {
     switch (type) {
         case USER.ADD:
             if (isUndefined(payload.id)) {
-                payload.id = Math.random().toString(36).substring(20);
+                payload.id = uuid.v1();
             }
             return {
                 ...state,

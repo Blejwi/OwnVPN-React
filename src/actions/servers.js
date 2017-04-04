@@ -1,4 +1,5 @@
 import {push} from 'react-router-redux';
+import uuid from 'uuid';
 import * as SERVER from '../constants/servers';
 import SSH from "../core/SSH";
 import {add as addLog} from '../actions/logs';
@@ -21,7 +22,7 @@ const addSuccess = server => dispatch => {
 };
 
 export const add = server => dispatch => {
-    server.id = Math.random().toString(36).substring(7);
+    server.id = uuid.v1();
     // TODO: check connection via ssh, if failure show modal
     dispatch(addSuccess(server));
     dispatch(push(`/server/show/${server.id}`));

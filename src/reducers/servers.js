@@ -1,4 +1,5 @@
 import * as SERVER from '../constants/servers';
+import uuid from 'uuid';
 import {isUndefined, keyBy} from 'lodash';
 import {Map} from 'immutable';
 
@@ -36,7 +37,7 @@ export default (state = DEFAULT_STATE, action) => {
                 return state;
             }
             if (isUndefined(action.payload.server.id)) {
-                action.payload.server.id = Math.random().toString(36).substring(20);
+                action.payload.server.id = uuid.v1();
             }
             const list = state.list.set(action.payload.server.id, action.payload.server);
             return {...state, list};
