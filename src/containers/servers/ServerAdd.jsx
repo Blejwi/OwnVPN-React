@@ -20,8 +20,7 @@ const mapStateToProps = (state, ownProps) => ({
             group_privilege: 'nogroup',
             max_clients: '',
             auth_algorithm: 'BF-CBC',
-            cipher_algorithm: 'SHA256',
-            ccd: true,
+            cipher_algorithm: 'SHA256'
         }
     }
 });
