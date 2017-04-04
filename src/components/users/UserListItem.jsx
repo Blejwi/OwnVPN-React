@@ -26,6 +26,8 @@ export default ({user, server, index, handleSetupClient, handleRemoveClient, han
                         <Link to={`/server/${server.id}/user/edit/${user.name}`}>
                             <Button
                                 icon="write"
+                                disabled={setupInProgress}
+                                loading={setupInProgress}
                             />
                         </Link>
                     )}
@@ -36,6 +38,8 @@ export default ({user, server, index, handleSetupClient, handleRemoveClient, han
                         <Button
                             icon="delete"
                             onClick={() => handleRemoveClient(server, user)}
+                            disabled={setupInProgress}
+                            loading={setupInProgress}
                         />
                     )}
                     content={`Remove ${user.name}`}

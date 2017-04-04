@@ -29,9 +29,23 @@ const _remove = (server, user) => ({
     type: USER.REMOVE,
     payload: {
         serverId: server.id,
-        userName: user.name
+        id: user.id
     }
 });
+
+const removeUserFiles = (server, user) => dispatch => {
+    dispatch({type: SERVER.SETUP, payload: {server}});
+    let ssh = new SSH(dispatch, server);
+    ssh.delete_client_files(user).then(() => {
+        toastr.success('User', `Successfully deleted user (${user.name}) files`);
+        dispatch(_remove(server, user));
+        dispatch(setupSuccessServer(server));
+        dispatch(save());
+    }).catch(e => {
+        toastr.error('User', `There was a problem during deleting user (${user.name}) files: ${e}`);
+        dispatch(setupFailureServer(server));
+    })
+};
 
 export const remove = (server, user) => dispatch => {
     dispatch(swal({
@@ -43,11 +57,11 @@ export const remove = (server, user) => dispatch => {
         showCancelButton: true,
         closeOnConfirm: true,
         onConfirm: () => {
-            // TODO remove from server
-            dispatch(_remove(server, user));
+            dispatch(removeUserFiles(server, user));
         },
         onCancel: () => {
             dispatch(_remove(server, user));
+            dispatch(save());
         }
     }));
 };

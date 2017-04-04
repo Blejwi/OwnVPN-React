@@ -128,6 +128,22 @@ export default class SSH {
                             }
                         })
                 })
+                .then(() => this.restart_openvpn())
+                .then(resolve)
+                .catch((e) => {
+                    this.log('Something failed...', LOG.LEVEL.ERROR);
+                    this.log(e, LOG.LEVEL.ERROR);
+                    reject(e);
+                });
+        });
+    }
+
+    delete_client_files({id}) {
+        return new Promise((resolve, reject) => {
+            this.connection
+                .then(() => this._runCommand(
+                    `rm -rf ${client_keys_dir}/${id}.key ${client_output_dir}/${id}.ovpn ${client_keys_dir}/${id}.crt`
+                )).then(() => this.restart_openvpn())
                 .then(resolve)
                 .catch((e) => {
                     this.log('Something failed...', LOG.LEVEL.ERROR);
@@ -349,6 +365,11 @@ export default class SSH {
         return this._runCommand(`sudo systemctl start openvpn@server`)
             .then(() => this._runCommand(`sudo systemctl status openvpn@server`))
             .then(() => this._runCommand(`sudo systemctl enable openvpn@server`));
+    }
+
+    restart_openvpn() {
+        return this._runCommand(`sudo systemctl restart openvpn@server`)
+            .then(() => this._runCommand(`sudo systemctl status openvpn@server`));
     }
 
     setup_client_infrastructure() {

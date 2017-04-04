@@ -24,7 +24,6 @@ const addSuccess = server => dispatch => {
 
 export const add = server => dispatch => {
     server.id = uuid.v1();
-    // TODO: check connection via ssh, if failure show modal
     dispatch(addSuccess(server));
     dispatch(push(`/server/show/${server.id}`));
 };
@@ -40,7 +39,6 @@ const editSuccess = server => dispatch => {
 };
 
 export const edit = (server) => dispatch => {
-    // TODO: check connection via ssh, if failure show modal
     dispatch(editSuccess(server));
     dispatch(push(`/server/show/${server.id}`));
 };
