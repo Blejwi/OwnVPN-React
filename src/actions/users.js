@@ -37,6 +37,8 @@ export const remove = (server, user) => dispatch => {
     dispatch(swal({
         title: 'Delete',
         type: 'warning',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
         text: 'Do you want do delete all files from server for user?',
         showCancelButton: true,
         closeOnConfirm: true,

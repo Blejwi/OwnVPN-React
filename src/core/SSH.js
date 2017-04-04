@@ -100,6 +100,8 @@ export default class SSH {
                                     this.dispatch(swal({
                                         title: 'Key exists',
                                         type: 'warning',
+                                        confirmButtonText: 'Yes',
+                                        cancelButtonText: 'No',
                                         text: `Key with name ${id} already exists. Do you want to regenerate it?`,
                                         showCancelButton: true,
                                         closeOnConfirm: true,
@@ -141,6 +143,8 @@ export default class SSH {
                 return new Promise((resolve, reject) => {
                     this.dispatch(swal({
                         title: 'Key exists',
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No',
                         type: 'warning',
                         text: 'Server keys already exists. Do you want to regenerate them?',
                         showCancelButton: true,
@@ -371,8 +375,8 @@ export default class SSH {
         let config = this.server.config;
         return `${disabled(config.local_ip_address)}local ${config.local_ip_address}
 port ${config.port}
-proto ${config.dev}
-dev ${config.protocol}
+proto ${config.protocol}
+dev ${config.dev}
 ${disabled(config.dev_node)}dev-node ${config.dev_node}
 ca ca.crt
 cert server.crt

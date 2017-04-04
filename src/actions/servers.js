@@ -1,8 +1,9 @@
-import {push} from 'react-router-redux';
-import uuid from 'uuid';
-import * as SERVER from '../constants/servers';
+import {push} from "react-router-redux";
+import uuid from "uuid";
+import {toastr} from "react-redux-toastr";
+import * as SERVER from "../constants/servers";
 import SSH from "../core/SSH";
-import {add as addLog} from '../actions/logs';
+import {add as addLog} from "../actions/logs";
 import * as LOG from "../constants/logs";
 import {save} from "./authorization";
 
@@ -65,10 +66,12 @@ export const setup = server => dispatch => {
     ssh.setup_server()
         .then(() => {
             dispatch(addLog(`Server setup success`, LOG.LEVEL.INFO, 'SERVER'));
+            toastr.success('Server', `Successful server setup`);
             return dispatch(setupSuccess(server));
         })
         .catch(() => {
             dispatch(addLog(`Server setup failure`, LOG.LEVEL.ERROR, 'SERVER'));
+            toastr.error('Server', `Failure during server setup`);
             return dispatch(setupFailure(server));
         });
 };
