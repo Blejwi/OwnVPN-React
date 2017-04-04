@@ -1,7 +1,8 @@
-import * as USER from '../constants/users';
+import * as USER from "../constants/users";
 import SSH from "../core/SSH";
-import {add as addLog} from '../actions/logs';
-import {save} from './authorization';
+import {toastr} from "react-redux-toastr";
+import {add as addLog} from "../actions/logs";
+import {save} from "./authorization";
 import * as LOG from "../constants/logs";
 
 export const add = user => dispatch => {
@@ -60,6 +61,15 @@ export const setupClient = (server, user) => dispatch => {
             dispatch(addLog(`Client setup failure`, LOG.LEVEL.ERROR, 'USER'));
             return dispatch(setupFailure(server));
         });
+};
+
+export const downloadOvpnFile = (server, user) => dispatch => {
+    let ssh = new SSH(dispatch, server);
+    ssh.download_ovpn_file(user).then(() => {
+        toastr.success('Download', `Successfully downloaded ovpn file`);
+    }).catch(e => {
+        toastr.error('Download', `There was a problem during file download: ${e}`);
+    });
 };
 
 export const fetch = (servers) => ({

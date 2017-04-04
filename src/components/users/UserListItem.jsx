@@ -2,7 +2,7 @@ import React from "react";
 import {Link} from 'react-router';
 import {TableRow, TableCell, Button, Popup} from "semantic-ui-react";
 
-export default ({user, server, index, handleSetupClient, handleRemoveClient, setupInProgress}) => (
+export default ({user, server, index, handleSetupClient, handleRemoveClient, handleDownloadOvpnFile, setupInProgress}) => (
     <TableRow>
         <TableCell>{index + 1}</TableCell>
         <TableCell>{user.name}</TableCell>
@@ -39,6 +39,15 @@ export default ({user, server, index, handleSetupClient, handleRemoveClient, set
                         />
                     )}
                     content={`Remove ${user.name}`}
+                />
+                <Popup
+                    trigger={(
+                        <Button
+                            icon="download"
+                            onClick={() => handleDownloadOvpnFile(server, user)}
+                        />
+                    )}
+                    content={`Download ovpn file for ${user.name}`}
                 />
             </Button.Group>
         </TableCell>

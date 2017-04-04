@@ -4,7 +4,7 @@ import {getServer, getSetupInProgress} from '../../selectors/servers';
 import {getUsersArray} from '../../selectors/users';
 import {setup} from '../../actions/servers';
 import ServerShowContent from '../../components/servers/ServerShowContent';
-import {setupClient, remove} from "../../actions/users";
+import {setupClient, remove, downloadOvpnFile} from "../../actions/users";
 
 class ServerShow extends React.Component {
     render() {
@@ -21,7 +21,8 @@ const mapStateToProps = (state, ownProp) => ({
 const mapDispatchToProps = dispatch => ({
     handleSetup: server => dispatch(setup(server)),
     handleSetupClient: (server, user) => dispatch(setupClient(server, user)),
-    handleRemoveClient: (server, user) => dispatch(remove(server, user))
+    handleRemoveClient: (server, user) => dispatch(remove(server, user)),
+    handleDownloadOvpnFile: (server, user) => dispatch(downloadOvpnFile(server, user))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServerShow);

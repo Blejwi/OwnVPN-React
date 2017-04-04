@@ -6,7 +6,7 @@ import UserList from '../users/UserList';
 import UserWarning from '../users/UserWarning';
 import ServerShowContentRow from './ServerShowContentRow';
 
-export default ({server, setupInProgress, handleSetup, handleSetupClient, handleRemoveClient,  users}) => (
+export default ({server, setupInProgress, handleSetup, handleSetupClient, handleRemoveClient, handleDownloadOvpnFile, users}) => (
     <div>
         <Header as="h1">Server information</Header>
         <Table definition>
@@ -60,6 +60,7 @@ export default ({server, setupInProgress, handleSetup, handleSetupClient, handle
             server={server}
             handleSetupClient={handleSetupClient}
             handleRemoveClient={handleRemoveClient}
+            handleDownloadOvpnFile={handleDownloadOvpnFile}
             setupInProgress={setupInProgress}
         />
         <Link to={`/server/${server.id}/user/add`}><Button>Add User</Button></Link>

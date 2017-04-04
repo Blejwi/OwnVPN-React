@@ -1,7 +1,7 @@
-import NodeSSH from 'node-ssh';
-import fs from 'fs';
-import {map} from 'lodash';
-import {add as addLog} from '../actions/logs';
+import NodeSSH from "node-ssh";
+import fs from "fs";
+import {remote} from "electron";
+import {add as addLog} from "../actions/logs";
 import * as LOG from "../constants/logs";
 
 
@@ -33,21 +33,21 @@ export default class SSH {
         this.server = server;
         this._ssh = new NodeSSH();
 
-        let config = {
+        this.config = {
             host: server.host,
             port: server.port,
             username: server.username
         };
 
         if (server.key) {
-            config.privateKey = fs.readFileSync(server.key, 'utf-8', 'r');
+            this.config.privateKey = fs.readFileSync(server.key, 'utf-8', 'r');
         }
 
         if (server.password) {
-            config.password = server.password;
+            this.config.password = server.password;
         }
 
-        this.connection = this._ssh.connect(config).catch((e) => {
+        this.connection = this._ssh.connect(this.config).catch((e) => {
             return Promise.reject(this.defaultError(e));
         });
     }
@@ -426,6 +426,31 @@ auth ${config.auth_algorithm}
 # script-security 2
 # up /etc/openvpn/update-resolv-conf
 # down /etc/openvpn/update-resolv-conf`;
+    }
+
+    download_ovpn_file({id}) {
+        return new Promise((resolve, reject) => {
+            this.connection
+                .then(() => {
+                    let file_path = `${client_output_dir}/${id}.ovpn`;
+                    return this._runCommand(`ls ${file_path}`)
+                        .then((response) => {
+                            let filename = remote.dialog.showSaveDialog(
+                                remote.getCurrentWindow(),
+                                {
+                                    defaultPath: `${id}.ovpn`
+                                }
+                            );
+                            return this._ssh.getFile(filename, `/home/${this.config.username}/client-configs/files/${id}.ovpn`);
+                        }).catch(e => reject(e));
+                })
+                .then(resolve)
+                .catch((e) => {
+                    this.log('Something failed...', LOG.LEVEL.ERROR);
+                    this.log(e, LOG.LEVEL.ERROR);
+                    reject(e);
+                });
+        });
     }
 }
 

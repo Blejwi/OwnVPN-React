@@ -3,7 +3,7 @@ import {Table, TableBody, TableHeader, TableRow, TableHeaderCell} from 'semantic
 import {map} from 'lodash';
 import UserListItem from './UserListItem';
 
-export default ({users, server, handleSetupClient, handleRemoveClient, setupInProgress}) => (
+export default ({users, server, handleSetupClient, handleRemoveClient, handleDownloadOvpnFile, setupInProgress}) => (
     <Table singleLine columns={3}>
         <TableHeader>
             <TableRow>
@@ -22,6 +22,7 @@ export default ({users, server, handleSetupClient, handleRemoveClient, setupInPr
                     key={index}
                     handleSetupClient={handleSetupClient}
                     handleRemoveClient={handleRemoveClient}
+                    handleDownloadOvpnFile={handleDownloadOvpnFile}
                     setupInProgress={setupInProgress}
                 />
             ))}
