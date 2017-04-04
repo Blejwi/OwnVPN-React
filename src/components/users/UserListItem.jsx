@@ -45,6 +45,8 @@ export default ({user, server, index, handleSetupClient, handleRemoveClient, han
                         <Button
                             icon="download"
                             onClick={() => handleDownloadOvpnFile(server, user)}
+                            disabled={setupInProgress}
+                            loading={setupInProgress}
                         />
                     )}
                     content={`Download ovpn file for ${user.name}`}

@@ -44,14 +44,14 @@ export const edit = (server) => dispatch => {
     dispatch(push(`/server/show/${server.id}`));
 };
 
-const setupSuccess = server =>  ({
+export const setupSuccess = server =>  ({
     type: SERVER.SETUP_SUCCESS,
     payload: {
         server
     }
 });
 
-const setupFailure = server =>  ({
+export const setupFailure = server =>  ({
     type: SERVER.SETUP_FAILURE,
     payload: {
         server
