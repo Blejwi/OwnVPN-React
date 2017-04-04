@@ -6,6 +6,8 @@ import {setupSuccess as setupSuccessServer, setupFailure as setupFailureServer} 
 import {save} from "./authorization";
 import * as LOG from "../constants/logs";
 import * as SERVER from "../constants/servers";
+import 'sweetalert/dist/sweetalert.css';
+import { swal } from 'react-redux-sweetalert';
 
 export const add = user => dispatch => {
     dispatch({
@@ -23,7 +25,7 @@ export const edit = user => dispatch => {
     dispatch(save());
 };
 
-export const remove = (server, user) => ({
+const _remove = (server, user) => ({
     type: USER.REMOVE,
     payload: {
         serverId: server.id,
@@ -31,10 +33,22 @@ export const remove = (server, user) => ({
     }
 });
 
-export const download = user => ({
-    type: USER.DOWNLOAD,
-    payload: user
-});
+export const remove = (server, user) => dispatch => {
+    dispatch(swal({
+        title: 'Delete',
+        type: 'warning',
+        text: 'Do you want do delete all files from server for user?',
+        showCancelButton: true,
+        closeOnConfirm: true,
+        onConfirm: () => {
+            // TODO remove from server
+            dispatch(_remove(server, user));
+        },
+        onCancel: () => {
+            dispatch(_remove(server, user));
+        }
+    }));
+};
 
 const setupSuccess = (user) =>  ({
     type: USER.SETUP_SUCCESS,

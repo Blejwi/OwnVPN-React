@@ -4,6 +4,7 @@ import {remote} from "electron";
 import {add as addLog} from "../actions/logs";
 import * as LOG from "../constants/logs";
 
+import {swal} from "react-redux-sweetalert";
 
 const cert_directory = '~/openvpn-ca';
 const vars_file = `${cert_directory}/vars`;
@@ -95,14 +96,28 @@ export default class SSH {
                             if (response.code === 0) {
                                 // Cert with given name exists
                                 this.log(`Key with name ${id} already exists`, LOG.LEVEL.ERROR);
-                                if (confirm(`Key with name ${id} already exists. Do you want to regenerate it?`)) {
+                                return new Promise((resolve, reject) => {
+                                    this.dispatch(swal({
+                                        title: 'Key exists',
+                                        type: 'warning',
+                                        text: `Key with name ${id} already exists. Do you want to regenerate it?`,
+                                        showCancelButton: true,
+                                        closeOnConfirm: true,
+                                        onConfirm: () => {
+                                            resolve(response);
+                                        },
+                                        onCancel: () => {
+                                            reject(response);
+                                        }
+                                    }));
+                                }).then(() => {
                                     return this._runCommand(`rm ${client_keys_dir}/${id}.key`)
                                         .then(() => this.generateClientKey(id))
                                         .then(() => this.generateClientConfigFiles(id)
                                         .then(() => this.bindClientIp(id, ipAddress)));
-                                }
-                                throw response;
+                                });
                             } else if (response.code === 2) {
+                                // Cert not exist
                                 return this.generateClientKey(id)
                                     .then(() => this.generateClientConfigFiles(id)
                                     .then(() => this.bindClientIp(id, ipAddress)));
@@ -123,11 +138,17 @@ export default class SSH {
     generateServerKeys() {
         return this._runCommand(`${check_keys}`, {}, false).then((response) => {
             if (response.code === 0) {
-                if (confirm('Server keys already exists. Do you want to regenerate them?')) {
-                    return this._generateServerKeys();
-                } else {
-                    return;
-                }
+                return new Promise((resolve, reject) => {
+                    this.dispatch(swal({
+                        title: 'Key exists',
+                        type: 'warning',
+                        text: 'Server keys already exists. Do you want to regenerate them?',
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        onConfirm: () => resolve(response),
+                        onCancel: () => reject(response),
+                    }));
+                }).then(() => this._generateServerKeys()).catch(response => response);
             }
             return this._generateServerKeys();
         });
