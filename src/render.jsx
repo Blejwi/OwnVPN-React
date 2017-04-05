@@ -4,7 +4,7 @@ import {Provider} from 'react-redux';
 import {Router, Route, IndexRoute} from 'react-router'
 import 'semantic-ui-css/semantic.min.css';
 import 'react-redux-toastr/src/styles/index.scss';
-import './resource/main.css';
+import './resource/main.scss';
 import store, {history} from './store';
 import {isFileOpen} from './selectors/authorization';
 import Dashboard from './containers/dashboard/Dashboard';

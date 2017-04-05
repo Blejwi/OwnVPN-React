@@ -1,0 +1,24 @@
+#main {
+    //height: 100%;
+}
+
+#main > div {
+    height: 100%;
+}
+
+.link-block {
+    display: block;
+}
+.pointer {
+    cursor: pointer;
+}
+
+.hover-enlarge-1_5 {
+  transform: scale(1);
+  opacity: 0.8!important;
+  transition: all ease 0.5s;
+  &:hover {
+    transform: scale(1.4);
+    opacity: 1;
+  }
+}

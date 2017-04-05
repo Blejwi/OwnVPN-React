@@ -7,3 +7,5 @@ export const getLogsArray = createSelector(
     [getLogsList],
     list => (List.isList(list)) ? list.toArray().reverse() : []
 );
+
+export const getLogsCollapsed = state => state.logs.collapsed;

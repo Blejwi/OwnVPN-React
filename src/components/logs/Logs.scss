@@ -1,12 +1,32 @@
 .logs-container {
-  position: absolute;
+  padding-top: 10px;
+  i {
+    margin-left: 15px;
+    &.collapse {
+      font-size: 1.3em;
+    }
+  }
+  pre {
+    max-height: 30vh;
+    width: 100%;
+    padding: 0 15px;
+    margin: 10px 0 0;
+
+    > .list {
+      min-height: 30vh;
+    }
+  }
+  .collapsed {
+    height: 0;
+    overflow: hidden;
+    > .list {
+      display: none
+    }
+  }
   bottom: 0;
   background: #2b303b;
   color: #fff;
-  width: 100%;
-  height: 100%;
   margin: 0;
-  padding: 10px;
 
   div.list {
     height: 100%;
