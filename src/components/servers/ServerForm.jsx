@@ -171,8 +171,7 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset, change
                 help_message="The maximum number of concurrently connected clients we want to allow."
             />
             <Field
-                component={Input}
-                input_type="select"
+                component={Select}
                 name="config.auth_algorithm"
                 options={AUTH_OPTIONS}
                 label="Auth algorithm"
@@ -181,8 +180,7 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset, change
                 validate={[required]}
             />
             <Field
-                component={Input}
-                input_type="select"
+                component={Select}
                 name="config.cipher_algorithm"
                 options={CIPHER_OPTIONS}
                 label="Cipher algorithm"
