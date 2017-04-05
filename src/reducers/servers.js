@@ -1,4 +1,5 @@
 import * as SERVER from '../constants/servers';
+import uuid from 'uuid';
 import {isUndefined, keyBy} from 'lodash';
 import {Map} from 'immutable';
 
@@ -21,8 +22,8 @@ const DEFAULT_STATE = {
             user_privilege: 'nobody',
             group_privilege: 'nogroup',
             max_clients: '',
-            auth_algorithm: 'BF-CBC',
-            cipher_algorithm: 'SHA256',
+            auth_algorithm: 'SHA256',
+            cipher_algorithm: 'BF-CBC',
         }
     }], 'id')),
     setupInProgress: Map()
@@ -36,7 +37,7 @@ export default (state = DEFAULT_STATE, action) => {
                 return state;
             }
             if (isUndefined(action.payload.server.id)) {
-                action.payload.server.id = Math.random().toString(36).substring(7);
+                action.payload.server.id = uuid.v1();
             }
             const list = state.list.set(action.payload.server.id, action.payload.server);
             return {...state, list};

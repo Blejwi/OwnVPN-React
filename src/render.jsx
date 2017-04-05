@@ -18,6 +18,7 @@ import ServerEdit from './containers/servers/ServerEdit';
 import UserAdd from './containers/users/UserAdd';
 import UserEdit from './containers/users/UserEdit';
 import ReduxToastr from 'react-redux-toastr'
+import ReduxSweetAlert from 'react-redux-sweetalert';
 
 const requireFile = (next, replace) => {
     if (!isFileOpen(store.getState())) {
@@ -58,6 +59,7 @@ ReactDOM.render(
                 transitionIn="fadeIn"
                 transitionOut="fadeOut"
                 progressBar/>
+            <ReduxSweetAlert />
         </div>
     </Provider>,
     document.getElementById("main")

@@ -6,7 +6,7 @@ import UserList from '../users/UserList';
 import UserWarning from '../users/UserWarning';
 import ServerShowContentRow from './ServerShowContentRow';
 
-export default ({server, setupInProgress, handleSetup, handleSetupClient, users}) => (
+export default ({server, setupInProgress, handleSetup, handleSetupClient, handleRemoveClient, handleDownloadOvpnFile, users}) => (
     <div>
         <Header as="h1">Server information</Header>
         <Table definition>
@@ -46,13 +46,23 @@ export default ({server, setupInProgress, handleSetup, handleSetupClient, users}
                 <ServerShowContentRow label="Cipher algorithm" value={server.config.cipher_algorithm}/>
             </TableBody>
         </Table>
+        <div>
+            <Link to={`/server/edit/${server.id}`}><Button>Edit</Button></Link>
+            <Button primary disabled={setupInProgress} onClick={() => handleSetup(server)}>
+                { setupInProgress ? <Spinner spinnerName="circle" className="button-spinner" /> : null }
+                Setup
+            </Button>
+        </div>
         <Header as="h1">Users</Header>
         <UserWarning show={server.config.dev !== 'tun'}/>
-        <UserList users={users} server={server} handleSetupClient={handleSetupClient} setupInProgress={setupInProgress}/>
-        <Link to={`/server/edit/${server.id}`}><Button>Edit</Button></Link>
-        <Button primary disabled={setupInProgress} onClick={() => handleSetup(server)}>
-            { setupInProgress ? <Spinner spinnerName="circle" className="button-spinner" /> : null }
-            Setup
-        </Button>
+        <UserList
+            users={users}
+            server={server}
+            handleSetupClient={handleSetupClient}
+            handleRemoveClient={handleRemoveClient}
+            handleDownloadOvpnFile={handleDownloadOvpnFile}
+            setupInProgress={setupInProgress}
+        />
+        <Link to={`/server/${server.id}/user/add`}><Button>Add User</Button></Link>
     </div>
 );

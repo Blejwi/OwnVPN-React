@@ -1,8 +1,10 @@
-import NodeSSH from 'node-ssh';
-import fs from 'fs';
-import {map} from 'lodash';
-import {add as addLog} from '../actions/logs';
+import NodeSSH from "node-ssh";
+import fs from "fs";
+import {remote} from "electron";
+import {add as addLog} from "../actions/logs";
 import * as LOG from "../constants/logs";
+
+import {swal} from "react-redux-sweetalert";
 
 const cert_directory = '~/openvpn-ca';
 const vars_file = `${cert_directory}/vars`;
@@ -14,7 +16,9 @@ const build_key_server = `${cert_begin} && ${cert_directory}/pkitool --batch --s
 
 const build_dh = `${cert_begin} && ${cert_directory}/build-dh`;
 const build_hmac = `openvpn --genkey --secret ${cert_directory}/keys/ta.key`;
-const copy_keys = `cd ${cert_directory}/keys && sudo cp ca.crt ca.key server.crt server.key ta.key dh2048.pem /etc/openvpn`;
+const all_keys = `ca.crt ca.key server.crt server.key ta.key dh2048.pem`;
+const copy_keys = `cd ${cert_directory}/keys && sudo cp ${all_keys} /etc/openvpn`;
+const check_keys = `cd ${cert_directory}/keys && ls ${all_keys}`;
 
 
 const generate_client_key = `${cert_directory}/pkitool --batch`;
@@ -22,19 +26,29 @@ const conf_file = `/etc/openvpn/server.conf`;
 const client_conf_base_file = `~/client-configs/base.conf`;
 const client_keys_dir = `~/openvpn-ca/keys`;
 const client_output_dir = `~/client-configs/files`;
+let ccd_dir = '/etc/openvpn/ccd'; // it should be able to reassigned by server configuration
 
 export default class SSH {
     constructor(dispatch, server) {
         this.dispatch = dispatch;
         this.server = server;
         this._ssh = new NodeSSH();
-        this.connection = this._ssh.connect({
+
+        this.config = {
             host: server.host,
             port: server.port,
-            username: server.username,
-            password: server.password,
-            privateKey: fs.readFileSync(server.key, 'utf-8', 'r')
-        }).catch((e) => {
+            username: server.username
+        };
+
+        if (server.key) {
+            this.config.privateKey = fs.readFileSync(server.key, 'utf-8', 'r');
+        }
+
+        if (server.password) {
+            this.config.password = server.password;
+        }
+
+        this.connection = this._ssh.connect(this.config).catch((e) => {
             return Promise.reject(this.defaultError(e));
         });
     }
@@ -53,12 +67,7 @@ export default class SSH {
                         .then(() => this.aptGetInstall())
                         .then(() => this.makeCADir())
                         .then(() => this.configureCAVars())
-                        // TODO add modal with question fi we should regenerate certs/keys
-                        // .then(() => this.cleanAll())
-                        // .then(() => this.buildCA())
-                        // .then(() => this.buildKeyServer())
-                        // .then(() => this.buildDH())
-                        // .then(() => this.buildHMAC())
+                        .then(() => this.generateServerKeys())
                         .then(() => this.copyKeys())
                         .then(() => this.uploadServerConfig())
                         .then(() => this.enable_ip_forward())
@@ -72,30 +81,54 @@ export default class SSH {
                             reject(e);
                         });
                 })
+                .catch((e) => reject(e));
         });
     }
 
-    setup_client(client) {
+    setup_client({id, ipAddress}) {
         this.log('Starting setup_client', LOG.LEVEL.INFO);
-        let client_name = client.id;
 
         return new Promise((resolve, reject) => {
             this.connection
                 .then(() => {
-                    return this._runCommand(`ls ${client_keys_dir}/${client_name}.key`, {}, false)
+                    return this._runCommand(`ls ${client_keys_dir}/${id}.key`, {}, false)
                         .then((response) => {
                             if (response.code === 0) {
                                 // Cert with given name exists
-                                this.log(`Key with name ${client_name} already exists`, LOG.LEVEL.ERROR);
-                                throw response;
+                                this.log(`Key with name ${id} already exists`, LOG.LEVEL.ERROR);
+                                return new Promise((resolve, reject) => {
+                                    this.dispatch(swal({
+                                        title: 'Key exists',
+                                        type: 'warning',
+                                        confirmButtonText: 'Yes',
+                                        cancelButtonText: 'No',
+                                        text: `Key with name ${id} already exists. Do you want to regenerate it?`,
+                                        showCancelButton: true,
+                                        closeOnConfirm: true,
+                                        onConfirm: () => {
+                                            resolve(response);
+                                        },
+                                        onCancel: () => {
+                                            reject(response);
+                                        }
+                                    }));
+                                }).then(() => {
+                                    return this._runCommand(`rm ${client_keys_dir}/${id}.key`)
+                                        .then(() => this.generateClientKey(id))
+                                        .then(() => this.generateClientConfigFiles(id)
+                                        .then(() => this.bindClientIp(id, ipAddress)));
+                                });
                             } else if (response.code === 2) {
-                                return this.generateClientKey(client_name)
-                                    .then(() => this.generateClientFile(client_name));
+                                // Cert not exist
+                                return this.generateClientKey(id)
+                                    .then(() => this.generateClientConfigFiles(id)
+                                    .then(() => this.bindClientIp(id, ipAddress)));
                             } else {
                                 throw response;
                             }
                         })
                 })
+                .then(() => this.restart_openvpn())
                 .then(resolve)
                 .catch((e) => {
                     this.log('Something failed...', LOG.LEVEL.ERROR);
@@ -105,26 +138,82 @@ export default class SSH {
         });
     }
 
-    generateClientKey(client_name) {
+    delete_client_files({id}) {
+        return new Promise((resolve, reject) => {
+            this.connection
+                .then(() => this._runCommand(
+                    `rm -rf ${client_keys_dir}/${id}.key ${client_output_dir}/${id}.ovpn ${client_keys_dir}/${id}.crt`
+                )).then(() => this.restart_openvpn())
+                .then(resolve)
+                .catch((e) => {
+                    this.log('Something failed...', LOG.LEVEL.ERROR);
+                    this.log(e, LOG.LEVEL.ERROR);
+                    reject(e);
+                });
+        });
+    }
+
+    generateServerKeys() {
+        return this._runCommand(`${check_keys}`, {}, false).then((response) => {
+            if (response.code === 0) {
+                return new Promise((resolve, reject) => {
+                    this.dispatch(swal({
+                        title: 'Key exists',
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No',
+                        type: 'warning',
+                        text: 'Server keys already exists. Do you want to regenerate them?',
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        onConfirm: () => resolve(response),
+                        onCancel: () => reject(response),
+                    }));
+                }).then(() => this._generateServerKeys()).catch(response => response);
+            }
+            return this._generateServerKeys();
+        });
+    }
+
+    _generateServerKeys() {
+        return this.cleanAll()
+            .then(() => this.buildCA())
+            .then(() => this.buildKeyServer())
+            .then(() => this.buildDH())
+            .then(() => this.buildHMAC());
+    }
+
+    generateClientKey(id) {
         return this._runCommand(
-            `${cert_begin} && ${generate_client_key} ${client_name}`
+            `${cert_begin} && ${generate_client_key} ${id}`
         );
     }
 
-    generateClientFile(client_name) {
+    generateClientConfigFiles(id) {
         return this._runCommand(
             `cat ${client_conf_base_file} \
             <(echo -e '<ca>') \
             ${client_keys_dir}/ca.crt \
             <(echo -e '</ca>\n<cert>') \
-            ${client_keys_dir}/${client_name}.crt \
+            ${client_keys_dir}/${id}.crt \
             <(echo -e '</cert>\n<key>') \
-            ${client_keys_dir}/${client_name}.key \
+            ${client_keys_dir}/${id}.key \
             <(echo -e '</key>\n<tls-auth>') \
             ${client_keys_dir}/ta.key \
             <(echo -e '</tls-auth>') \
-            > ${client_output_dir}/${client_name}.ovpn`
+            > ${client_output_dir}/${id}.ovpn`
         );
+    }
+
+    bindClientIp(id, ipAddress) {
+        return this._runCommand(
+            `sudo mkdir -p ${ccd_dir} && sudo touch ${ccd_dir}/${id} && echo "${ipAddress} ${this.nextIpAddress(ipAddress)}" | sudo tee ${ccd_dir}/${id}`
+        );
+    }
+
+    nextIpAddress(ipAddress) {
+        const sections = ipAddress.split('.');
+        sections[3] = +(sections[3])++;
+        return sections.join('.');
     }
 
     defaultError(e) {
@@ -278,6 +367,11 @@ export default class SSH {
             .then(() => this._runCommand(`sudo systemctl enable openvpn@server`));
     }
 
+    restart_openvpn() {
+        return this._runCommand(`sudo systemctl restart openvpn@server`)
+            .then(() => this._runCommand(`sudo systemctl status openvpn@server`));
+    }
+
     setup_client_infrastructure() {
         return this._runCommand(`mkdir -p ~/client-configs/files && chmod 700 ~/client-configs/files`)
             .then(() => this.uploadClientBaseConfig());
@@ -302,8 +396,8 @@ export default class SSH {
         let config = this.server.config;
         return `${disabled(config.local_ip_address)}local ${config.local_ip_address}
 port ${config.port}
-proto ${config.dev}
-dev ${config.protocol}
+proto ${config.protocol}
+dev ${config.dev}
 ${disabled(config.dev_node)}dev-node ${config.dev_node}
 ca ca.crt
 cert server.crt
@@ -378,6 +472,31 @@ auth ${config.auth_algorithm}
 # script-security 2
 # up /etc/openvpn/update-resolv-conf
 # down /etc/openvpn/update-resolv-conf`;
+    }
+
+    download_ovpn_file({id}) {
+        return new Promise((resolve, reject) => {
+            this.connection
+                .then(() => {
+                    let file_path = `${client_output_dir}/${id}.ovpn`;
+                    return this._runCommand(`ls ${file_path}`)
+                        .then((response) => {
+                            let filename = remote.dialog.showSaveDialog(
+                                remote.getCurrentWindow(),
+                                {
+                                    defaultPath: `${id}.ovpn`
+                                }
+                            );
+                            return this._ssh.getFile(filename, `/home/${this.config.username}/client-configs/files/${id}.ovpn`);
+                        }).catch(e => reject(e));
+                })
+                .then(resolve)
+                .catch((e) => {
+                    this.log('Something failed...', LOG.LEVEL.ERROR);
+                    this.log(e, LOG.LEVEL.ERROR);
+                    reject(e);
+                });
+        });
     }
 }
 
