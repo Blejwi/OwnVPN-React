@@ -7,13 +7,14 @@ import {getLogsArray, getLogsCollapsed} from "../../selectors/logs";
 
 import './Dashboard.scss';
 import {clear, collapse} from "../../actions/logs";
+import {Link} from "react-router";
 
 class Dashboard extends React.Component {
     render() {
         return (
-            <Container fluid className="main">
-                <Menu attached="top" inverted className="top-menu">
-                    <Menu.Item header>OwnVPN</Menu.Item>
+            <Container fluid className={"main " + (this.props.logs_collapsed ? '' : 'bottom-pad')}>
+                <Menu attached="top" inverted className="top-menu fixed">
+                    <Menu.Item header as={Link} to="/">OwnVPN</Menu.Item>
                 </Menu>
                 <Grid padded={true} divided={true}>
                     <Grid.Column width="3" className="sidebar-menu">

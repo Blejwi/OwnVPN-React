@@ -19,6 +19,7 @@ import UserAdd from './containers/users/UserAdd';
 import UserEdit from './containers/users/UserEdit';
 import ReduxToastr from 'react-redux-toastr'
 import ReduxSweetAlert from 'react-redux-sweetalert';
+import Home from "./containers/home/Home";
 
 const requireFile = (next, replace) => {
     if (!isFileOpen(store.getState())) {
@@ -42,6 +43,7 @@ ReactDOM.render(
                             </Route>
                         </Route>
                     </Route>
+                    <IndexRoute component={Home}/>
                 </Route>
                 <Route path="/login" component={Authorization}>
                     <IndexRoute component={SelectSource}/>

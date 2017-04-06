@@ -1,5 +1,6 @@
 .main {
   height: calc(100% - 41px);
+  padding-bottom: 40px;
   > div.grid {
     height: 100%;
     .sidebar-menu {
@@ -17,6 +18,7 @@
     display: inline-block;
   }
   .top-menu {
+    height: 40px;
     border-radius: 0!important;
     border-bottom: 1px solid #2d2e2f!important;
   }
@@ -25,5 +27,8 @@
     bottom: 0;
     position: fixed!important;
     width: 100%;
+  }
+  &.bottom-pad {
+    padding-bottom: 340px;
   }
 }
