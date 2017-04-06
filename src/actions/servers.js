@@ -58,8 +58,17 @@ export const setupFailure = server =>  ({
 });
 
 export const setup = server => dispatch => {
+    let ssh;
     dispatch({type: SERVER.SETUP, payload: {server}});
-    let ssh = new SSH(dispatch, server);
+
+    try {
+        ssh = new SSH(dispatch, server);
+    } catch (e) {
+        dispatch(addLog(`Server setup failure`, LOG.LEVEL.ERROR, 'SERVER'));
+        dispatch(addLog(`${e}`, LOG.LEVEL.ERROR, 'SSH'));
+        toastr.error('Server', `Failure during server setup`);
+        return dispatch(setupFailure(server));
+    }
 
     ssh.setup_server()
         .then(() => {

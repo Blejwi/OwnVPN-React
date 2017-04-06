@@ -95,7 +95,7 @@ export default class SSH {
                         .then((response) => {
                             if (response.code === 0) {
                                 // Cert with given name exists
-                                this.log(`Key with name ${id} already exists`, LOG.LEVEL.ERROR);
+                                this.log(`Key with name ${id} already exists`, LOG.LEVEL.WARNING);
                                 return new Promise((resolve, reject) => {
                                     this.dispatch(swal({
                                         title: 'Key exists',
@@ -105,12 +105,11 @@ export default class SSH {
                                         text: `Key with name ${id} already exists. Do you want to regenerate it?`,
                                         showCancelButton: true,
                                         closeOnConfirm: true,
-                                        onConfirm: () => {
-                                            resolve(response);
-                                        },
-                                        onCancel: () => {
-                                            reject(response);
-                                        }
+                                        onConfirm: () => resolve(response),
+                                        onCancel: () => reject(response),
+                                        allowOutsideClick: true,
+                                        onOutsideClick: () => reject(response),
+                                        onEscapeKey: () => reject(response)
                                     }));
                                 }).then(() => {
                                     return this._runCommand(`rm ${client_keys_dir}/${id}.key`)
@@ -167,6 +166,9 @@ export default class SSH {
                         closeOnConfirm: true,
                         onConfirm: () => resolve(response),
                         onCancel: () => reject(response),
+                        allowOutsideClick: true,
+                        onOutsideClick: () => reject(response),
+                        onEscapeKey: () => reject(response)
                     }));
                 }).then(() => this._generateServerKeys()).catch(response => response);
             }

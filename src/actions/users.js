@@ -35,7 +35,17 @@ const _remove = (server, user) => ({
 
 const removeUserFiles = (server, user) => dispatch => {
     dispatch({type: SERVER.SETUP, payload: {server}});
-    let ssh = new SSH(dispatch, server);
+    let ssh;
+
+    try {
+        ssh = new SSH(dispatch, server);
+    } catch (e) {
+        dispatch(addLog(`Delete failure`, LOG.LEVEL.ERROR, 'FILE'));
+        dispatch(addLog(`${e}`, LOG.LEVEL.ERROR, 'SSH'));
+        toastr.error('User', `There was a problem during deleting user (${user.name}) files: ${e}`);
+        return dispatch(setupFailureServer(server));
+    }
+
     ssh.delete_client_files(user).then(() => {
         toastr.success('User', `Successfully deleted user (${user.name}) files`);
         dispatch(_remove(server, user));
@@ -56,13 +66,16 @@ export const remove = (server, user) => dispatch => {
         text: 'Do you want do delete all files from server for user?',
         showCancelButton: true,
         closeOnConfirm: true,
-        onConfirm: () => {
+        onConfirm: (dismiss) => {
             dispatch(removeUserFiles(server, user));
         },
-        onCancel: () => {
+        onCancel: (dismiss) => {
             dispatch(_remove(server, user));
             dispatch(save());
-        }
+        },
+        allowOutsideClick: true,
+        onOutsideClick: () => {},
+        onEscapeKey: () => {}
     }));
 };
 
@@ -81,18 +94,30 @@ const setupFailure = (user) =>  ({
 });
 
 export const setupClient = (server, user) => dispatch => {
+    let ssh;
     dispatch({type: SERVER.SETUP, payload: {server}});
     dispatch({type: USER.SETUP, payload: {server, user}});
-    let ssh = new SSH(dispatch, server);
+
+    try {
+        ssh = new SSH(dispatch, server);
+    } catch (e) {
+        dispatch(addLog(`Client setup failure`, LOG.LEVEL.ERROR, 'USER'));
+        dispatch(addLog(`${e}`, LOG.LEVEL.ERROR, 'SSH'));
+        toastr.error('User', `Failure during client setup`);
+        dispatch(setupFailureServer(server));
+        return dispatch(setupFailure(user));
+    }
 
     ssh.setup_client(user)
         .then(() => {
             dispatch(addLog(`Client setup success`, LOG.LEVEL.INFO, 'USER'));
+            toastr.success('User', `Successful client setup`);
             dispatch(setupSuccessServer(server));
             return dispatch(setupSuccess(user));
         })
         .catch(() => {
             dispatch(addLog(`Client setup failure`, LOG.LEVEL.ERROR, 'USER'));
+            toastr.error('User', `Failure during client setup`);
             dispatch(setupFailureServer(server));
             return dispatch(setupFailure(user));
         });
@@ -100,7 +125,17 @@ export const setupClient = (server, user) => dispatch => {
 
 export const downloadOvpnFile = (server, user) => dispatch => {
     dispatch({type: SERVER.SETUP, payload: {server}});
-    let ssh = new SSH(dispatch, server);
+    let ssh;
+
+    try {
+        ssh = new SSH(dispatch, server);
+    } catch (e) {
+        dispatch(addLog(`Download failure`, LOG.LEVEL.ERROR, 'FILE'));
+        dispatch(addLog(`${e}`, LOG.LEVEL.ERROR, 'SSH'));
+        toastr.error('User', `Failure during file download`);
+        return dispatch(setupFailureServer(server));
+    }
+
     ssh.download_ovpn_file(user).then(() => {
         toastr.success('Download', `Successfully downloaded ovpn file`);
         dispatch(setupSuccessServer(server));

@@ -39,7 +39,7 @@ ReactDOM.render(
                         <Route path=":id">
                             <Route path="user">
                                 <Route path="add" component={UserAdd}/>
-                                <Route path="edit/:name" component={UserEdit}/>
+                                <Route path="edit/:user_id" component={UserEdit}/>
                             </Route>
                         </Route>
                     </Route>

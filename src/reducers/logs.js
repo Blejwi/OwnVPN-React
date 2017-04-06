@@ -3,7 +3,7 @@ import {List} from "immutable";
 
 const DEFAULT_STATE = {
     list: List([]),
-    collapsed: false
+    collapsed: true
 };
 
 export default (state = DEFAULT_STATE, action) => {

@@ -20,7 +20,7 @@ class Dashboard extends React.Component {
                     <Grid.Column width="3" className="sidebar-menu">
                         <ServerMenu/>
                     </Grid.Column>
-                    <Grid.Column width="13">
+                    <Grid.Column width="13" className="content">
                         {this.props.children}
                     </Grid.Column>
                 </Grid>
