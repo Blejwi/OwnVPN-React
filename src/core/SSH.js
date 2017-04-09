@@ -116,7 +116,7 @@ export default class SSH {
                                         .then(() => this.generateClientKey(id))
                                         .then(() => this.generateClientConfigFiles(id)
                                         .then(() => this.bindClientIp(id, ipAddress)));
-                                });
+                                }).catch(e => e);
                             } else if (response.code === 2) {
                                 // Cert not exist
                                 return this.generateClientKey(id)
