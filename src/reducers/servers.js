@@ -27,7 +27,8 @@ const DEFAULT_STATE = {
         }
     }], 'id')),
     setupInProgress: Map(),
-    status: Map()
+    status: Map(),
+    statusFetch: Map(),
 };
 
 export default (state = DEFAULT_STATE, action) => {
@@ -55,7 +56,13 @@ export default (state = DEFAULT_STATE, action) => {
                 status: state.status.set(action.payload.serverId, {
                     ...state.status.get(action.payload.serverId, {}),
                     ...omit(action.payload, ['serverId'])
-                })
+                }),
+                statusFetch: state.statusFetch.set(action.payload.serverId, false)
+            };
+        case SERVER.STATUS_FETCH_START:
+            return {
+                ...state,
+                statusFetch: state.statusFetch.set(action.payload.serverId, true)
             };
         default:
             return state;

@@ -11,6 +11,7 @@ export const SETUP_SUCCESS = 'SERVER_SETUP_SUCCESS';
 export const SETUP_FAILURE = 'SERVER_SETUP_FAILURE';
 
 export const STATUS_CHANGE = 'SERVER_STATUS_CHANGE';
+export const STATUS_FETCH_START = 'SERVER_STATUS_FETCH_START';
 
 export const AUTH_OPTIONS = [
     {value: 'SHA256', text: 'SHA256'},

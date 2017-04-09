@@ -3,7 +3,7 @@ import {Card, Icon, Popup} from 'semantic-ui-react';
 import './ServerStatusItem.scss';
 import {STATUS} from "../../../constants/servers";
 
-export default ({level, description, name, details}) => {
+export default ({level, description, name, details, statusFetchInProgress, handleRefresh}) => {
     let icon, color, details_element;
 
     switch (level) {
@@ -54,8 +54,18 @@ export default ({level, description, name, details}) => {
             <Card.Content>
                 {details_element}
                 {icon_element}
+                <Icon
+                    loading={statusFetchInProgress}
+                    disabled={statusFetchInProgress}
+                    onClick={handleRefresh}
+                    title="Refresh"
+                    className="spinner-icon pointer"
+                    name="refresh"
+                    size="small"
+                    color="grey"
+                />
                 <Card.Header>{name}</Card.Header>
             </Card.Content>
         </Card>
-    )
+    );
 };

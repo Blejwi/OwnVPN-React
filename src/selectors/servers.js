@@ -5,6 +5,7 @@ import {STATUS} from "../constants/servers";
 export const getServersMap = state => state.servers.list;
 export const getSetupInProgressMap = state => state.servers.setupInProgress;
 export const getServerStatusMap = state => state.servers.status;
+export const getServerFetchStatusMap = state => state.servers.statusFetch;
 
 export const getServerArray = createSelector(
     [getServersMap],
@@ -34,3 +35,8 @@ export const getServerStatus = createSelector([
         description: null
     }
 }));
+
+export const getServerFetchStatus = createSelector([
+    getServerFetchStatusMap,
+    (_, {server}) => String(server.id)
+], (map, id) => map.get(id, false));

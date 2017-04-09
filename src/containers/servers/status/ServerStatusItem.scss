@@ -1,5 +1,10 @@
 .server-status {
   i {
     float: right;
+    &.spinner-icon {
+      position: absolute;
+      top:5px;
+      right: 0;
+    }
   }
 }

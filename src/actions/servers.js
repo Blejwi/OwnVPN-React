@@ -86,6 +86,12 @@ export const setup = server => dispatch => {
 
 export const updateStatus = server => dispatch => {
     dispatch(addLog(`Checking server (${server.name}) status`, LOG.LEVEL.INFO, 'SERVER'));
+    dispatch({
+        type: SERVER.STATUS_FETCH_START,
+        payload: {
+            serverId: server.id
+        }
+    });
 
     let ssh;
     let payload = {
