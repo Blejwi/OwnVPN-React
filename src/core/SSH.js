@@ -5,6 +5,7 @@ import {add as addLog} from "../actions/logs";
 import * as LOG from "../constants/logs";
 
 import {swal} from "react-redux-sweetalert";
+import {STATUS} from "../constants/servers";
 
 const cert_directory = '~/openvpn-ca';
 const vars_file = `${cert_directory}/vars`;
@@ -55,6 +56,85 @@ export default class SSH {
 
     log(msg, level) {
         this.dispatch(addLog(msg, level, 'SSH'));
+    }
+
+    get_status() {
+        return new Promise((resolve, reject) => {
+            this.connection
+                .then(() => {
+                    return this._is_active(resolve, reject);
+                }).catch(reject);
+        });
+    }
+
+    _resolve_function(resolve, reject, level, description='') {
+        return this._runCommand(`sudo systemctl status openvpn@server`, {}, false)
+            .then(r => {
+                resolve({
+                    level, description,
+                    details: r.stdout
+                })
+        }).catch(reject);
+    };
+
+    _is_active(resolve, reject) {
+        return this._runCommand(`sudo systemctl is-active openvpn@server`, {}, false)
+            .then((r) => {
+                if (r.code === 0) {
+                    return this._resolve_function(
+                        resolve, reject, STATUS.OK
+                    );
+                } else if (r.stdout === 'inactive') {
+                    return this._is_enabled(resolve, reject);
+                } else if (r.code === 3) {
+                    return this._is_failed(resolve, reject);
+                } else {
+                    return this._resolve_function(
+                        resolve, reject,
+                        STATUS.ERROR, 'Error while checking service active status'
+                    );
+                }
+            })
+            .catch(reject);
+    }
+
+    _is_failed(resolve, reject) {
+        return this._runCommand(`sudo systemctl is-failed openvpn@server`, {}, false)
+            .then(r => {
+                if (r.code === 0) {
+                    this._resolve_function(
+                        resolve, reject,
+                        STATUS.ERROR, 'Service status is failed'
+                    );
+                } else if (r.code === 1) {
+                    this._resolve_function(
+                        resolve, reject,
+                        STATUS.ERROR, 'Service status unknown'
+                    );
+                } else {
+                    this._resolve_function(
+                        resolve, reject,
+                        STATUS.ERROR, 'Error while checking service failed status'
+                    );
+                }
+            }).catch(reject);
+    }
+
+    _is_enabled(resolve, reject) {
+        return this._runCommand(`sudo systemctl is-enabled openvpn@server`, {}, false)
+            .then(r => {
+                if (r.code === 0) {
+                    this._resolve_function(
+                        resolve, reject,
+                        STATUS.WARNING, 'Service is enabled, but not active'
+                    );
+                } else {
+                    this._resolve_function(
+                        resolve, reject,
+                        STATUS.ERROR, 'Error while checking service enabled status'
+                    );
+                }
+            }).catch(reject);
     }
 
     setup_server() {

@@ -1,6 +1,6 @@
 import * as SERVER from '../constants/servers';
 import uuid from 'uuid';
-import {isUndefined, keyBy} from 'lodash';
+import {isUndefined, keyBy, omit} from 'lodash';
 import {Map} from 'immutable';
 
 const DEFAULT_STATE = {
@@ -26,7 +26,8 @@ const DEFAULT_STATE = {
             cipher_algorithm: 'BF-CBC',
         }
     }], 'id')),
-    setupInProgress: Map()
+    setupInProgress: Map(),
+    status: Map()
 };
 
 export default (state = DEFAULT_STATE, action) => {
@@ -48,6 +49,14 @@ export default (state = DEFAULT_STATE, action) => {
         case SERVER.SETUP_FAILURE:
         case SERVER.SETUP_SUCCESS:
             return {...state, setupInProgress: state.setupInProgress.set(String(action.payload.server.id), false)};
+        case SERVER.STATUS_CHANGE:
+            return {
+                ...state,
+                status: state.status.set(action.payload.serverId, {
+                    ...state.status.get(action.payload.serverId, {}),
+                    ...omit(action.payload, ['serverId'])
+                })
+            };
         default:
             return state;
     }

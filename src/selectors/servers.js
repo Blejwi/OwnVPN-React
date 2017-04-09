@@ -1,8 +1,10 @@
 import {createSelector} from 'reselect';
 import {Map} from 'immutable';
+import {STATUS} from "../constants/servers";
 
 export const getServersMap = state => state.servers.list;
 export const getSetupInProgressMap = state => state.servers.setupInProgress;
+export const getServerStatusMap = state => state.servers.status;
 
 export const getServerArray = createSelector(
     [getServersMap],
@@ -18,3 +20,17 @@ export const getSetupInProgress = createSelector([
     getSetupInProgressMap,
     (_, {params}) => String(params.id)
 ], (map, id) => map.get(id, false));
+
+export const getServerStatus = createSelector([
+    getServerStatusMap,
+    (_, {server}) => String(server.id)
+], (map, id) => map.get(id, {
+    server: {
+        level: STATUS.UNKNOWN,
+        description: null
+    },
+    vpn: {
+        level: STATUS.UNKNOWN,
+        description: null
+    }
+}));
