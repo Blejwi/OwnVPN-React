@@ -31,3 +31,12 @@ export const add = (message, level, module='APP') => {
         payload: {message, level, module, time}
     };
 };
+
+export const collapse = () => ({
+    type: LOG.TOGGLE_COLLAPSE
+});
+
+
+export const clear = () => ({
+    type: LOG.CLEAR
+});

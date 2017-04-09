@@ -4,7 +4,7 @@ import {Provider} from 'react-redux';
 import {Router, Route, IndexRoute} from 'react-router'
 import 'semantic-ui-css/semantic.min.css';
 import 'react-redux-toastr/src/styles/index.scss';
-import './resource/main.css';
+import './resource/main.scss';
 import store, {history} from './store';
 import {isFileOpen} from './selectors/authorization';
 import Dashboard from './containers/dashboard/Dashboard';
@@ -19,6 +19,7 @@ import UserAdd from './containers/users/UserAdd';
 import UserEdit from './containers/users/UserEdit';
 import ReduxToastr from 'react-redux-toastr'
 import ReduxSweetAlert from 'react-redux-sweetalert';
+import Home from "./containers/home/Home";
 
 const requireFile = (next, replace) => {
     if (!isFileOpen(store.getState())) {
@@ -38,10 +39,11 @@ ReactDOM.render(
                         <Route path=":id">
                             <Route path="user">
                                 <Route path="add" component={UserAdd}/>
-                                <Route path="edit/:name" component={UserEdit}/>
+                                <Route path="edit/:user_id" component={UserEdit}/>
                             </Route>
                         </Route>
                     </Route>
+                    <IndexRoute component={Home}/>
                 </Route>
                 <Route path="/login" component={Authorization}>
                     <IndexRoute component={SelectSource}/>

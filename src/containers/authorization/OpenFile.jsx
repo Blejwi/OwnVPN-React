@@ -1,10 +1,11 @@
 import React from 'react';
 import {reduxForm, Field} from 'redux-form';
 import {connect} from 'react-redux';
-import {Grid, Form, Header} from 'semantic-ui-react';
+import {Grid, Form, Header, Button} from 'semantic-ui-react';
 import Actions from '../../components/form/Actions';
 import Input from '../../components/form/Input';
 import {openFile} from '../../actions/authorization';
+import {Link} from "react-router";
 
 const OpenFile = ({onSubmit, submitting, pristine, reset, handleSubmit}) => (
     <Grid padded="vertically" columns={1}>
@@ -12,7 +13,9 @@ const OpenFile = ({onSubmit, submitting, pristine, reset, handleSubmit}) => (
             <Header as="h1">Open file</Header>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Field component={Input} name="password" label="Password" type="password" required/>
-                <Actions submitting={submitting} pristine={pristine} reset={reset}/>
+                <Actions submitting={submitting} pristine={pristine} reset={reset}>
+                    <Link to="/login/new"><Button>New file</Button></Link>
+                </Actions>
             </Form>
         </Grid.Column>
     </Grid>

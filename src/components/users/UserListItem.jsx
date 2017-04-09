@@ -23,7 +23,7 @@ export default ({user, server, index, handleSetupClient, handleRemoveClient, han
                 />
                 <Popup
                     trigger={(
-                        <Link to={`/server/${server.id}/user/edit/${user.name}`}>
+                        <Link to={`/server/${server.id}/user/edit/${user.id}`}>
                             <Button
                                 icon="write"
                                 disabled={setupInProgress}

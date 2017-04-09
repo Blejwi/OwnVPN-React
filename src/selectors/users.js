@@ -12,5 +12,5 @@ export const getUsersArray = createSelector([
 
 export const getUser = createSelector([
     getUsersMap,
-    (_, {params}) => params.name
-], (map, name) => map.get(name));
+    (_, {params}) => params.user_id
+], (map, user_id) => map.get(user_id));
