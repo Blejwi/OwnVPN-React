@@ -1,4 +1,5 @@
 import * as SERVER from '../constants/servers';
+import moment from 'moment';
 import uuid from 'uuid';
 import {isUndefined, keyBy, omit} from 'lodash';
 import {Map} from 'immutable';
@@ -55,7 +56,8 @@ export default (state = DEFAULT_STATE, action) => {
                 ...state,
                 status: state.status.set(action.payload.serverId, {
                     ...state.status.get(action.payload.serverId, {}),
-                    ...omit(action.payload, ['serverId'])
+                    ...omit(action.payload, ['serverId']),
+                    updated: moment().toDate().getTime()
                 }),
                 statusFetch: state.statusFetch.set(action.payload.serverId, false)
             };

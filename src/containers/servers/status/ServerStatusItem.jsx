@@ -2,8 +2,9 @@ import React from 'react';
 import {Card, Icon, Popup} from 'semantic-ui-react';
 import './ServerStatusItem.scss';
 import {STATUS} from "../../../constants/servers";
+import moment from 'moment';
 
-export default ({level, description, name, details, statusFetchInProgress, handleRefresh}) => {
+export default ({level, description, name, details, updated, statusFetchInProgress, handleRefresh}) => {
     let icon, color, details_element;
 
     switch (level) {
@@ -65,6 +66,7 @@ export default ({level, description, name, details, statusFetchInProgress, handl
                     color="grey"
                 />
                 <Card.Header>{name}</Card.Header>
+                {updated ? <Card.Meta>Update: {moment(updated).format('YYYY-MM-DD H:mm:ss.SS')}</Card.Meta> : null}
             </Card.Content>
         </Card>
     );

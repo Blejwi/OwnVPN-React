@@ -57,3 +57,5 @@ export const DEFAULT_SERVER_STATUS = {
         description: null
     }
 };
+
+export const UPDATE_SERVER_STATUS_CACHE_TIME = 60 * 1000;
