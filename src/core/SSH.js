@@ -3,7 +3,6 @@ import fs from "fs";
 import {remote} from "electron";
 import {add as addLog} from "../actions/logs";
 import * as LOG from "../constants/logs";
-
 import {swal} from "react-redux-sweetalert";
 import {STATUS} from "../constants/servers";
 
@@ -71,7 +70,8 @@ export default class SSH {
         return this._runCommand(`sudo systemctl status openvpn@server`, {}, false)
             .then(r => {
                 resolve({
-                    level, description,
+                    level,
+                    description,
                     details: r.stdout
                 })
         }).catch(reject);

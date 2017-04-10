@@ -13,16 +13,17 @@
     width: 100%;
     padding: 0 15px;
     margin: 10px 0 0;
+    white-space: pre-wrap;
 
     > .list {
       min-height: 300px;
     }
-  }
-  .collapsed {
-    height: 0;
-    overflow: hidden;
-    > .list {
-      display: none
+    &.collapsed {
+      height: 0;
+      overflow: hidden;
+      > .list {
+        display: none
+      }
     }
   }
   bottom: 0;
@@ -33,9 +34,14 @@
   div.list {
     height: 100%;
     margin: 0;
-    > div {
+    > .item {
       &:before {
         content: "$ ";
+      }
+      &.collapsed {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       > span {
         &.level {

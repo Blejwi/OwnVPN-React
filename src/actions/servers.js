@@ -6,7 +6,6 @@ import SSH from "../core/SSH";
 import {add as addLog} from "../actions/logs";
 import * as LOG from "../constants/logs";
 import {save} from "./authorization";
-import {STATUS} from "../constants/servers";
 
 export const fetch = (servers) => ({
     type: SERVER.FETCH,
@@ -97,12 +96,12 @@ export const updateStatus = server => dispatch => {
     let payload = {
         serverId: server.id,
         server: {
-            level: STATUS.UNKNOWN,
+            level: SERVER.STATUS.UNKNOWN,
             description: null,
             details: null,
         },
         vpn: {
-            level: STATUS.UNKNOWN,
+            level: SERVER.STATUS.UNKNOWN,
             description: null,
             details: null
         }
@@ -110,13 +109,7 @@ export const updateStatus = server => dispatch => {
 
     try {
         ssh = new SSH(dispatch, server);
-        payload = {
-            ...payload,
-            server: {
-                level: STATUS.OK,
-                description: null
-            }
-        }
+        payload.server.level = SERVER.STATUS.OK;
     } catch (e) {
         dispatch(addLog(`Error getting server status (${server.name})`, LOG.LEVEL.ERROR, 'SERVER'));
         dispatch(addLog(`${e}`, LOG.LEVEL.ERROR, 'SERVER'));
@@ -142,7 +135,7 @@ export const updateStatus = server => dispatch => {
             payload: {
                 ...payload,
                 server: {
-                    level: STATUS.ERROR,
+                    level: SERVER.STATUS.ERROR,
                     description: `Error during VPN status check`,
                     details: `${e}`,
                 }

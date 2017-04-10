@@ -46,3 +46,14 @@ export const STATUS = {
     ERROR: 'SERVER_STATUS_ERROR',
     UNKNOWN: 'SERVER_STATUS_UNKNOWN',
 };
+
+export const DEFAULT_SERVER_STATUS = {
+    server: {
+        level: STATUS.UNKNOWN,
+        description: null
+    },
+    vpn: {
+        level: STATUS.UNKNOWN,
+        description: null
+    }
+};
