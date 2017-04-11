@@ -5,7 +5,9 @@ import {ListItem} from "semantic-ui-react";
 class LogItem extends React.Component {
     constructor() {
         super();
-        this.collapsed = true;
+        this.state = {
+            collapsed: true
+        };
         this.clickStart = 0;
     }
 
@@ -14,7 +16,7 @@ class LogItem extends React.Component {
             <ListItem
                 onMouseDown={(e) => this.mouseDown(e)}
                 onMouseUp={(e) => this.mouseUp(e)}
-                className={this.collapsed ? 'collapsed': ''}>
+                className={this.state.collapsed ? 'collapsed': ''}>
                 <span className={`level ${this.props.level}`}>{`[${this.props.level}]`}</span>
                 <span className="module">{`[${this.props.module}]`}</span>
                 <span className="time">{`[${this.props.time}]`}</span>
@@ -24,8 +26,7 @@ class LogItem extends React.Component {
     }
 
     toggleCollapse() {
-        this.collapsed = !this.collapsed;
-        this.forceUpdate();
+        this.setState((prevState) => ({collapsed: !prevState.collapsed}));
     }
 
     mouseDown(event) {
