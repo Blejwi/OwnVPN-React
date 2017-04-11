@@ -556,20 +556,21 @@ auth ${config.auth_algorithm}
 # down /etc/openvpn/update-resolv-conf`;
     }
 
-    download_ovpn_file({id}) {
+    download_configuration({id}) {
         return new Promise((resolve, reject) => {
             this.connection
                 .then(() => {
                     let file_path = `${client_output_dir}/${id}.ovpn`;
                     return this._runCommand(`ls ${file_path}`)
-                        .then((response) => {
+                        .then(() => {
                             let filename = remote.dialog.showSaveDialog(
                                 remote.getCurrentWindow(),
                                 {
                                     defaultPath: `${id}.ovpn`
                                 }
                             );
-                            return this._ssh.getFile(filename, `/home/${this.config.username}/client-configs/files/${id}.ovpn`);
+
+                            return this._ssh.getFile(filename, `~/client-configs/files/${id}.ovpn`);
                         }).catch(e => reject(e));
                 })
                 .then(resolve)
