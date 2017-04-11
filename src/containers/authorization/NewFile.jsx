@@ -7,21 +7,31 @@ import Actions from '../../components/form/Actions';
 import Input from '../../components/form/Input';
 import {newFile} from '../../actions/authorization';
 import {required, minLength} from "../../utils/validators";
+import File from "../../components/form/File";
+import LoginWrapper from "../../components/authorization/LoginWrapper";
 
-const NewFile = ({onSubmit, submitting, pristine, reset, handleSubmit}) => (
-    <Grid padded="vertically" columns={1}>
-        <Grid.Column>
-            <Header as="h1">New file</Header>
-            <Form onSubmit={handleSubmit(onSubmit)}>
-                <Field component={Input} name="password" label="Password" type="password" required validate={[required, minLength(3)]}/>
-                <Field component={Input} name="duplicatedPassword" label="Duplicate password" type="password" required validate={[required, minLength(3)]} />
+const NewFile = ({onSubmit, submitting, pristine, reset, handleSubmit, change}) => (
+    <LoginWrapper header="Create new configuration file">
+        <Header as="h1">New file</Header>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+            <Field
+                component={File}
+                change={change}
+                save
+                type="text"
+                name="filename"
+                label="Config file path"
+                disabled
+                validate={[required]}
+            />
+            <Field component={Input} name="password" label="Password" type="password" required validate={[required, minLength(3)]}/>
+            <Field component={Input} name="duplicatedPassword" label="Duplicate password" type="password" required validate={[required, minLength(3)]} />
 
-                <Actions submitting={submitting} pristine={pristine} reset={reset}>
-                    <Link to="/login/open"><Button>Open file</Button></Link>
-                </Actions>
-            </Form>
-        </Grid.Column>
-    </Grid>
+            <Actions submitting={submitting} pristine={pristine} reset={reset}>
+                <Link to="/login"><Button>Back</Button></Link>
+            </Actions>
+        </Form>
+    </LoginWrapper>
 );
 
 const mapDispatchToProps = dispatch => ({

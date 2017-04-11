@@ -5,10 +5,9 @@ import ReduxToastr from 'react-redux-toastr'
 import ReduxSweetAlert from 'react-redux-sweetalert';
 import store, {history} from './../store';
 import Dashboard from './../containers/dashboard/Dashboard';
-import SelectSource from './../components/authorization/SelectSource';
+import SelectSource from './authorization/Login';
 import Authorization from './../components/authorization/Authorization';
 import NewFile from './../containers/authorization/NewFile';
-import OpenFile from './../containers/authorization/OpenFile';
 import ServerAdd from './../containers/servers/ServerAdd';
 import ServerShow from './../containers/servers/ServerShow';
 import ServerEdit from './../containers/servers/ServerEdit';
@@ -44,7 +43,6 @@ export default () => (
                 <Route path="/login" component={Authorization}>
                     <IndexRoute component={SelectSource}/>
                     <Route path="new" component={NewFile}/>
-                    <Route path="open" component={OpenFile}/>
                 </Route>
                 <Route path="*" component={Dashboard}/>
             </Router>
