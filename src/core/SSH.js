@@ -1,9 +1,10 @@
 import NodeSSH from "node-ssh";
 import fs from "fs";
 import {remote} from "electron";
+import {swal} from "react-redux-sweetalert";
+import {map} from 'lodash';
 import {add as addLog} from "../actions/logs";
 import * as LOG from "../constants/logs";
-import {swal} from "react-redux-sweetalert";
 import {STATUS} from "../constants/servers";
 
 const cert_directory = '~/openvpn-ca';
@@ -490,8 +491,7 @@ server 10.8.0.0 255.255.255.0
 ifconfig-pool-persist ipp.txt
 ;server-bridge 10.8.0.4 255.255.255.0 10.8.0.50 10.8.0.100
 ;server-bridge
-;push "route 192.168.10.0 255.255.255.0"
-;push "route 192.168.20.0 255.255.255.0"
+${map(config.routes, route => `push "route ${route.network} ${route.mask}"\n`)}
 ${disabled(config.dev === 'tun')}client-config-dir ccd
 ;route 192.168.40.128 255.255.255.248
 ;learn-address ./script
