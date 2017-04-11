@@ -9,6 +9,7 @@ app.on('window-all-closed', () => (process.platform !== 'darwin')?app.quit():nul
 
 app.on('ready', () => {
     developerTools.default(developerTools.REACT_DEVELOPER_TOOLS);
+    developerTools.default(developerTools.REDUX_DEVTOOLS);
     mainWindow = new BrowserWindow({width: 1024, height: 728});
     mainWindow.loadURL('http://localhost:8080/');
     mainWindow.on('closed', () => mainWindow = null);
