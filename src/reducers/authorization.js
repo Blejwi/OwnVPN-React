@@ -46,6 +46,11 @@ export default (state = DEFAULT_STATE, {type, payload}) => {
                     .set('open', true)
                     .set('password', hash(payload.password))
             };
+        case AUTH.CLOSE:
+            return {
+                ...state,
+                file: state.file.set('open', false)
+            };
         default:
             return state;
     }
