@@ -8,7 +8,6 @@ const options = {
     module: {
         loaders: [{
             test: /\.js(x|)$/,
-            // loader: 'babel-loader',
             exclude: /node_modules/,
             loader: 'babel-loader',
             query: {
@@ -38,8 +37,10 @@ const options = {
         packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
     },
     entry: [
+        'react-hot-loader/patch',
         './src/render.jsx'
     ],
+    devtool: 'inline-source-map',
     target: 'electron-main',
     plugins: [
         new HtmlWebpackPlugin({

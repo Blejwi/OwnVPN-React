@@ -7,7 +7,7 @@ import UserWarning from '../users/UserWarning';
 import ServerShowContentRow from './ServerShowContentRow';
 import ServerStatus from "../../containers/servers/status/ServerStatus";
 
-export default ({server, setupInProgress, handleSetup, handleSetupClient, handleRemoveClient, handleDownloadOvpnFile, users}) => (
+export default ({server, setupInProgress, handleSetup, handleSetupClient, handleRemoveClient, handleDownloadConfiguration, users}) => (
     <div>
         <Header as="h1">Server information</Header>
         <ServerStatus server={server}/>
@@ -37,7 +37,6 @@ export default ({server, setupInProgress, handleSetup, handleSetupClient, handle
                 <ServerShowContentRow label="Local IP address" value={server.config.local_ip_address}/>
                 <ServerShowContentRow label="Listen port" value={server.config.port}/>
                 <ServerShowContentRow label="Protocol" value={server.config.protocol}/>
-                <ServerShowContentRow label="Protocol" value={server.config.protocol}/>
                 <ServerShowContentRow label="Dev" value={server.config.dev}/>
                 <ServerShowContentRow label="Dev-node" value={server.config.dev_node}/>
                 <ServerShowContentRow label="TLS-Auth" value={(server.config.tls_auth)?'Yes':'No'}/>
@@ -62,7 +61,7 @@ export default ({server, setupInProgress, handleSetup, handleSetupClient, handle
             server={server}
             handleSetupClient={handleSetupClient}
             handleRemoveClient={handleRemoveClient}
-            handleDownloadOvpnFile={handleDownloadOvpnFile}
+            handleDownloadConfiguration={handleDownloadConfiguration}
             setupInProgress={setupInProgress}
         />
         <Link to={`/server/${server.id}/user/add`}><Button>Add User</Button></Link>

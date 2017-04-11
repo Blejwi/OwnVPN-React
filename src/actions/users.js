@@ -123,7 +123,7 @@ export const setupClient = (server, user) => dispatch => {
         });
 };
 
-export const downloadOvpnFile = (server, user) => dispatch => {
+export const downloadConfiguration = (server, user) => dispatch => {
     dispatch({type: SERVER.SETUP, payload: {server}});
     let ssh;
 
@@ -136,7 +136,7 @@ export const downloadOvpnFile = (server, user) => dispatch => {
         return dispatch(setupFailureServer(server));
     }
 
-    ssh.download_ovpn_file(user).then(() => {
+    ssh.download_configuration(user).then(() => {
         toastr.success('Download', `Successfully downloaded ovpn file`);
         dispatch(setupSuccessServer(server));
     }).catch(e => {
