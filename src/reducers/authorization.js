@@ -1,6 +1,5 @@
 import * as AUTH from '../constants/authorization';
 import {Map} from 'immutable';
-import {omit} from "lodash";
 
 const DEFAULT_STATE = {
     file: Map({
