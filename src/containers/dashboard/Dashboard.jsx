@@ -8,6 +8,7 @@ import {getLogsArray, getLogsCollapsed} from "../../selectors/logs";
 import './Dashboard.scss';
 import {clear, collapse} from "../../actions/logs";
 import {Link} from "react-router";
+import {closeFile} from "../../actions/authorization";
 
 class Dashboard extends React.Component {
     render() {
@@ -15,6 +16,9 @@ class Dashboard extends React.Component {
             <Container fluid className={"main " + (this.props.logs_collapsed ? '' : 'bottom-pad')}>
                 <Menu attached="top" inverted className="top-menu fixed">
                     <Menu.Item header as={Link} to="/">OwnVPN</Menu.Item>
+                    <Menu.Menu position="right">
+                        <Menu.Item onClick={() => this.props.handleLogout()}>Log out</Menu.Item>
+                    </Menu.Menu>
                 </Menu>
                 <Grid padded={true} divided={true}>
                     <Grid.Column width="3" className="sidebar-menu">
@@ -46,6 +50,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     handleCollapse: server => dispatch(collapse()),
     handleClear: server => dispatch(clear()),
+    handleLogout: server => dispatch(closeFile()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

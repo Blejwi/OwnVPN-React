@@ -1,5 +1,6 @@
 import * as AUTH from '../constants/authorization';
 import {Map} from 'immutable';
+import {omit} from "lodash";
 
 const DEFAULT_STATE = {
     file: Map({
@@ -45,6 +46,11 @@ export default (state = DEFAULT_STATE, {type, payload}) => {
                     .set('filename', payload.filename)
                     .set('open', true)
                     .set('password', hash(payload.password))
+            };
+        case AUTH.CLOSE:
+            return {
+                ...state,
+                file: state.file.set('open', false)
             };
         default:
             return state;

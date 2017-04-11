@@ -7,7 +7,7 @@ import store from '../store/index';
 import {fetch} from "./servers";
 import {fetch as fetch_users} from "./users";
 
-export const save = () => (dispatch) => {
+export const save = (closeFileOnSuccess=false) => (dispatch) => {
     const state = store.getState();
     // Get all necessary data from store
     let file = state.auth.file;
@@ -29,6 +29,13 @@ export const save = () => (dispatch) => {
             type: AUTH.SAVE_SUCCESS,
             payload: null
         });
+
+        if (closeFileOnSuccess) {
+            dispatch({
+                type: AUTH.CLOSE
+            });
+            dispatch(push('/login'));
+        }
     }).catch(e => {
         toastr.error('Authorization', `Problem during file save: ${e}`);
         dispatch({
@@ -90,4 +97,9 @@ export const openFile = file => dispatch => {
         });
         dispatch(load(file, filename[0]));
     });
+};
+
+
+export const closeFile = () => dispatch => {
+    dispatch(save(true));
 };
