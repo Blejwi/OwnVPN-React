@@ -5,10 +5,12 @@ import Spinner from 'react-spinkit';
 import UserList from '../users/UserList';
 import UserWarning from '../users/UserWarning';
 import ServerShowContentRow from './ServerShowContentRow';
+import ServerStatus from "../../containers/servers/status/ServerStatus";
 
 export default ({server, setupInProgress, handleSetup, handleSetupClient, handleRemoveClient, handleDownloadOvpnFile, users}) => (
     <div>
         <Header as="h1">Server information</Header>
+        <ServerStatus server={server}/>
         <Table definition>
             <TableBody>
                 <ServerShowContentRow label="Name" value={server.name}/>

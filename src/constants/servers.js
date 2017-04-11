@@ -10,6 +10,9 @@ export const SETUP = 'SERVER_SETUP';
 export const SETUP_SUCCESS = 'SERVER_SETUP_SUCCESS';
 export const SETUP_FAILURE = 'SERVER_SETUP_FAILURE';
 
+export const STATUS_CHANGE = 'SERVER_STATUS_CHANGE';
+export const STATUS_FETCH_START = 'SERVER_STATUS_FETCH_START';
+
 export const AUTH_OPTIONS = [
     {value: 'SHA256', text: 'SHA256'},
     {value: 'SHA512', text: 'SHA512'},
@@ -37,3 +40,22 @@ export const YES_NO_OPTIONS = [
     {value: false, text: 'No'}
 ];
 
+export const STATUS = {
+    OK: 'SERVER_STATUS_OK',
+    WARNING: 'SERVER_STATUS_WARNING',
+    ERROR: 'SERVER_STATUS_ERROR',
+    UNKNOWN: 'SERVER_STATUS_UNKNOWN',
+};
+
+export const DEFAULT_SERVER_STATUS = {
+    server: {
+        level: STATUS.UNKNOWN,
+        description: null
+    },
+    vpn: {
+        level: STATUS.UNKNOWN,
+        description: null
+    }
+};
+
+export const UPDATE_SERVER_STATUS_CACHE_TIME = 60 * 1000;

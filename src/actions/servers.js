@@ -82,3 +82,64 @@ export const setup = server => dispatch => {
             return dispatch(setupFailure(server));
         });
 };
+
+export const updateStatus = server => dispatch => {
+    dispatch(addLog(`Checking server (${server.name}) status`, LOG.LEVEL.INFO, 'SERVER'));
+    dispatch({
+        type: SERVER.STATUS_FETCH_START,
+        payload: {
+            serverId: server.id
+        }
+    });
+
+    let ssh;
+    let payload = {
+        serverId: server.id,
+        server: {
+            level: SERVER.STATUS.UNKNOWN,
+            description: null,
+            details: null,
+        },
+        vpn: {
+            level: SERVER.STATUS.UNKNOWN,
+            description: null,
+            details: null
+        }
+    };
+
+    try {
+        ssh = new SSH(dispatch, server);
+        payload.server.level = SERVER.STATUS.OK;
+    } catch (e) {
+        dispatch(addLog(`Error getting server status (${server.name})`, LOG.LEVEL.ERROR, 'SERVER'));
+        dispatch(addLog(`${e}`, LOG.LEVEL.ERROR, 'SERVER'));
+        return dispatch({
+            type: SERVER.STATUS_CHANGE,
+            payload
+        });
+    }
+
+    ssh.get_status().then(({level, description, details}) => {
+        dispatch({
+            type: SERVER.STATUS_CHANGE,
+            payload: {
+                ...payload,
+                vpn: {
+                    level, description, details
+                }
+            }
+        })
+    }).catch(e => {
+        dispatch({
+            type: SERVER.STATUS_CHANGE,
+            payload: {
+                ...payload,
+                server: {
+                    level: SERVER.STATUS.ERROR,
+                    description: `Error during VPN status check`,
+                    details: `${e}`,
+                }
+            }
+        })
+    })
+};
