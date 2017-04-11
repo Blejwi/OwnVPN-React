@@ -1,5 +1,5 @@
 import * as AUTH from '../constants/authorization';
-import {Map} from 'immutable';
+import {Map, List} from 'immutable';
 
 const DEFAULT_STATE = {
     file: Map({
@@ -9,7 +9,8 @@ const DEFAULT_STATE = {
         password: '',
         dirty: false,
         open: false
-    })
+    }),
+    recentFiles: List()
 };
 
 const hash = password => password; // TODO: select hash function and add salt
@@ -45,6 +46,11 @@ export default (state = DEFAULT_STATE, {type, payload}) => {
                     .set('filename', payload.filename)
                     .set('open', true)
                     .set('password', hash(payload.password))
+            };
+        case AUTH.FETCH_RECENT:
+            return {
+                ...state,
+                recentFiles: List(payload)
             };
         default:
             return state;
