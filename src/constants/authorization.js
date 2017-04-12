@@ -5,3 +5,4 @@ export const LOAD_FAILURE = 'AUTH_LOAD_FAILURE';
 export const NEW = 'AUTH_NEW';
 export const OPEN = 'AUTH_OPEN';
 export const CLOSE = 'AUTH_CLOSE';
+export const FETCH_RECENT = 'AUTH_FETCH_RECENT';

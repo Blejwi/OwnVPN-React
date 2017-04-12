@@ -18,14 +18,32 @@ const selectFile = (change, name) => {
     });
 };
 
-export default ({change, ...props}) => (
+const saveFile = (change, name) => {
+    remote.dialog.showSaveDialog(remote.getCurrentWindow(), filename => {
+        if (filename) {
+            change(name, filename);
+        } else {
+            clearFile(change, name);
+        }
+    });
+};
+
+const filePicker = (change, name, save) => {
+    if (save) {
+        saveFile(change, name);
+    } else {
+        selectFile(change, name);
+    }
+};
+
+export default ({change, save, ...props}) => (
     <Input
         {...props}
         type="text"
         readOnly
         action={(
             <Button.Group>
-                <Button onClick={() => selectFile(change, props.input.name)} type="button">
+                <Button onClick={() => filePicker(change, props.input.name, save)} type="button">
                     Select file
                 </Button>
                 <Dropdown

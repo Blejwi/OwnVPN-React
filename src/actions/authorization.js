@@ -6,6 +6,9 @@ import {toastr} from 'react-redux-toastr';
 import store from '../store/index';
 import {fetch} from "./servers";
 import {fetch as fetch_users} from "./users";
+import {swal} from "react-redux-sweetalert";
+import {filter, uniq, slice} from "lodash";
+import settings from 'electron-settings';
 
 export const save = (closeFileOnSuccess = false) => (dispatch) => {
     const state = store.getState();
@@ -57,6 +60,7 @@ export const load = (file, filename) => (dispatch) => {
                 payload: null
             });
             toastr.success('Authorization', 'Successfully loaded data');
+            addRecent(filename);
             dispatch(push('/'));
         }).catch(e => {
             throw e;
@@ -71,34 +75,82 @@ export const load = (file, filename) => (dispatch) => {
 };
 
 export const newFile = file => dispatch => {
-    remote.dialog.showSaveDialog(remote.getCurrentWindow(), filename => {
-        let encryption = new Encryption(filename, file.password, false);
+    let encryption = new Encryption(file.filename, file.password, false);
 
-        // Create actual file and save initial encrypted empty json
-        encryption.save({}, 'w').then(() => {
-            dispatch({
-                type: AUTH.NEW,
-                payload: {...file, filename}
-            });
-            toastr.success('Authorization', 'Successfully created new file');
-
-            dispatch(push('/'));
-        }).catch((e) => {
-            toastr.error('Authorization', `Problem during file creation: ${e}`);
+    // Create actual file and save initial encrypted empty json
+    encryption.save({}, 'w').then(() => {
+        dispatch({
+            type: AUTH.NEW,
+            payload: {...file}
         });
+        toastr.success('Authorization', 'Successfully created new file');
+        addRecent(file.filename);
+        dispatch(push('/'));
+    }).catch((e) => {
+        toastr.error('Authorization', `Problem during file creation: ${e}`);
     });
 };
 
-export const openFile = file => dispatch => {
+export const openFile = () => dispatch => {
     remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
         properties: ['openFile']
     }, filename => {
-        dispatch({
-            type: AUTH.OPEN,
-            payload: {...file, filename: filename[0]}
-        });
-        dispatch(load(file, filename[0]));
+        if (!filename) {
+            return;
+        }
+
+        dispatch(openFilePassword(filename));
     });
+};
+
+export const openFilePassword = filename => dispatch => {
+    let file = {};
+    filename = [].concat(filename)[0];
+
+    dispatch(swal({
+        title: 'Password',
+        type: 'input',
+        inputPlaceholder: "Password...",
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        text: 'Type password for chosen file',
+        showCancelButton: true,
+        closeOnConfirm: true,
+        onConfirm: (password) => {
+            if (!password) {
+                toastr.error('Authorization', `Invalid password`);
+                return;
+            }
+
+            file.password = password;
+            dispatch({
+                type: AUTH.OPEN,
+                payload: {
+                    ...file,
+                    filename: filename
+                }
+            });
+            dispatch(load(file, filename));
+        },
+        onCancel: () => {},
+        allowOutsideClick: true,
+        onOutsideClick: () => {},
+        onEscapeKey: () => {}
+    }));
+};
+
+export const addRecent = filename => {
+    let previous_config_files = settings.get('recent_config_files') || [];
+    previous_config_files.unshift(filename);
+    previous_config_files = slice(filter(uniq(previous_config_files), x => !!x), 0, 5);
+    settings.set('recent_config_files', previous_config_files);
+};
+
+export const fetchRecent = () => dispatch => {
+    dispatch({
+        type: AUTH.FETCH_RECENT,
+        payload: settings.get('recent_config_files') || []
+    })
 };
 
 

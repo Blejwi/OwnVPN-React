@@ -15,3 +15,7 @@ export const isFileDirty = createSelector([
 export const isFileOpen = createSelector([
     getFileMap
 ], isFile('open'));
+
+export const getRecentFiles = createSelector([
+    state => state.auth.recentFiles
+], recentFiles => recentFiles.toJS());
