@@ -8,9 +8,9 @@ import {fetch} from "./servers";
 import {fetch as fetch_users} from "./users";
 import {swal} from "react-redux-sweetalert";
 import {filter, uniq, slice} from "lodash";
-const settings = require('electron-settings');
+import settings from 'electron-settings';
 
-export const save = () => (dispatch) => {
+export const save = (closeFileOnSuccess = false) => (dispatch) => {
     const state = store.getState();
     // Get all necessary data from store
     let file = state.auth.file;
@@ -32,6 +32,13 @@ export const save = () => (dispatch) => {
             type: AUTH.SAVE_SUCCESS,
             payload: null
         });
+
+        if (closeFileOnSuccess) {
+            dispatch({
+                type: AUTH.CLOSE
+            });
+            dispatch(push('/login'));
+        }
     }).catch(e => {
         toastr.error('Authorization', `Problem during file save: ${e}`);
         dispatch({
@@ -41,7 +48,7 @@ export const save = () => (dispatch) => {
     });
 };
 
-export const load = (file, filename) => (dispatch)=> {
+export const load = (file, filename) => (dispatch) => {
     // Try to open selected file and load it
     try {
         let encryption = new Encryption(filename, file.password);
@@ -55,7 +62,9 @@ export const load = (file, filename) => (dispatch)=> {
             toastr.success('Authorization', 'Successfully loaded data');
             addRecent(filename);
             dispatch(push('/'));
-        }).catch(e => {throw e;});
+        }).catch(e => {
+            throw e;
+        });
     } catch (e) {
         dispatch({
             type: AUTH.LOAD_FAILURE,
@@ -142,4 +151,9 @@ export const fetchRecent = () => dispatch => {
         type: AUTH.FETCH_RECENT,
         payload: settings.get('recent_config_files') || []
     })
+};
+
+
+export const closeFile = () => dispatch => {
+    dispatch(save(true));
 };

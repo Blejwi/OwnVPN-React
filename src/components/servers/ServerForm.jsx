@@ -5,6 +5,8 @@ import Input from '../form/Input';
 import Select from '../form/Select';
 import File from '../form/File';
 import Actions from '../form/Actions';
+import Array from '../form/Array';
+import ServerFormRoutes from './ServerFormRoutes';
 import {AUTH_OPTIONS, CIPHER_OPTIONS, PROTOCOL_OPTIONS, DEV_OPTIONS, YES_NO_OPTIONS} from '../../constants/servers';
 import {required, minValue, maxValue, email} from "../../utils/validators";
 
@@ -132,6 +134,11 @@ const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset, change
                         you may need to selectively disable the
                         Windows firewall for the TAP adapter.
                         Non-Windows systems usually dont need this.'
+            />
+            <Array
+                name="config.routes"
+                label="Routes"
+                component={ServerFormRoutes}
             />
             <Field
                 component={Select}
