@@ -562,7 +562,9 @@ auth ${config.auth_algorithm}
                 .then(() => {
                     let file_path = `${client_output_dir}/${id}.ovpn`;
                     return this._runCommand(`ls ${file_path}`)
-                        .then(() => {
+                        .then(() => this._runCommand(`readlink -f ${file_path}`))
+                        .then((response) => {
+                            const absolute_filepath = response.stdout;
                             let filename = remote.dialog.showSaveDialog(
                                 remote.getCurrentWindow(),
                                 {
@@ -570,7 +572,7 @@ auth ${config.auth_algorithm}
                                 }
                             );
 
-                            return this._ssh.getFile(filename, `~/client-configs/files/${id}.ovpn`);
+                            return this._ssh.getFile(filename, absolute_filepath);
                         }).catch(e => reject(e));
                 })
                 .then(resolve)
