@@ -104,6 +104,11 @@ export const updateStatus = server => dispatch => {
             level: SERVER.STATUS.UNKNOWN,
             description: null,
             details: null
+        },
+        users: {
+            level: SERVER.STATUS.UNKNOWN,
+            description: null,
+            details: null
         }
     };
 
@@ -120,15 +125,36 @@ export const updateStatus = server => dispatch => {
     }
 
     ssh.get_status().then(({level, description, details}) => {
-        dispatch({
-            type: SERVER.STATUS_CHANGE,
-            payload: {
-                ...payload,
-                vpn: {
-                    level, description, details
-                }
+        payload = {
+            ...payload,
+            vpn: {
+                level, description, details
             }
-        })
+        };
+    }).then(() => {
+        return ssh.get_users_stats().then(({level, description, details}) => {
+            dispatch({
+                type: SERVER.STATUS_CHANGE,
+                payload: {
+                    ...payload,
+                    users: {
+                        level, description, details
+                    }
+                }
+            })
+        }).catch(e => {
+            dispatch({
+                type: SERVER.STATUS_CHANGE,
+                payload: {
+                    ...payload,
+                    users: {
+                        level: SERVER.STATUS.ERROR,
+                        description: null,
+                        details: `${e}`
+                    }
+                }
+            })
+        });
     }).catch(e => {
         dispatch({
             type: SERVER.STATUS_CHANGE,
@@ -140,6 +166,6 @@ export const updateStatus = server => dispatch => {
                     details: `${e}`,
                 }
             }
-        })
-    })
+        });
+    });
 };

@@ -14,7 +14,7 @@ class ServerStatus extends React.Component {
 
     render() {
         return (
-            <Card.Group className="server-status">
+            <Card.Group className="server-status" itemsPerRow="3">
                 <ServerStatusItem
                     name="Server status"
                     statusFetchInProgress={this.props.serverStatusFetchInProgress}
@@ -28,6 +28,13 @@ class ServerStatus extends React.Component {
                     handleRefresh={() => this.updateServerStatus()}
                     updated={this.props.serverStatus.updated}
                     {...this.props.serverStatus.vpn}
+                />
+                <ServerStatusItem
+                    name="VPN statistics"
+                    statusFetchInProgress={this.props.serverStatusFetchInProgress}
+                    handleRefresh={() => this.updateServerStatus()}
+                    updated={this.props.serverStatus.updated}
+                    {...this.props.serverStatus.users}
                 />
             </Card.Group>
         );

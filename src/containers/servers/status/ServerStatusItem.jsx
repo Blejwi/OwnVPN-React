@@ -44,9 +44,11 @@ export default ({level, description, name, details, updated, statusFetchInProgre
             <Popup
                 className="whitespace-pre"
                 trigger={<Icon name="question circle" color="grey"/>}
-                content={details}
                 hoverable
-            />
+                wide='very'
+            >
+                <span className="details-content" dangerouslySetInnerHTML={{__html: details}}></span>
+            </Popup>
         );
     }
 

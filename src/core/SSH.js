@@ -67,6 +67,42 @@ export default class SSH {
         });
     }
 
+    get_users_stats() {
+        return new Promise((resolve, reject) => {
+            this.connection
+                .then(() => this._runCommand(`sudo cat /etc/openvpn/openvpn-status.log`))
+                .then(response => {
+                    let reg = new RegExp(/(.*)\n(.*)\n(Common.*?)\n(.*)\nROUTING TABLE\n(Virtual.*)\n(.*)\nGLOBAL STATS\n(.*)\nEND/im)
+                    let result = reg.exec(response.stdout);
+
+                    let details = '';
+                    details += `<h5>Client list</h5>` + this._get_part(result[3], result[4]);
+                    details += `<h5>Routing table</h5>` + this._get_part(result[5], result[6]);
+                    details += `<h5>Global stats</h5><p>${result[7]}</p>`;
+                    details += `<p>Updated: ${result[2]}</p>`;
+
+                    resolve({
+                        level: STATUS.OK,
+                        description: null,
+                        details
+                    })
+                })
+                .catch(reject);
+        });
+    }
+
+    _get_part(headers, lines) {
+        headers = headers.split(',');
+        lines = map(lines.split('\n'), line => line.split(','));
+        return `
+        <table>
+            <thead>${map(headers, header => `<th>${header}</th>`).join('')}</thead>
+            ${map(lines, line =>
+                `<tr>${map(line, field => `<td>${field}</td>`).join('')}</tr>`
+            ).join('')}
+        </table>`;
+    }
+
     _resolve_function(resolve, reject, level, description='') {
         return this._runCommand(`sudo systemctl status openvpn@server`, {}, false)
             .then(r => {
