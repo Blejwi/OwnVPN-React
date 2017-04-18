@@ -2,6 +2,7 @@
   <dictionary name="wpanas">
     <words>
       <w>dropdown</w>
+      <w>ifconfig</w>
     </words>
   </dictionary>
 </component>

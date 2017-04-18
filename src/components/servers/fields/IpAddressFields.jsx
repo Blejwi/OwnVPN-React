@@ -1,25 +1,29 @@
 import React from 'react';
 import {Field} from 'redux-form';
 import {Button} from 'semantic-ui-react';
-import Input from '../form/Input';
-import {required} from '../../utils/validators';
+import {isFunction} from 'lodash';
+import Input from '../../form/Input';
+import {required} from '../../../utils/validators';
 
-export default ({name, handleRemove}) => (
-    <div>
+export default ({name, handleRemove, helpMessage}) => (
+    <div className="field">
         <Field
             name={`${name}.network`}
             component={Input}
             label="Network"
             action={
-                <Button
-                    icon="remove"
-                    content="Remove"
-                    onClick={handleRemove}
-                />
+                isFunction(handleRemove) && (
+                    <Button
+                        icon="remove"
+                        content="Remove"
+                        onClick={handleRemove}
+                    />
+                )
             }
             placeholder="192.168.10.0"
             required
             validate={[required]}
+            help_message={helpMessage}
         />
         <Field
             name={`${name}.mask`}
