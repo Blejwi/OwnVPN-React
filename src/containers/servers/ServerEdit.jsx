@@ -12,7 +12,10 @@ class ServerEdit extends React.Component {
 
 const mapStateToProps = (state, ownProps) => ({
     initialValues: getServer(state, ownProps),
-    serverMode: getFormSelector(state, 'server_mode')
+    serverMode: getFormSelector(state, 'config.server_mode'),
+    devMode: getFormSelector(state, 'config.dev'),
+    allowSubnet: getFormSelector(state, 'config.allow_subnet'),
+    assignIp: getFormSelector(state, 'config.assign_ip')
 });
 
 const mapDispatchToProps = dispatch => ({

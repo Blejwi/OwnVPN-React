@@ -8,6 +8,7 @@ import Select from '../../form/Select';
 import IpAddressFields from './IpAddressFields';
 import ServerModeFields from './ServerModeFields';
 import BridgingModeFields from './BridgingModeFields';
+import AssignSpecificIpFields from './AssignSpecificIpFields';
 import {maxValue, minValue, required} from '../../../utils/validators';
 import {
     AUTH_OPTIONS,
@@ -15,17 +16,19 @@ import {
     DEV_OPTIONS,
     PROTOCOL_OPTIONS,
     YES_NO_OPTIONS,
-    LOG_LEVEL_OPIONS
+    LOG_LEVEL_OPIONS,
+    TOPOLOGY_OPTIONS
 } from '../../../constants/servers';
 import * as HELP_MESSAGE from '../../../constants/help_messages';
+import AllowSubnetFields from "./AllowSubnetFields";
 
-export default ({change, serverMode}) => (
+export default ({change, serverMode, devMode, allowSubnet, assignIp}) => (
     <Segment vertical>
         <Header as="h2">VPN Configuration</Header>
         <Field
             component={Input}
             name="config.local_ip_address"
-            label="Local IP address (optional)"
+            label="Local IP address"
             helpMessage={HELP_MESSAGE.LOCAL_IP_ADDRESS}
         />
         <Field
@@ -52,23 +55,17 @@ export default ({change, serverMode}) => (
             component={Select}
             name="config.dev"
             options={DEV_OPTIONS}
-            label="Dev"
+            label="Tunnel type - dev"
             helpMessage={HELP_MESSAGE.DEV}
             required
             validate={[required]}
         />
         <Field
-            component={Input}
-            name="config.dev_node"
-            label="Dev-node"
-            helpMessage={HELP_MESSAGE.DEV_NODE}
-        />
-        <Field
-            component={Input}
+            component={Select}
             name="config.topology"
             label="Topology"
             helpMessage={HELP_MESSAGE.TOPOLOGY}
-            options={['subnet', 'net30', 'p2p']}
+            options={TOPOLOGY_OPTIONS}
         />
         <ServerModeFields
             change={change}
@@ -78,16 +75,27 @@ export default ({change, serverMode}) => (
             change={change}
             serverMode={serverMode}
         />
+        <AllowSubnetFields
+            change={change}
+            serverMode={serverMode}
+            devMode={devMode}
+            assignIp={assignIp}
+            allowSubnet={allowSubnet}
+        />
+        <AssignSpecificIpFields
+            change={change}
+            assignIp={assignIp}
+            allowSubnet={allowSubnet}
+        />
         <Field
             component={File}
             change={change}
             name="ifconfigPoolPersist"
             label="Ifconfig pool persist"
-            disabled
         />
         <Array
             name="config.routes"
-            label="Routes"
+            label="Push routes to allow the client access other private subnets"
             component={IpAddressFields}
         />
         <Field

@@ -5,7 +5,7 @@ import {isFunction} from 'lodash';
 import Input from '../../form/Input';
 import {required} from '../../../utils/validators';
 
-export default ({name, handleRemove, helpMessage}) => (
+export default ({name, handleRemove, helpMessage, disabled}) => (
     <div className="field">
         <Field
             name={`${name}.network`}
@@ -21,8 +21,9 @@ export default ({name, handleRemove, helpMessage}) => (
                 )
             }
             placeholder="192.168.10.0"
-            required
-            validate={[required]}
+            required={!disabled}
+            disabled={disabled}
+            validate={!disabled && [required]}
             helpMessage={helpMessage}
         />
         <Field
@@ -30,8 +31,9 @@ export default ({name, handleRemove, helpMessage}) => (
             component={Input}
             label="Mask"
             placeholder="255.255.255.0"
-            required
-            validate={[required]}
+            required={!disabled}
+            disabled={disabled}
+            validate={!disabled && [required]}
         />
     </div>
 );

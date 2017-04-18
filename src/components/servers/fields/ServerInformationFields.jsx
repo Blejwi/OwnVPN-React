@@ -53,7 +53,6 @@ export default ({change}) => (
             type="text"
             name="key"
             label="SSH private key path"
-            disabled
         />
     </Segment>
 );

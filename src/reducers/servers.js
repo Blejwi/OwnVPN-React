@@ -25,6 +25,16 @@ const DEFAULT_STATE = {
             max_clients: '',
             auth_algorithm: 'SHA256',
             cipher_algorithm: 'BF-CBC',
+            server_mode: 'server',
+            topology: 'net30',
+            client_to_client: true,
+            duplicate_cn: false,
+            compress: false,
+            verb: '3',
+            server: {
+                network: '10.8.0.0',
+                mask: '255.255.255.0'
+            }
         }
     }], 'id')),
     setupInProgress: Map(),

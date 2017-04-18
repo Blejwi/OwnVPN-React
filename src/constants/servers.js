@@ -31,8 +31,8 @@ export const PROTOCOL_OPTIONS = [
 ];
 
 export const DEV_OPTIONS = [
-    {value: 'tun', text: 'tun'},
-    {value: 'tap', text: 'tap'}
+    {value: 'tun', text: 'tun - routed IP tunnel'},
+    {value: 'tap', text: 'tap - ethernet tunnel'}
 ];
 
 export const YES_NO_OPTIONS = [
@@ -51,6 +51,13 @@ export const LOG_LEVEL_OPIONS = [
     {value: '7', text: '7'},
     {value: '8', text: '8'},
     {value: '9', text: '9'}
+];
+
+export const TOPOLOGY_OPTIONS = [
+    {value: 'none', text: 'none'},
+    {value: 'subnet', text: 'subnet (recommended)'},
+    {value: 'net30', text: 'net30 (not recommended)'},
+    {value: 'p2p', text: 'p2p'}
 ];
 
 export const STATUS = {

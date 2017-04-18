@@ -1,7 +1,7 @@
 import React from 'react';
 import {reduxForm, Field, SubmissionError} from 'redux-form';
 import {connect} from 'react-redux';
-import {Grid, Form, Button, Header} from 'semantic-ui-react';
+import {Form, Button, Header} from 'semantic-ui-react';
 import {Link} from 'react-router';
 import Actions from '../../components/form/Actions';
 import Input from '../../components/form/Input';
@@ -21,7 +21,6 @@ const NewFile = ({onSubmit, submitting, pristine, reset, handleSubmit, change}) 
                 type="text"
                 name="filename"
                 label="Config file path"
-                disabled
                 validate={[required]}
             />
             <Field component={Input} name="password" label="Password" type="password" required validate={[required, minLength(3)]}/>

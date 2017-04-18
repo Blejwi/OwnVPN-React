@@ -6,34 +6,38 @@ import Input from '../../form/Input';
 import {required} from '../../../utils/validators';
 import Radio from '../../form/Radio';
 
+const isOn = serverMode => serverMode === 'bridge';
+
 export default ({change, serverMode}) => (
     <Segment padded={true}>
         <Header as="h5">Server mode for ethernet bridging</Header>
         <Field
             component={Radio}
-            name="server_mode"
+            name="config.server_mode"
             label="Enabled"
             radio
             defaultValue="bridge"
             currentValue={serverMode}
             change={change}
         />
-        <IpAddressFields name="server_bridge"/>
+        <IpAddressFields name="config.server_bridge" disabled={!isOn(serverMode)}/>
         <Field
-            name="server_bridge.start"
+            name="config.server_bridge.start"
             component={Input}
             label="Start range"
             placeholder="10.8.0.50"
-            required
-            validate={[required]}
+            disabled={!isOn(serverMode)}
+            required={isOn(serverMode)}
+            validate={isOn(serverMode) && [required]}
         />
         <Field
-            name="server_bridge.end"
+            name="config.server_bridge.end"
             component={Input}
             label="End range"
             placeholder="10.8.0.100"
-            required
-            validate={[required]}
+            disabled={!isOn(serverMode)}
+            required={isOn(serverMode)}
+            validate={isOn(serverMode) && [required]}
         />
     </Segment>
 );

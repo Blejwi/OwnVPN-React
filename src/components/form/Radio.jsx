@@ -4,7 +4,7 @@ import Error from './Error';
 
 const handleChange = (change, name) => (event, {name, value}) => change(name, value);
 
-export default ({input, label, required, defaultValue, currentValue, change, meta: {touched, error}}) => {
+export default ({input, label, required, disabled, defaultValue, currentValue, change, meta: {touched, error}}) => {
     return (
         <Form.Field>
             <Checkbox
@@ -15,6 +15,7 @@ export default ({input, label, required, defaultValue, currentValue, change, met
                 required={required}
                 checked={currentValue === defaultValue}
                 value={defaultValue}
+                disabled={disabled}
             />
             <Error touched={touched} error={error}/>
         </Form.Field>
