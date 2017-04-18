@@ -7,6 +7,8 @@ let mainWindow = null;
 
 app.on('window-all-closed', () => (process.platform !== 'darwin')?app.quit():null);
 
+require('electron-context-menu')();
+
 app.on('ready', () => {
     developerTools.default(developerTools.REACT_DEVELOPER_TOOLS);
     developerTools.default(developerTools.REDUX_DEVTOOLS);
