@@ -20,12 +20,6 @@ export default (state = DEFAULT_STATE, {type, payload}) => {
             };
         case USER.EDIT:
             const user = omit(payload, ['serverId']);
-            return {
-                ...state,
-                list: state.list
-                    .updateIn([payload.serverId, payload.id], user)
-            };
-
             return {...state, list: state.list.setIn([payload.serverId, payload.id], user)};
         case USER.REMOVE:
             return {

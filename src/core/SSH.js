@@ -194,6 +194,7 @@ export default class SSH {
                                     }));
                                 }).then(() => {
                                     return this._runCommand(`rm ${client_keys_dir}/${id}.key`)
+                                        .then(() => this.removeCrtFromDB(id))
                                         .then(() => this.generateClientKey(id))
                                         .then(() => this.generateClientConfigFiles(id)
                                         .then(() => this.bindClientIp(id, ipAddress)));
@@ -223,7 +224,9 @@ export default class SSH {
             this.connection
                 .then(() => this._runCommand(
                     `rm -rf ${client_keys_dir}/${id}.key ${client_output_dir}/${id}.ovpn ${client_keys_dir}/${id}.crt`
-                )).then(() => this.restart_openvpn())
+                ))
+                .then(() => this.removeCrtFromDB(id))
+                .then(() => this.restart_openvpn())
                 .then(resolve)
                 .catch((e) => {
                     this.log('Something failed...', LOG.LEVEL.ERROR);
@@ -268,6 +271,12 @@ export default class SSH {
     generateClientKey(id) {
         return this._runCommand(
             `${cert_begin} && ${generate_client_key} ${id}`
+        );
+    }
+
+    removeCrtFromDB(id) {
+        return this._runCommand(
+            `sed -i '/CN=${id}/d' ${client_keys_dir}/index.txt`
         );
     }
 
@@ -538,9 +547,6 @@ persist-tun
 ;http-proxy-retry
 ;http-proxy [proxy server] [proxy port
 ;mute-replay-warnings
-#ca ca.crt # we place tese in ovpn file
-#cert client.crt
-#key client.key
 remote-cert-tls server
 ${disabled(config.tls_auth)}tls-auth ta.key 1
 cipher ${config.cipher_algorithm}
