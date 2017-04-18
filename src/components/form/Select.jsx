@@ -4,9 +4,9 @@ import {map} from 'lodash';
 import Label from './Label';
 import Error from './Error';
 
-export default ({input, label, options, help_message, required, meta: {touched, error}}) => (
+export default ({input, label, options, helpMessage, required, meta: {touched, error}}) => (
     <Form.Field>
-        <Label help_message={help_message}>{label}</Label>
+        <Label helpMessage={helpMessage}>{label}</Label>
         <select {...input} placeholder={label} required={required}>
             {map(options, (option, key) => <option key={key} value={option.value} >{option.text}</option>)}
         </select>

@@ -23,7 +23,7 @@ export default ({name, handleRemove, helpMessage}) => (
             placeholder="192.168.10.0"
             required
             validate={[required]}
-            help_message={helpMessage}
+            helpMessage={helpMessage}
         />
         <Field
             name={`${name}.mask`}

@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {edit} from '../../actions/servers';
-import {getServer} from '../../selectors/servers';
+import {getServer, getFormSelector} from '../../selectors/servers';
 import ServerForm from '../../components/servers/ServerForm';
 
 class ServerEdit extends React.Component {
@@ -11,7 +11,8 @@ class ServerEdit extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-    initialValues: getServer(state, ownProps)
+    initialValues: getServer(state, ownProps),
+    serverMode: getFormSelector(state, 'server_mode')
 });
 
 const mapDispatchToProps = dispatch => ({

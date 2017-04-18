@@ -1,13 +1,13 @@
 import React from 'react';
 import {Popup} from 'semantic-ui-react';
 
-export default ({children, help_message}) => {
+export default ({children, helpMessage}) => {
     const label = <label>{children}</label>;
 
-    if (help_message) {
+    if (helpMessage) {
         return (
             <Popup trigger={label}>
-                <Popup.Content>{help_message}</Popup.Content>
+                <Popup.Content>{helpMessage}</Popup.Content>
             </Popup>
         );
     }

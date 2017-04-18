@@ -3,6 +3,7 @@ import {Header, Segment} from 'semantic-ui-react';
 import {Field} from 'redux-form';
 import Input from '../../form/Input';
 import {email} from '../../../utils/validators';
+import * as HELPER_MESSAGE from '../../../constants/help_messages';
 
 export default () => (
     <Segment vertical>
@@ -11,7 +12,7 @@ export default () => (
             component={Input}
             name="country"
             label="Country"
-            help_message="Country code, for example: PL, US"
+            helpMessage={HELPER_MESSAGE.COUNTRY}
         />
         <Field component={Input} name="province" label="Province"/>
         <Field component={Input} name="city" label="City"/>

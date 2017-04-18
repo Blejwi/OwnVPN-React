@@ -6,12 +6,12 @@ import ServerInformationFields from './fields/ServerInformationFields';
 import CertificateInformationFields from './fields/CertificateInformationFields';
 import VpnConfigurationFields from './fields/VpnConfigurationFields';
 
-const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset, change}) => (
+const ServerForm = ({handleSubmit, onSubmit, submitting, pristine, reset, change, serverMode}) => (
     <Form onSubmit={handleSubmit(onSubmit)}>
         <Header as="h1">Server Form</Header>
         <ServerInformationFields change={change}/>
         <CertificateInformationFields/>
-        <VpnConfigurationFields change={change}/>
+        <VpnConfigurationFields change={change} serverMode={serverMode}/>
         <Segment vertical>
             <Actions submitting={submitting} pristine={pristine} reset={reset}/>
         </Segment>
