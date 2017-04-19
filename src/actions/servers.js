@@ -124,7 +124,7 @@ export const updateStatus = server => dispatch => {
         });
     }
 
-    ssh.get_status().then(({level, description, details}) => {
+    ssh.statistics.get_status().then(({level, description, details}) => {
         payload = {
             ...payload,
             vpn: {
@@ -132,7 +132,7 @@ export const updateStatus = server => dispatch => {
             }
         };
     }).then(() => {
-        return ssh.get_users_stats().then(({level, description, details}) => {
+        return ssh.statistics.get_users_stats().then(({level, description, details}) => {
             dispatch({
                 type: SERVER.STATUS_CHANGE,
                 payload: {
