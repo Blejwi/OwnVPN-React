@@ -72,14 +72,11 @@ export default class SSH {
             this.connection
                 .then(() => this._runCommand(`sudo cat /etc/openvpn/openvpn-status.log`))
                 .then(response => {
-                    let reg = new RegExp(/(.*)\n(.*)\n(Common.*?)\n(.*)\nROUTING TABLE\n(Virtual.*)\n(.*)\nGLOBAL STATS\n(.*)\nEND/im)
-                    let result = reg.exec(response.stdout);
-
                     let details = '';
-                    details += `<h5>Client list</h5>` + this._get_part(result[3], result[4]);
-                    details += `<h5>Routing table</h5>` + this._get_part(result[5], result[6]);
-                    details += `<h5>Global stats</h5><p>${result[7]}</p>`;
-                    details += `<p>Updated: ${result[2]}</p>`;
+                    details += this._get_client_list(response);
+                    details += this._get_routing_table(response);
+                    details += this._get_global_stats(response);
+                    details += this._get_updated(response);
 
                     resolve({
                         level: STATUS.OK,
@@ -91,9 +88,49 @@ export default class SSH {
         });
     }
 
+    _get_updated(response) {
+        let reg = new RegExp(/Updated,(.*?)\n/i);
+        let result = reg.exec(response.stdout);
+        if (result && result.length > 1 && result[1]) {
+            return `<p>Updated: ${result[1]}</p>`;
+        }
+        return '';
+    }
+
+    _get_global_stats(response) {
+        let reg = new RegExp(/GLOBAL STATS\n(.*?)\nEND/im);
+        let result = reg.exec(response.stdout);
+        if (result && result.length > 1 && result[1]) {
+            return `<b>Global stats</b><p>${result[1]}</p><div class="ui divider"></div>`;
+        }
+        return '';
+    }
+
+    _get_routing_table(response) {
+        let reg = new RegExp(/(Virtual Address.*)\n(.*?)\nGLOBAL STATS/im);
+        let result = reg.exec(response.stdout);
+        if (result && result.length > 2 && result[1] && result[2]) {
+            return `<b>Routing table</b>` + this._get_part(result[1], result[2]) + `<div class="ui divider"></div>`;
+        }
+        return '';
+    }
+
+    _get_client_list(response) {
+        let reg = new RegExp(/(Common Name.*)\n(.*?)\nROUTING TABLE/im);
+        let result = reg.exec(response.stdout);
+        if (result && result.length > 2 && result[1] && result[2]) {
+            return `<b>Client list</b>` + this._get_part(result[1], result[2]) + `<div class="ui divider"></div>`;
+        }
+        return '';
+    }
+
     _get_part(headers, lines) {
+        headers = headers || '';
+        lines = lines || '';
+
         headers = headers.split(',');
         lines = map(lines.split('\n'), line => line.split(','));
+
         return `
         <table>
             <thead>${map(headers, header => `<th>${header}</th>`).join('')}</thead>

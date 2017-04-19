@@ -149,7 +149,7 @@ export const updateStatus = server => dispatch => {
                     ...payload,
                     users: {
                         level: SERVER.STATUS.ERROR,
-                        description: null,
+                        description: `Error during getting VPN statistics`,
                         details: `${e}`
                     }
                 }
