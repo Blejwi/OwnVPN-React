@@ -4,6 +4,57 @@ import uuid from 'uuid';
 import {isUndefined, keyBy, omit} from 'lodash';
 import {Map} from 'immutable';
 
+const DEFAULT_SERVER_CONFIG = {
+    local_ip_address: '',
+    port: 1194,
+    protocol: 'udp',
+    dev: 'tun',
+    topology: 'net30',
+    server_mode: 'server',
+    server: {
+        network: '10.8.0.0',
+        mask: '255.255.255.0'
+    },
+    server_bridge: {
+        network: '10.8.0.4',
+        mask: '255.255.255.0',
+        start: '10.8.0.50',
+        end: '10.8.0.100'
+    },
+    allow_subnet: false,
+    assign_ip: false,
+    ifconfig_pool_persist: true,
+    routes: [],
+    learn_address: '',
+    redirect_gateway: {
+        local: false,
+        auto_local: false,
+        def1: false,
+        bypass_dhcp: false,
+        bypass_dns: false,
+        bypass_local: false,
+        block_local: false
+    },
+    client_to_client: true,
+    duplicate_cn: false,
+    keep_alive: {
+        ping: 10,
+        during: 120
+    },
+    tls_auth: true,
+    auth_algorithm: 'SHA256',
+    cipher_algorithm: 'BF-CBC',
+    compress: false,
+    max_clients: '',
+    user_privilege: 'nobody',
+    group_privilege: 'nogroup',
+    persist_key: true,
+    persist_tun: true,
+    verb: '3',
+    mute: '',
+    explicit_exit_notify: true
+};
+
 const DEFAULT_STATE = {
     list: Map(keyBy([{
         id: '1',
@@ -16,25 +67,7 @@ const DEFAULT_STATE = {
         password: '',
         key: '~/.ssh/vpn_rsa',
         config: {
-            port: '1194',
-            protocol: 'udp',
-            dev: 'tun',
-            tls_auth: true,
-            user_privilege: 'nobody',
-            group_privilege: 'nogroup',
-            max_clients: '',
-            auth_algorithm: 'SHA256',
-            cipher_algorithm: 'BF-CBC',
-            server_mode: 'server',
-            topology: 'net30',
-            client_to_client: true,
-            duplicate_cn: false,
-            compress: false,
-            verb: '3',
-            server: {
-                network: '10.8.0.0',
-                mask: '255.255.255.0'
-            }
+            ...DEFAULT_SERVER_CONFIG
         }
     }], 'id')),
     setupInProgress: Map(),

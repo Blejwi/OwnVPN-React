@@ -15,7 +15,8 @@ const mapStateToProps = (state, ownProps) => ({
     serverMode: getFormSelector(state, 'config.server_mode'),
     devMode: getFormSelector(state, 'config.dev'),
     allowSubnet: getFormSelector(state, 'config.allow_subnet'),
-    assignIp: getFormSelector(state, 'config.assign_ip')
+    assignIp: getFormSelector(state, 'config.assign_ip'),
+    redirectGateway: getFormSelector(state, 'config.redirect_gateway')
 });
 
 const mapDispatchToProps = dispatch => ({

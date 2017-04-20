@@ -9,6 +9,9 @@ import IpAddressFields from './IpAddressFields';
 import ServerModeFields from './ServerModeFields';
 import BridgingModeFields from './BridgingModeFields';
 import AssignSpecificIpFields from './AssignSpecificIpFields';
+import AllowSubnetFields from './AllowSubnetFields';
+import RedirectGatewayFields from './RedirectGatewayFields';
+import KeepAliveFields from './KeepAliveFields';
 import {maxValue, minValue, required} from '../../../utils/validators';
 import {
     AUTH_OPTIONS,
@@ -20,9 +23,8 @@ import {
     TOPOLOGY_OPTIONS
 } from '../../../constants/servers';
 import * as HELP_MESSAGE from '../../../constants/help_messages';
-import AllowSubnetFields from "./AllowSubnetFields";
 
-export default ({change, serverMode, devMode, allowSubnet, assignIp}) => (
+export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGateway}) => (
     <Segment vertical>
         <Header as="h2">VPN Configuration</Header>
         <Field
@@ -88,15 +90,25 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp}) => (
             allowSubnet={allowSubnet}
         />
         <Field
-            component={File}
-            change={change}
-            name="ifconfigPoolPersist"
-            label="Ifconfig pool persist"
+            component={Select}
+            options={YES_NO_OPTIONS}
+            name="ifconfig_pool_persist"
+            label="Maintain a record of client <-> virtual IP address"
         />
         <Array
             name="config.routes"
             label="Push routes to allow the client access other private subnets"
             component={IpAddressFields}
+        />
+        <Field
+            component={File}
+            change={change}
+            name="learn_address"
+            label="Learn address script"
+            helpMessage={HELP_MESSAGE.LEARN_ADDRESS}
+        />
+        <RedirectGatewayFields
+            redirectGateway={redirectGateway}
         />
         <Field
             component={Select}
@@ -114,14 +126,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp}) => (
             required
             validate={[required]}
         />
-        <Field
-            component={Select}
-            options={YES_NO_OPTIONS}
-            name="config.compress"
-            label="Enable compression"
-            required
-            validate={[required]}
-        />
+        <KeepAliveFields/>
         <Field
             component={Select}
             options={YES_NO_OPTIONS}
@@ -130,25 +135,6 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp}) => (
             helpMessage={HELP_MESSAGE.TLS_AUTH}
             required
             validate={[required]}
-        />
-        <Field
-            component={Input}
-            name="config.user_privilege"
-            label="User privilege"
-            helpMessage={HELP_MESSAGE.USER_PRIVILEGE}
-        />
-        <Field
-            component={Input}
-            name="config.group_privilege"
-            label="Group privilege"
-            helpMessage={HELP_MESSAGE.GROUP_PRIVILEGE}
-        />
-        <Field
-            component={Input}
-            name="config.max_clients"
-            label="Max clients"
-            type="number"
-            helpMessage={HELP_MESSAGE.MAX_CLIENTS}
         />
         <Field
             component={Select}
@@ -169,9 +155,68 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp}) => (
         />
         <Field
             component={Select}
+            options={YES_NO_OPTIONS}
+            name="config.compress"
+            label="Enable compression"
+            required
+            validate={[required]}
+        />
+        <Field
+            component={Input}
+            name="config.max_clients"
+            label="Max clients"
+            type="number"
+            helpMessage={HELP_MESSAGE.MAX_CLIENTS}
+        />
+        <Field
+            component={Input}
+            name="config.user_privilege"
+            label="User privilege"
+            helpMessage={HELP_MESSAGE.USER_PRIVILEGE}
+        />
+        <Field
+            component={Input}
+            name="config.group_privilege"
+            label="Group privilege"
+            helpMessage={HELP_MESSAGE.GROUP_PRIVILEGE}
+        />
+        <Field
+            component={Select}
+            options={YES_NO_OPTIONS}
+            name="config.persist_key"
+            label="Persist key"
+            required
+            validate={[required]}
+        />
+        <Field
+            component={Select}
+            options={YES_NO_OPTIONS}
+            name="config.persist_tun"
+            label="Persist tunnel"
+            required
+            validate={[required]}
+        />
+        <Field
+            component={Select}
             options={LOG_LEVEL_OPIONS}
             name="config.verb"
             label="Log level"
+            required
+            validate={[required]}
+        />
+        <Field
+            component={Input}
+            name="config.mute"
+            type="number"
+            label="Mute"
+            helpMessage={HELP_MESSAGE.MUTE}
+            validate={[minValue(0)]}
+        />
+        <Field
+            component={Select}
+            options={YES_NO_OPTIONS}
+            name="config.explicit_exit_notify"
+            label="Notify the client when the server restarts"
             required
             validate={[required]}
         />
