@@ -6,6 +6,7 @@ import {map} from 'lodash';
 import {add as addLog} from "../actions/logs";
 import * as LOG from "../constants/logs";
 import {STATUS} from "../constants/servers";
+import SSHStats from "./SSHStats";
 
 const cert_directory = '~/openvpn-ca';
 const vars_file = `${cert_directory}/vars`;
@@ -52,90 +53,12 @@ export default class SSH {
         this.connection = this._ssh.connect(this.config).catch((e) => {
             return Promise.reject(this.defaultError(e));
         });
+
+        this.statistics = new SSHStats(this, dispatch);
     }
 
     log(msg, level) {
         this.dispatch(addLog(msg, level, 'SSH'));
-    }
-
-    get_status() {
-        return new Promise((resolve, reject) => {
-            this.connection
-                .then(() => {
-                    return this._is_active(resolve, reject);
-                }).catch(reject);
-        });
-    }
-
-    _resolve_function(resolve, reject, level, description='') {
-        return this._runCommand(`sudo systemctl status openvpn@server`, {}, false)
-            .then(r => {
-                resolve({
-                    level,
-                    description,
-                    details: r.stdout
-                })
-        }).catch(reject);
-    };
-
-    _is_active(resolve, reject) {
-        return this._runCommand(`sudo systemctl is-active openvpn@server`, {}, false)
-            .then((r) => {
-                if (r.code === 0) {
-                    return this._resolve_function(
-                        resolve, reject, STATUS.OK
-                    );
-                } else if (r.stdout === 'inactive') {
-                    return this._is_enabled(resolve, reject);
-                } else if (r.code === 3) {
-                    return this._is_failed(resolve, reject);
-                } else {
-                    return this._resolve_function(
-                        resolve, reject,
-                        STATUS.ERROR, 'Error while checking service active status'
-                    );
-                }
-            })
-            .catch(reject);
-    }
-
-    _is_failed(resolve, reject) {
-        return this._runCommand(`sudo systemctl is-failed openvpn@server`, {}, false)
-            .then(r => {
-                if (r.code === 0) {
-                    this._resolve_function(
-                        resolve, reject,
-                        STATUS.ERROR, 'Service status is failed'
-                    );
-                } else if (r.code === 1) {
-                    this._resolve_function(
-                        resolve, reject,
-                        STATUS.ERROR, 'Service status unknown'
-                    );
-                } else {
-                    this._resolve_function(
-                        resolve, reject,
-                        STATUS.ERROR, 'Error while checking service failed status'
-                    );
-                }
-            }).catch(reject);
-    }
-
-    _is_enabled(resolve, reject) {
-        return this._runCommand(`sudo systemctl is-enabled openvpn@server`, {}, false)
-            .then(r => {
-                if (r.code === 0) {
-                    this._resolve_function(
-                        resolve, reject,
-                        STATUS.WARNING, 'Service is enabled, but not active'
-                    );
-                } else {
-                    this._resolve_function(
-                        resolve, reject,
-                        STATUS.ERROR, 'Error while checking service enabled status'
-                    );
-                }
-            }).catch(reject);
     }
 
     setup_server() {
@@ -194,6 +117,7 @@ export default class SSH {
                                     }));
                                 }).then(() => {
                                     return this._runCommand(`rm ${client_keys_dir}/${id}.key`)
+                                        .then(() => this.removeCrtFromDB(id))
                                         .then(() => this.generateClientKey(id))
                                         .then(() => this.generateClientConfigFiles(id)
                                         .then(() => this.bindClientIp(id, ipAddress)));
@@ -223,7 +147,9 @@ export default class SSH {
             this.connection
                 .then(() => this._runCommand(
                     `rm -rf ${client_keys_dir}/${id}.key ${client_output_dir}/${id}.ovpn ${client_keys_dir}/${id}.crt`
-                )).then(() => this.restart_openvpn())
+                ))
+                .then(() => this.removeCrtFromDB(id))
+                .then(() => this.restart_openvpn())
                 .then(resolve)
                 .catch((e) => {
                     this.log('Something failed...', LOG.LEVEL.ERROR);
@@ -268,6 +194,12 @@ export default class SSH {
     generateClientKey(id) {
         return this._runCommand(
             `${cert_begin} && ${generate_client_key} ${id}`
+        );
+    }
+
+    removeCrtFromDB(id) {
+        return this._runCommand(
+            `sed -i '/CN=${id}/d' ${client_keys_dir}/index.txt`
         );
     }
 
@@ -538,9 +470,6 @@ persist-tun
 ;http-proxy-retry
 ;http-proxy [proxy server] [proxy port
 ;mute-replay-warnings
-#ca ca.crt # we place tese in ovpn file
-#cert client.crt
-#key client.key
 remote-cert-tls server
 ${disabled(config.tls_auth)}tls-auth ta.key 1
 cipher ${config.cipher_algorithm}

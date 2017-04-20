@@ -50,11 +50,12 @@ export const STATUS = {
 export const DEFAULT_SERVER_STATUS = {
     server: {
         level: STATUS.UNKNOWN,
-        description: null
     },
     vpn: {
         level: STATUS.UNKNOWN,
-        description: null
+    },
+    users: {
+        level: STATUS.UNKNOWN,
     }
 };
 
