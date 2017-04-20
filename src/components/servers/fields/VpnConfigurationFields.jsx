@@ -103,7 +103,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
         <Field
             component={File}
             change={change}
-            name="learn_address"
+            name="config.learn_address"
             label="Learn address script"
             helpMessage={HELP_MESSAGE.LEARN_ADDRESS}
         />
