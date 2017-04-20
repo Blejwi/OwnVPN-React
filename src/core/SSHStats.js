@@ -23,16 +23,16 @@ export default class SSHStats {
             this.ssh.connection
                 .then(() => {
                     return this.ssh._runCommand(`free -m`).then(r => {
-                        details += `<h5>Memory</h5><pre class="code">${' '.repeat(15)}${r.stdout}</pre>`;
-                    }).catch(e => details += `<h5>Memory</h5><pre class="code">Could not get memory details ${e}</pre>`)
+                        details += `<h5>Memory</h5><pre>${' '.repeat(15)}${r.stdout}</pre>`;
+                    }).catch(e => details += `<h5>Memory</h5><pre>Could not get memory details, check logs for details</pre>`)
                 }).then(() => {
                     return this.ssh._runCommand(`top -bn 1 | head -n 5`).then(r => {
-                        details += `<h5>System details</h5><pre class="code">${r.stdout}</pre>`;
-                    }).catch(e => details += `<h5>System details</h5><pre class="code">Could not get system details ${e}</pre>`);
+                        details += `<h5>System details</h5><pre>${r.stdout}</pre>`;
+                    }).catch(e => details += `<h5>System details</h5><pre>Could not get system details, check logs for details</pre>`);
                 }).then(() => {
-                    return this.ssh._runCommand(`top -bn 1 -d 0.01 | grep 'openvpn\\|^  PID'`).then(r => {
-                        details += `<h5>OpenVPN - top</h5><pre class="code">${r.stdout}</pre>`;
-                    }).catch(e => details += `<h5>OpenVPN - top</h5><pre class="code">Could not get vpn details ${e}</pre>`);
+                    return this.ssh._runCommand(`top -bn1 | grep openvpn && top -bn 1 -d 0.01 | grep 'openvpn\\|^  PID'`).then(r => {
+                        details += `<h5>OpenVPN - top</h5><pre>${r.stdout}</pre>`;
+                    }).catch(e => details += `<h5>OpenVPN - top</h5><pre>Could not get vpn details, check logs for details</pre>`);
                 }).then(() => resolve(details)).catch(reject);
         });
     }
