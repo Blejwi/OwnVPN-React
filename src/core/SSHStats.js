@@ -8,12 +8,32 @@ export default class SSHStats {
     }
 
 
-    get_status() {
+    get_vpn_status() {
         return new Promise((resolve, reject) => {
             this.ssh.connection
                 .then(() => {
                     return this._is_active(resolve, reject);
                 }).catch(reject);
+        });
+    }
+
+    get_machine_status() {
+        let details = '';
+        return new Promise((resolve, reject) => {
+            this.ssh.connection
+                .then(() => {
+                    return this.ssh._runCommand(`free -m`).then(r => {
+                        details += `<h5>Memory</h5><pre class="code">${' '.repeat(15)}${r.stdout}</pre>`;
+                    }).catch(e => details += `<h5>Memory</h5><pre class="code">Could not get memory details ${e}</pre>`)
+                }).then(() => {
+                    return this.ssh._runCommand(`top -bn 1 | head -n 5`).then(r => {
+                        details += `<h5>System details</h5><pre class="code">${r.stdout}</pre>`;
+                    }).catch(e => details += `<h5>System details</h5><pre class="code">Could not get system details ${e}</pre>`);
+                }).then(() => {
+                    return this.ssh._runCommand(`top -bn 1 -d 0.01 | grep 'openvpn\\|^  PID'`).then(r => {
+                        details += `<h5>OpenVPN - top</h5><pre class="code">${r.stdout}</pre>`;
+                    }).catch(e => details += `<h5>OpenVPN - top</h5><pre class="code">Could not get vpn details ${e}</pre>`);
+                }).then(() => resolve(details)).catch(reject);
         });
     }
 
@@ -85,12 +105,12 @@ export default class SSHStats {
         <table>
             <thead>${map(headers, header => `<th>${header}</th>`).join('')}</thead>
             ${map(lines, line =>
-                `<tr>${map(line, field => `<td>${field}</td>`).join('')}</tr>`
-            ).join('')}
+            `<tr>${map(line, field => `<td>${field}</td>`).join('')}</tr>`
+        ).join('')}
         </table>`;
     }
-    
-    _resolve_function(resolve, reject, level, description='') {
+
+    _resolve_function(resolve, reject, level, description = '') {
         return this.ssh._runCommand(`sudo systemctl status openvpn@server`, {}, false)
             .then(r => {
                 resolve({
@@ -98,9 +118,9 @@ export default class SSHStats {
                     description,
                     details: r.stdout
                 })
-        }).catch(reject);
+            }).catch(reject);
     };
-    
+
     _is_active(resolve, reject) {
         return this.ssh._runCommand(`sudo systemctl is-active openvpn@server`, {}, false)
             .then((r) => {

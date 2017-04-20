@@ -124,48 +124,46 @@ export const updateStatus = server => dispatch => {
         });
     }
 
-    ssh.statistics.get_status().then(({level, description, details}) => {
-        payload = {
-            ...payload,
-            vpn: {
-                level, description, details
-            }
-        };
-    }).then(() => {
-        return ssh.statistics.get_users_stats().then(({level, description, details}) => {
-            dispatch({
-                type: SERVER.STATUS_CHANGE,
-                payload: {
-                    ...payload,
-                    users: {
-                        level, description, details
-                    }
-                }
-            })
-        }).catch(e => {
-            dispatch({
-                type: SERVER.STATUS_CHANGE,
-                payload: {
-                    ...payload,
-                    users: {
-                        level: SERVER.STATUS.ERROR,
-                        description: `Error during getting VPN statistics`,
-                        details: `${e}`
-                    }
-                }
-            })
-        });
+    ssh.statistics.get_machine_status().then(details => {
+        payload.server.details = details;
     }).catch(e => {
-        dispatch({
-            type: SERVER.STATUS_CHANGE,
-            payload: {
+        payload.server.details = `Could not get details, ${e}`;
+    }).then(() => {
+        return ssh.statistics.get_vpn_status().then(data => {
+            payload = {
+                ...payload,
+                vpn: {
+                    ...data
+                }
+            };
+        }).catch(e => {
+            payload = {
                 ...payload,
                 server: {
                     level: SERVER.STATUS.ERROR,
                     description: `Error during VPN status check`,
                     details: `${e}`,
                 }
-            }
+            };
         });
-    });
+    }).then(() => {
+        return ssh.statistics.get_users_stats().then(({level, description, details}) => {
+            payload = {
+                ...payload,
+                users: {
+                    level, description, details
+                }
+            };
+        }).catch(e => {
+            payload = {
+                ...payload,
+                users: {
+                    level: SERVER.STATUS.ERROR,
+                    description: `Error during getting VPN statistics`,
+                    details: `${e}`
+                }
+            };
+        });
+    }).then(() => dispatch({type: SERVER.STATUS_CHANGE, payload}))
+      .catch(() => dispatch({type: SERVER.STATUS_CHANGE, payload}));
 };
