@@ -5,9 +5,12 @@
     height: 100%;
     .sidebar-menu {
       padding: 0!important;
-      > .menu {
+      .menu {
         border-radius: 0;
         height: 100%;
+        position: fixed;
+        overflow: hidden;
+        max-width: 18.5vw;
       }
     }
   }
