@@ -9,7 +9,6 @@ import './Dashboard.scss';
 import {clear, collapse} from "../../actions/logs";
 import {Link} from "react-router";
 import {closeFile} from "../../actions/authorization";
-import Scroll from "../../components/utils/Scroll";
 
 class Dashboard extends React.Component {
     render() {
@@ -23,10 +22,10 @@ class Dashboard extends React.Component {
                 </Menu>
                 <Grid padded={true} divided={true}>
                     <Grid.Column width="3" className="sidebar-menu">
-                        <Scroll><ServerMenu/></Scroll>
+                        <ServerMenu/>
                     </Grid.Column>
                     <Grid.Column width="13" className="main-content">
-                        <Scroll><div>{this.props.children}</div></Scroll>
+                        {this.props.children}
                     </Grid.Column>
                 </Grid>
 
