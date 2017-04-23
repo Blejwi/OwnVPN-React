@@ -5,9 +5,12 @@
     height: 100%;
     .sidebar-menu {
       padding: 0!important;
-      > .menu {
+      .menu {
         border-radius: 0;
         height: 100%;
+        position: fixed;
+        overflow: hidden;
+        max-width: 18.5vw;
       }
     }
   }
@@ -27,12 +30,14 @@
     bottom: 0;
     position: fixed!important;
     width: 100%;
+    z-index: 99999;
   }
   &.bottom-pad {
     padding-bottom: 340px;
   }
 
   .main-content {
+    height: calc(100vh - 80px);
     min-height: calc(100vh - 80px);
   }
 }
