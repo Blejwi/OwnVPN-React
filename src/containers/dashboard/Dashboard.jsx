@@ -26,7 +26,7 @@ class Dashboard extends React.Component {
                         <Scroll><ServerMenu/></Scroll>
                     </Grid.Column>
                     <Grid.Column width="13" className="main-content">
-                        {this.props.children}
+                        <Scroll><div>{this.props.children}</div></Scroll>
                     </Grid.Column>
                 </Grid>
 
