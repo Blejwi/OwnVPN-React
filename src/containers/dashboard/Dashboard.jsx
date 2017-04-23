@@ -9,11 +9,12 @@ import './Dashboard.scss';
 import {clear, collapse} from "../../actions/logs";
 import {Link} from "react-router";
 import {closeFile} from "../../actions/authorization";
+import Scroll from "../../components/utils/Scroll";
 
 class Dashboard extends React.Component {
     render() {
         return (
-            <Container fluid className={"main " + (this.props.logs_collapsed ? '' : 'bottom-pad')}>
+            <Container fluid className="main">
                 <Menu attached="top" inverted className="top-menu fixed">
                     <Menu.Item header as={Link} to="/">OwnVPN</Menu.Item>
                     <Menu.Menu position="right">
@@ -22,10 +23,14 @@ class Dashboard extends React.Component {
                 </Menu>
                 <Grid padded={true} divided={true}>
                     <Grid.Column width="3" className="sidebar-menu">
-                        <ServerMenu/>
+                        <Scroll><ServerMenu/></Scroll>
                     </Grid.Column>
-                    <Grid.Column width="13" className="main-content">
-                        {this.props.children}
+                    <Grid.Column width="13" className={`main-content`}>
+                        <Scroll>
+                            <div className={(this.props.logs_collapsed ? '' :'bottom-pad')}>
+                                {this.props.children}
+                            </div>
+                        </Scroll>
                     </Grid.Column>
                 </Grid>
 
