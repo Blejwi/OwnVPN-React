@@ -5,7 +5,8 @@ import Spinner from 'react-spinkit';
 import UserList from '../users/UserList';
 import UserWarning from '../users/UserWarning';
 import ServerShowContentRow from './ServerShowContentRow';
-import ServerStatus from "../../containers/servers/status/ServerStatus";
+import ServerStatus from '../../containers/servers/status/ServerStatus';
+import LABELS from '../../constants/labels';
 
 const showBoolean = value => !!value ? 'Yes': 'No';
 
@@ -15,51 +16,51 @@ export default ({server, setupInProgress, handleSetup, handleSetupClient, handle
         <ServerStatus server={server}/>
         <Table definition>
             <TableBody>
-                <ServerShowContentRow label="Name" value={server.name}/>
-                <ServerShowContentRow label="Host address" value={server.host}/>
-                <ServerShowContentRow label="Port" value={server.port}/>
-                <ServerShowContentRow label="Username" value={server.username}/>
-                <ServerShowContentRow label="SSH private key path" value={server.key}/>
+                <ServerShowContentRow label={LABELS.NAME} value={server.name}/>
+                <ServerShowContentRow label={LABELS.HOST} value={server.host}/>
+                <ServerShowContentRow label={LABELS.PORT} value={server.port}/>
+                <ServerShowContentRow label={LABELS.USERNAME} value={server.username}/>
+                <ServerShowContentRow label={LABELS.KEY} value={server.key}/>
             </TableBody>
         </Table>
         <Header as="h1">Certificate information</Header>
         <Table definition>
             <TableBody>
-                <ServerShowContentRow label="Country" value={server.country}/>
-                <ServerShowContentRow label="Province" value={server.province}/>
-                <ServerShowContentRow label="City" value={server.city}/>
-                <ServerShowContentRow label="Organization" value={server.org}/>
-                <ServerShowContentRow label="E-mail" value={server.email}/>
-                <ServerShowContentRow label="Organizational unit" value={server.ou}/>
+                <ServerShowContentRow label={LABELS.COUNTRY} value={server.country}/>
+                <ServerShowContentRow label={LABELS.PROVINCE} value={server.province}/>
+                <ServerShowContentRow label={LABELS.CITY} value={server.city}/>
+                <ServerShowContentRow label={LABELS.ORG} value={server.org}/>
+                <ServerShowContentRow label={LABELS.EMAIL} value={server.email}/>
+                <ServerShowContentRow label={LABELS.OU} value={server.ou}/>
             </TableBody>
         </Table>
         <Header as="h1">VPN Configuration</Header>
         <Table definition>
             <TableBody>
-                <ServerShowContentRow label="Local IP address" value={server.config.local_ip_address}/>
-                <ServerShowContentRow label="Listen port" value={server.config.port}/>
-                <ServerShowContentRow label="Protocol" value={server.config.protocol}/>
-                <ServerShowContentRow label="Tunnel type" value={server.config.dev}/>
-                <ServerShowContentRow label="Topology" value={server.config.topology}/>
-                <ServerShowContentRow label="Server mode" value={server.config.server_mode}/>
-                <ServerShowContentRow label="Allow client's private subnet to access the VPN" value={showBoolean(server.config.allow_subnet)}/>
-                <ServerShowContentRow label="Assign specific IP addresses to specific clients" value={showBoolean(server.config.assign_ip)}/>
-                <ServerShowContentRow label="Maintain a record of client <-> virtual IP address" value={showBoolean(server.config.ifconfig_pool_persist)}/>
-                <ServerShowContentRow label="Learn address script" value={server.config.learn_address}/>
-                <ServerShowContentRow label="Allow different clients to 'see' each other" value={showBoolean(server.config.client_to_client)}/>
-                <ServerShowContentRow label="Allow multiple clients to connect with the same certificate/key" value={showBoolean(server.config.duplicate_cn)}/>
-                <ServerShowContentRow label="TLS-Auth" value={showBoolean(server.config.tls_auth)}/>
-                <ServerShowContentRow label="Auth algorithm" value={server.config.auth_algorithm}/>
-                <ServerShowContentRow label="Cipher algorithm" value={server.config.cipher_algorithm}/>
-                <ServerShowContentRow label="Enable compression" value={showBoolean(server.config.compress)}/>
-                <ServerShowContentRow label="Max clients" value={server.config.max_clients}/>
-                <ServerShowContentRow label="User privilege" value={server.config.user_privilege}/>
-                <ServerShowContentRow label="Group privilege" value={server.config.group_privilege}/>
-                <ServerShowContentRow label="Persist key" value={showBoolean(server.config.persist_key)}/>
-                <ServerShowContentRow label="Persist tunnel" value={showBoolean(server.config.persist_tun)}/>
-                <ServerShowContentRow label="Log level" value={server.config.verb}/>
-                <ServerShowContentRow label="Mute" value={server.config.mute}/>
-                <ServerShowContentRow label="Notify the client when the server restarts" value={showBoolean(server.config.persist_key)}/>
+                <ServerShowContentRow label={LABELS.LOCAL_IP_ADDRESS} value={server.config.local_ip_address}/>
+                <ServerShowContentRow label={LABELS.LISTEN_PORT} value={server.config.port}/>
+                <ServerShowContentRow label={LABELS.PROTOCOL} value={server.config.protocol}/>
+                <ServerShowContentRow label={LABELS.DEV} value={server.config.dev}/>
+                <ServerShowContentRow label={LABELS.TOPOLOGY} value={server.config.topology}/>
+                <ServerShowContentRow label={LABELS.SERVER_MODE} value={server.config.server_mode}/>
+                <ServerShowContentRow label={LABELS.ALLOW_SUBNET} value={showBoolean(server.config.allow_subnet)}/>
+                <ServerShowContentRow label={LABELS.ASSIGN_IP} value={showBoolean(server.config.assign_ip)}/>
+                <ServerShowContentRow label={LABELS.IFCONFIG_POOL_PERSIST} value={showBoolean(server.config.ifconfig_pool_persist)}/>
+                <ServerShowContentRow label={LABELS.LEARN_ADDRESS} value={server.config.learn_address}/>
+                <ServerShowContentRow label={LABELS.CLIENT_TO_CLIENT} value={showBoolean(server.config.client_to_client)}/>
+                <ServerShowContentRow label={LABELS.DUPLICATE_CN} value={showBoolean(server.config.duplicate_cn)}/>
+                <ServerShowContentRow label={LABELS.TLS_AUTH} value={showBoolean(server.config.tls_auth)}/>
+                <ServerShowContentRow label={LABELS.AUTH_ALGORITHM} value={server.config.auth_algorithm}/>
+                <ServerShowContentRow label={LABELS.CIPHER_ALGORITHM} value={server.config.cipher_algorithm}/>
+                <ServerShowContentRow label={LABELS.COMPRESS} value={showBoolean(server.config.compress)}/>
+                <ServerShowContentRow label={LABELS.MAX_CLIENTS} value={server.config.max_clients}/>
+                <ServerShowContentRow label={LABELS.USER_PRIVILEGE} value={server.config.user_privilege}/>
+                <ServerShowContentRow label={LABELS.GROUP_PRIVILEGE} value={server.config.group_privilege}/>
+                <ServerShowContentRow label={LABELS.PERSIST_KEY} value={showBoolean(server.config.persist_key)}/>
+                <ServerShowContentRow label={LABELS.PERSIST_TUN} value={showBoolean(server.config.persist_tun)}/>
+                <ServerShowContentRow label={LABELS.VERB} value={server.config.verb}/>
+                <ServerShowContentRow label={LABELS.MUTE} value={server.config.mute}/>
+                <ServerShowContentRow label={LABELS.EXPLICIT_EXIT_NOTIFY} value={server.config.explicit_exit_notify}/>
             </TableBody>
         </Table>
         <div>

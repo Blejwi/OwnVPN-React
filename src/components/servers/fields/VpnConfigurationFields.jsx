@@ -23,6 +23,7 @@ import {
     TOPOLOGY_OPTIONS
 } from '../../../constants/servers';
 import * as HELP_MESSAGE from '../../../constants/help_messages';
+import LABELS from '../../../constants/labels';
 
 export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGateway}) => (
     <Segment vertical>
@@ -30,14 +31,14 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
         <Field
             component={Input}
             name="config.local_ip_address"
-            label="Local IP address"
+            label={LABELS.LOCAL_IP_ADDRESS}
             helpMessage={HELP_MESSAGE.LOCAL_IP_ADDRESS}
         />
         <Field
             component={Input}
             name="config.port"
             type="number"
-            label="Listen port"
+            label={LABELS.LISTEN_PORT}
             helpMessage={HELP_MESSAGE.PORT}
             min="1"
             max="65535"
@@ -48,7 +49,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             component={Select}
             name="config.protocol"
             options={PROTOCOL_OPTIONS}
-            label="Protocol"
+            label={LABELS.PROTOCOL}
             helpMessage={HELP_MESSAGE.PROTOCOL}
             required
             validate={[required]}
@@ -57,7 +58,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             component={Select}
             name="config.dev"
             options={DEV_OPTIONS}
-            label="Tunnel type - dev"
+            label={LABELS.DEV}
             helpMessage={HELP_MESSAGE.DEV}
             required
             validate={[required]}
@@ -65,7 +66,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
         <Field
             component={Select}
             name="config.topology"
-            label="Topology"
+            label={LABELS.TOPOLOGY}
             helpMessage={HELP_MESSAGE.TOPOLOGY}
             options={TOPOLOGY_OPTIONS}
         />
@@ -93,18 +94,18 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             component={Select}
             options={YES_NO_OPTIONS}
             name="ifconfig_pool_persist"
-            label="Maintain a record of client <-> virtual IP address"
+            label={LABELS.IFCONFIG_POOL_PERSIST}
         />
         <Array
             name="config.routes"
-            label="Push routes to allow the client access other private subnets"
+            label={LABELS.ROUTES}
             component={IpAddressFields}
         />
         <Field
             component={File}
             change={change}
             name="config.learn_address"
-            label="Learn address script"
+            label={LABELS.LEARN_ADDRESS}
             helpMessage={HELP_MESSAGE.LEARN_ADDRESS}
         />
         <RedirectGatewayFields
@@ -114,7 +115,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             component={Select}
             options={YES_NO_OPTIONS}
             name="config.client_to_client"
-            label="Allow different clients to 'see' each other"
+            label={LABELS.CLIENT_TO_CLIENT}
             required
             validate={[required]}
         />
@@ -122,7 +123,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             component={Select}
             options={YES_NO_OPTIONS}
             name="config.duplicate_cn"
-            label="Allow multiple clients to connect with the same certificate/key"
+            label={LABELS.DUPLICATE_CN}
             required
             validate={[required]}
         />
@@ -131,7 +132,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             component={Select}
             options={YES_NO_OPTIONS}
             name="config.tls_auth"
-            label="TLS-Auth"
+            label={LABELS.TLS_AUTH}
             helpMessage={HELP_MESSAGE.TLS_AUTH}
             required
             validate={[required]}
@@ -140,7 +141,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             component={Select}
             name="config.auth_algorithm"
             options={AUTH_OPTIONS}
-            label="Auth algorithm"
+            label={LABELS.AUTH_ALGORITHM}
             required
             validate={[required]}
         />
@@ -148,7 +149,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             component={Select}
             name="config.cipher_algorithm"
             options={CIPHER_OPTIONS}
-            label="Cipher algorithm"
+            label={LABELS.CIPHER_ALGORITHM}
             helpMessage={HELP_MESSAGE.CIPHER_ALGORITHM}
             required
             validate={[required]}
@@ -157,34 +158,34 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             component={Select}
             options={YES_NO_OPTIONS}
             name="config.compress"
-            label="Enable compression"
+            label={LABELS.COMPRESS}
             required
             validate={[required]}
         />
         <Field
             component={Input}
             name="config.max_clients"
-            label="Max clients"
+            label={LABELS.MAX_CLIENTS}
             type="number"
             helpMessage={HELP_MESSAGE.MAX_CLIENTS}
         />
         <Field
             component={Input}
             name="config.user_privilege"
-            label="User privilege"
+            label={LABELS.USER_PRIVILEGE}
             helpMessage={HELP_MESSAGE.USER_PRIVILEGE}
         />
         <Field
             component={Input}
             name="config.group_privilege"
-            label="Group privilege"
+            label={LABELS.GROUP_PRIVILEGE}
             helpMessage={HELP_MESSAGE.GROUP_PRIVILEGE}
         />
         <Field
             component={Select}
             options={YES_NO_OPTIONS}
             name="config.persist_key"
-            label="Persist key"
+            label={LABELS.PERSIST_KEY}
             required
             validate={[required]}
         />
@@ -192,7 +193,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             component={Select}
             options={YES_NO_OPTIONS}
             name="config.persist_tun"
-            label="Persist tunnel"
+            label={LABELS.PERSIST_TUN}
             required
             validate={[required]}
         />
@@ -200,7 +201,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             component={Select}
             options={LOG_LEVEL_OPIONS}
             name="config.verb"
-            label="Log level"
+            label={LABELS.VERB}
             required
             validate={[required]}
         />
@@ -208,7 +209,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             component={Input}
             name="config.mute"
             type="number"
-            label="Mute"
+            label={LABELS.MUTE}
             helpMessage={HELP_MESSAGE.MUTE}
             validate={[minValue(0)]}
         />
@@ -216,7 +217,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             component={Select}
             options={YES_NO_OPTIONS}
             name="config.explicit_exit_notify"
-            label="Notify the client when the server restarts"
+            label={LABELS.EXPLICIT_EXIT_NOTIFY}
             required
             validate={[required]}
         />
