@@ -1,6 +1,7 @@
 import React from 'react';
 import {Header, Segment} from 'semantic-ui-react';
 import {Field} from 'redux-form';
+import LABELS from '../../../constants/labels';
 import Input from '../../form/Input';
 import File from '../../form/File';
 import {required, minValue, maxValue} from "../../../utils/validators";
@@ -12,27 +13,27 @@ export default ({change}) => (
         <Field
             component={Input}
             name="name"
-            label="Name"
+            label={LABELS.NAME}
             required
             validate={[required]}
         />
         <Field
             component={Input}
             name="host"
-            label="Host address"
+            label={LABELS.HOST}
             required
             validate={[required]}
         />
         <Field
             component={Input}
             name="password"
-            label="Password"
+            label={LABELS.PASSWORD}
             type="password"
         />
         <Field
             component={Input}
             name="port"
-            label="Port"
+            label={LABELS.PORT}
             type="number"
             min="1"
             max="65535"
@@ -43,7 +44,7 @@ export default ({change}) => (
         <Field
             component={Input}
             name="username"
-            label="Username"
+            label={LABELS.USERNAME}
             required
             validate={[required]}
         />
@@ -52,7 +53,7 @@ export default ({change}) => (
             change={change}
             type="text"
             name="key"
-            label="SSH private key path"
+            label={LABELS.KEY}
         />
     </Segment>
 );

@@ -3,16 +3,17 @@ import {Header, Segment} from 'semantic-ui-react';
 import {Field} from 'redux-form';
 import Radio from '../../form/Radio';
 import IpAddressFields from './IpAddressFields';
+import LABELS from '../../../constants/labels';
 
 const isOn = serverMode => serverMode === 'server';
 
 export default ({change, serverMode}) => (
     <Segment padded={true}>
-        <Header as="h5">Server mode</Header>
+        <Header as="h5">{LABELS.SERVER_MODE}</Header>
         <Field
             component={Radio}
             name="config.server_mode"
-            label="Enabled"
+            label={LABELS.ENABLED}
             radio
             change={change}
             defaultValue="server"

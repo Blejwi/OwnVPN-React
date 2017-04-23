@@ -4,13 +4,14 @@ import {Button} from 'semantic-ui-react';
 import {isFunction} from 'lodash';
 import Input from '../../form/Input';
 import {required} from '../../../utils/validators';
+import LABELS from '../../../constants/labels';
 
 export default ({name, handleRemove, helpMessage, disabled}) => (
     <div className="field">
         <Field
             name={`${name}.network`}
             component={Input}
-            label="Network"
+            label={LABELS.NETWORK}
             action={
                 isFunction(handleRemove) && (
                     <Button
@@ -29,7 +30,7 @@ export default ({name, handleRemove, helpMessage, disabled}) => (
         <Field
             name={`${name}.mask`}
             component={Input}
-            label="Mask"
+            label={LABELS.MASK}
             placeholder="255.255.255.0"
             required={!disabled}
             disabled={disabled}

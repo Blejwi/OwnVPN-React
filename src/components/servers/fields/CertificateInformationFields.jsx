@@ -4,6 +4,7 @@ import {Field} from 'redux-form';
 import Input from '../../form/Input';
 import {email} from '../../../utils/validators';
 import * as HELPER_MESSAGE from '../../../constants/help_messages';
+import LABELS from '../../../constants/labels';
 
 export default () => (
     <Segment vertical>
@@ -11,13 +12,34 @@ export default () => (
         <Field
             component={Input}
             name="country"
-            label="Country"
+            label={LABELS.COUNTRY}
             helpMessage={HELPER_MESSAGE.COUNTRY}
         />
-        <Field component={Input} name="province" label="Province"/>
-        <Field component={Input} name="city" label="City"/>
-        <Field component={Input} name="org" label="Organization"/>
-        <Field component={Input} name="email" label="E-mail" type="email" validate={[email]}/>
-        <Field component={Input} name="ou" label="Organizational unit"/>
+        <Field
+            component={Input}
+            name="province"
+            label={LABELS.PROVINCE}
+        />
+        <Field
+            component={Input}
+            name="city"
+            label={LABELS.CITY}
+        />
+        <Field
+            component={Input}
+            name="org"
+            label={LABELS.ORG}
+        />
+        <Field
+            component={Input}
+            name="email"
+            label={LABELS.EMAIL}
+            validate={[email]}
+        />
+        <Field
+            component={Input}
+            name="ou"
+            label={LABELS.OU}
+        />
     </Segment>
 );
