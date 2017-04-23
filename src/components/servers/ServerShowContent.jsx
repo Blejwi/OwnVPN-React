@@ -8,7 +8,7 @@ import ServerShowContentRow from './ServerShowContentRow';
 import ServerStatus from '../../containers/servers/status/ServerStatus';
 import LABELS from '../../constants/labels';
 
-const showBoolean = value => !!value ? 'Yes': 'No';
+const showBoolean = value => value === '1' ? 'Yes': 'No';
 
 export default ({server, setupInProgress, handleSetup, handleSetupClient, handleRemoveClient, handleDownloadConfiguration, users}) => (
     <div>
@@ -60,7 +60,7 @@ export default ({server, setupInProgress, handleSetup, handleSetupClient, handle
                 <ServerShowContentRow label={LABELS.PERSIST_TUN} value={showBoolean(server.config.persist_tun)}/>
                 <ServerShowContentRow label={LABELS.VERB} value={server.config.verb}/>
                 <ServerShowContentRow label={LABELS.MUTE} value={server.config.mute}/>
-                <ServerShowContentRow label={LABELS.EXPLICIT_EXIT_NOTIFY} value={server.config.explicit_exit_notify}/>
+                <ServerShowContentRow label={LABELS.EXPLICIT_EXIT_NOTIFY} value={showBoolean(server.config.explicit_exit_notify)}/>
             </TableBody>
         </Table>
         <div>

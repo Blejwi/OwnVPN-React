@@ -36,8 +36,8 @@ export const DEV_OPTIONS = [
 ];
 
 export const YES_NO_OPTIONS = [
-    {value: true, text: 'Yes'},
-    {value: false, text: 'No'}
+    {value: '1', text: 'Yes'},
+    {value: '0', text: 'No'}
 ];
 
 export const LOG_LEVEL_OPIONS = [
