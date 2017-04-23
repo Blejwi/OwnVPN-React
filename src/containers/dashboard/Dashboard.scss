@@ -4,10 +4,12 @@
   > div.grid {
     height: 100%;
     .sidebar-menu {
-      padding: 0!important;
+      padding: 0 !important;
       > .menu {
         border-radius: 0;
         height: 100%;
+        position: fixed !important;
+        max-width: 18.5vw;
       }
     }
   }
@@ -19,13 +21,13 @@
   }
   .top-menu {
     height: 40px;
-    border-radius: 0!important;
-    border-bottom: 1px solid #2d2e2f!important;
+    border-radius: 0 !important;
+    border-bottom: 1px solid #2d2e2f !important;
   }
   .logs {
-    padding: 0!important;
+    padding: 0 !important;
     bottom: 0;
-    position: fixed!important;
+    position: fixed !important;
     width: 100%;
   }
   &.bottom-pad {
@@ -34,5 +36,6 @@
 
   .main-content {
     min-height: calc(100vh - 80px);
+    box-shadow: none !important;
   }
 }

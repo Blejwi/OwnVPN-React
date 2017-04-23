@@ -110,6 +110,7 @@ export const openFilePassword = filename => dispatch => {
     dispatch(swal({
         title: 'Password',
         type: 'input',
+        inputType: 'password',
         inputPlaceholder: "Password...",
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
