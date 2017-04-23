@@ -18,7 +18,7 @@ export default () => (
         />
         <Field
             component={Input}
-            name="config.keep_alive.during"
+            name="config.keep_alive.duration"
             type="number"
             label="Ping"
             min="1"

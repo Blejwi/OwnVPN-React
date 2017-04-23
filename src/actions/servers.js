@@ -1,6 +1,7 @@
-import {push} from "react-router-redux";
-import uuid from "uuid";
-import {toastr} from "react-redux-toastr";
+import {push} from 'react-router-redux';
+import uuid from 'uuid';
+import {toastr} from 'react-redux-toastr';
+import {swal} from 'react-redux-sweetalert';
 import * as SERVER from "../constants/servers";
 import SSH from "../core/SSH";
 import {add as addLog} from "../actions/logs";
@@ -167,3 +168,9 @@ export const updateStatus = server => dispatch => {
     }).then(() => dispatch({type: SERVER.STATUS_CHANGE, payload}))
       .catch(() => dispatch({type: SERVER.STATUS_CHANGE, payload}));
 };
+
+export const preview = config => dispatch => {
+    dispatch(swal({
+
+    }));
+}
