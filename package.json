@@ -55,7 +55,7 @@
   },
   "scripts": {
     "server": "webpack-dev-server --progress --inline --hot --history-api-fallback",
-    "run": "electron .",
+    "run": "electron . --disable-gpu",
     "start": "npm run-script server & npm run-script run"
   }
 }
