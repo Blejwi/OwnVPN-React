@@ -1,5 +1,6 @@
 import {createSelector} from 'reselect';
 import {Map} from 'immutable';
+import {formValueSelector} from 'redux-form';
 import {DEFAULT_SERVER_STATUS} from "../constants/servers";
 
 export const getServersMap = state => state.servers.list;
@@ -31,3 +32,5 @@ export const getServerFetchStatus = createSelector([
     getServerFetchStatusMap,
     (_, {server}) => String(server.id)
 ], (map, id) => map.get(id, false));
+
+export const getFormSelector = formValueSelector('server');

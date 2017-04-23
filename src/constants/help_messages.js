@@ -1,0 +1,13 @@
+export const LOCAL_IP_ADDRESS = 'Which local IP address should OpenVPN listen on? (optional) Enter valid ip address or leave empty';
+export const PORT = 'Which TCP/UDP port should OpenVPN listen on?';
+export const PROTOCOL = 'TCP or UDP server?';
+export const DEV = '"dev tun" will create a routed IP tunnel, "dev tap" will create an ethernet tunnel. Use "dev tap0" if you are ethernet bridging and have precreated a tap0 virtual interface and bridged it with your ethernet interface. If you want to control access policies over the VPN, you must create firewall rules for the the TUN/TAP interface. On non-Windows systems, you can give an explicit unit number, such as tun0. On Windows, use \"dev-node\" for this. On most systems, the VPN will not function unless you partially or fully disable the firewall for the TUN/TAP interface.';
+export const TOPOLOGY = 'Network topology should be subnet (addressing via IP) unless Windows clients v2.0.9 and lower have to be supported (then net30, i.e. a /30 per client) defaults to net30 (not recommended)';
+export const TLS_AUTH = 'For extra security beyond that provided by SSL/TLS, create an "HMAC firewall" to help block DoS attacks and UDP port flooding.';
+export const USER_PRIVILEGE = 'It\'s a good idea to reduce the OpenVPN daemon\'s privileges after initialization. You can set this on non-Windows systems.';
+export const GROUP_PRIVILEGE = 'It\'s a good idea to reduce the OpenVPN daemon\'s privileges after initialization. You can set this on non-Windows systems.';
+export const MAX_CLIENTS = 'The maximum number of concurrently connected clients we want to allow.';
+export const CIPHER_ALGORITHM = 'Select a cryptographic cipher. This config item must be copied to the client config file as well.';
+export const COUNTRY = 'Country code, for example: PL, US';
+export const LEARN_ADDRESS = 'Set script that dynamically modify the firewall in response to access from different clients.';
+export const MUTE = 'Silence repeating messages. Set how many sequential messages of the same category will output to the log. If left empty, this option won\'t be enabled.';

@@ -3,10 +3,10 @@ import {isUndefined} from 'lodash';
 import {TableRow, TableCell} from 'semantic-ui-react';
 
 export default ({label, value}) => (
-    (!isUndefined(value)) ? (
+    (!isUndefined(value) && value !== '') ? (
             <TableRow>
                 <TableCell>{label}</TableCell>
-                <TableCell>{value}</TableCell>
+                <TableCell positive={value === 'Yes'} negative={value === 'No'}>{value}</TableCell>
             </TableRow>
         ): null
 );
