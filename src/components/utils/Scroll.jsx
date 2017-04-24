@@ -8,6 +8,9 @@ export default ({children}) => (
         options={{
             mouseWheel: true,
             fadeScrollbars: true,
+            preventDefault: false,
+            click: true,
+            tap: true,
             scrollbars: true
         }}
     >

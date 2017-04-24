@@ -90,10 +90,10 @@ export default (state = DEFAULT_STATE, action) => {
         case SERVER.FETCH:
             return {...state, list: Map(keyBy(action.payload, 'id'))};
         case SERVER.SETUP:
-            return {...state, setupInProgress: state.setupInProgress.set(String(action.payload.server.id), '1')};
+            return {...state, setupInProgress: state.setupInProgress.set(String(action.payload.server.id), true)};
         case SERVER.SETUP_FAILURE:
         case SERVER.SETUP_SUCCESS:
-            return {...state, setupInProgress: state.setupInProgress.set(String(action.payload.server.id), '0')};
+            return {...state, setupInProgress: state.setupInProgress.set(String(action.payload.server.id), false)};
         case SERVER.STATUS_CHANGE:
             return {
                 ...state,
@@ -102,12 +102,12 @@ export default (state = DEFAULT_STATE, action) => {
                     ...omit(action.payload, ['serverId']),
                     updated: moment().toDate().getTime()
                 }),
-                statusFetch: state.statusFetch.set(action.payload.serverId, '0')
+                statusFetch: state.statusFetch.set(action.payload.serverId, false)
             };
         case SERVER.STATUS_FETCH_START:
             return {
                 ...state,
-                statusFetch: state.statusFetch.set(action.payload.serverId, '1')
+                statusFetch: state.statusFetch.set(action.payload.serverId, true)
             };
         default:
             return state;
