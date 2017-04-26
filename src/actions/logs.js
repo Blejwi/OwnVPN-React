@@ -26,6 +26,8 @@ export const add = (message, level, module='APP') => {
         }
     }
 
+    message = message.replace(/\\n/g, '\n').replace(/\\t/g, '\t').replace(/\\r/g, '\r');
+
     return {
         type: LOG.ADD,
         payload: {message, level, module, time}
