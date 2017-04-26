@@ -26,9 +26,7 @@ export const add = (message, level, module='APP') => {
         }
     }
 
-    message = message.replace(/\\n/g, '\n');
-    message = message.replace(/\\t/g, '\t');
-    message = message.replace(/\\r/g, '\r');
+    message = message.replace(/\\n/g, '\n').replace(/\\t/g, '\t').replace(/\\r/g, '\r');
 
     return {
         type: LOG.ADD,
