@@ -171,6 +171,8 @@ export const updateStatus = server => dispatch => {
 
 export const preview = config => dispatch => {
     dispatch(swal({
-
+        title: 'Preview configuration',
+        text: `<pre>${config}</pre>`,
+        html: true
     }));
-}
+};

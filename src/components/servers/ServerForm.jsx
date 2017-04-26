@@ -17,7 +17,7 @@ const ServerForm = ({handleSubmit, onSubmit, onPreview, submitting, pristine, re
         />
         <Segment vertical>
             <Actions submitting={submitting} pristine={pristine} reset={reset}>
-                <Button onClick={onPreview}>Preview</Button>
+                <Button onClick={onPreview} type="button">Preview</Button>
             </Actions>
         </Segment>
     </Form>

@@ -1,11 +1,10 @@
 import React from 'react';
 import {Header, Segment} from 'semantic-ui-react';
 import {Field} from 'redux-form';
-import Array from '../../form/Array';
 import File from '../../form/File';
 import Input from '../../form/Input';
 import Select from '../../form/Select';
-import IpAddressFields from './IpAddressFields';
+import RoutesFields from './RoutesFields';
 import ServerModeFields from './ServerModeFields';
 import BridgingModeFields from './BridgingModeFields';
 import AssignSpecificIpFields from './AssignSpecificIpFields';
@@ -96,11 +95,7 @@ export default ({change, serverMode, devMode, allowSubnet, assignIp, redirectGat
             name="ifconfig_pool_persist"
             label={LABELS.IFCONFIG_POOL_PERSIST}
         />
-        <Array
-            name="config.routes"
-            label={LABELS.ROUTES}
-            component={IpAddressFields}
-        />
+        <RoutesFields/>
         <Field
             component={File}
             change={change}

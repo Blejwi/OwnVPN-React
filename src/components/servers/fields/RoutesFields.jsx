@@ -1,10 +1,12 @@
 import React from 'react';
+import {Button, Divider, Header, Segment} from 'semantic-ui-react';
 import {FieldArray} from 'redux-form';
-import {Segment, Button, Divider, Header} from 'semantic-ui-react';
+import IpAddressFields from './IpAddressFields';
+import LABELS from '../../../constants/labels';
 
-const render = (Component, label) => ({fields}) => (
+const render = ({fields}) => (
     <Segment padded={true}>
-        <Header as="h5">{label}</Header>
+        <Header as="h5">{LABELS.ROUTES}</Header>
         <Button
             icon="add"
             content="Add"
@@ -14,15 +16,15 @@ const render = (Component, label) => ({fields}) => (
         {fields.map((field, index) => (
             <div key={index}>
                 <Divider/>
-                <Component name={field} handleRemove={() => fields.remove(index)}/>
+                <IpAddressFields name={field} handleRemove={() => fields.remove(index)}/>
             </div>
         ))}
     </Segment>
 );
 
-export default ({name, label, component}) => (
+export default () => (
     <FieldArray
-        name={name}
-        component={render(component, label)}
+        name="config.routes"
+        component={render}
     />
-)
+);
