@@ -1,8 +1,8 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import ServerForm from '../../components/servers/ServerForm';
-import {add, preview} from '../../actions/servers';
-import {getPreview} from '../../selectors/servers';
+import { add, preview } from '../../actions/servers';
+import { getPreview } from '../../selectors/servers';
 
 class ServerAdd extends React.Component {
     onPreview() {
@@ -14,7 +14,7 @@ class ServerAdd extends React.Component {
     }
 }
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = state => ({
     initialValues: {
         config: {
             port: '1194',
@@ -26,14 +26,14 @@ const mapStateToProps = (state, ownProps) => ({
             max_clients: '',
             auth_algorithm: 'SHA256',
             cipher_algorithm: 'BF-CBC',
-        }
+        },
     },
-    config: getPreview(state)
+    config: getPreview(state),
 });
 
 const mapDispatchToProps = dispatch => ({
     onSubmit: server => dispatch(add(server)),
-    handlePreview: config => dispatch(preview(config))
+    handlePreview: config => dispatch(preview(config)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServerAdd);

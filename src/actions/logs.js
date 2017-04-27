@@ -1,9 +1,10 @@
-import {isObject} from 'lodash';
+import { isObject } from 'lodash';
 import moment from 'moment';
 import * as LOG from '../constants/logs';
 
-export const add = (message, level, module='APP') => {
-    let time = moment().format('YYYY-MM-DD H:mm:ss.SS');
+export const add = (inputMessage, level, module = 'APP') => {
+    const time = moment().format('YYYY-MM-DD H:mm:ss.SS');
+    let message = inputMessage;
 
     switch (level) {
         case LOG.LEVEL.WARNING:
@@ -30,15 +31,15 @@ export const add = (message, level, module='APP') => {
 
     return {
         type: LOG.ADD,
-        payload: {message, level, module, time}
+        payload: { message, level, module, time },
     };
 };
 
 export const collapse = () => ({
-    type: LOG.TOGGLE_COLLAPSE
+    type: LOG.TOGGLE_COLLAPSE,
 });
 
 
 export const clear = () => ({
-    type: LOG.CLEAR
+    type: LOG.CLEAR,
 });

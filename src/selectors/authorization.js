@@ -1,21 +1,19 @@
-import {createSelector} from 'reselect';
-import {Map} from 'immutable';
+import { createSelector } from 'reselect';
+import { Map } from 'immutable';
 
 export const getFileMap = state => state.auth.file;
-const isFile = property => file => Map.isMap(file) ? file.get(property, false) : false;
+const isFile = property => (file) => {
+    if (Map.isMap(file)) {
+        return file.get(property, false);
+    }
 
-export const isFileDecrypted = createSelector([
-    getFileMap
-], isFile('decrypted'));
-
-export const isFileDirty = createSelector([
-    getFileMap
-], isFile('dirty'));
+    return false;
+};
 
 export const isFileOpen = createSelector([
-    getFileMap
+    getFileMap,
 ], isFile('open'));
 
 export const getRecentFiles = createSelector([
-    state => state.auth.recentFiles
+    state => state.auth.recentFiles,
 ], recentFiles => recentFiles.toJS());

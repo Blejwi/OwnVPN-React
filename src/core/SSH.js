@@ -1,45 +1,44 @@
-import NodeSSH from "node-ssh";
-import fs from "fs";
-import {remote} from "electron";
-import {swal} from "react-redux-sweetalert";
-import {map} from 'lodash';
-import {add as addLog} from "../actions/logs";
-import * as LOG from "../constants/logs";
-import {STATUS} from "../constants/servers";
-import SSHStats from "./SSHStats";
+import NodeSSH from 'node-ssh';
+import fs from 'fs';
+import { remote } from 'electron';
+import { swal } from 'react-redux-sweetalert';
+import { map } from 'lodash';
+import { add as addLog } from '../actions/logs';
+import * as LOG from '../constants/logs';
+import SSHStats from './SSHStats';
 
-const cert_directory = '~/openvpn-ca';
-const vars_file = `${cert_directory}/vars`;
-const cert_begin = `cd ${cert_directory} && source ${vars_file}`;
+const certDirectory = '~/openvpn-ca';
+const varsFile = `${certDirectory}/vars`;
+const certBegin = `cd ${certDirectory} && source ${varsFile}`;
 
-const clean_all = `${cert_directory}/clean-all`;
-const build_ca = `${cert_directory}/pkitool --initca`;
-const build_key_server = `${cert_begin} && ${cert_directory}/pkitool --batch --server server`;
+const cleanAll = `${certDirectory}/clean-all`;
+const buildCa = `${certDirectory}/pkitool --initca`;
+const buildKeyServer = `${certBegin} && ${certDirectory}/pkitool --batch --server server`;
 
-const build_dh = `${cert_begin} && ${cert_directory}/build-dh`;
-const build_hmac = `openvpn --genkey --secret ${cert_directory}/keys/ta.key`;
-const all_keys = `ca.crt ca.key server.crt server.key ta.key dh2048.pem`;
-const copy_keys = `cd ${cert_directory}/keys && sudo cp ${all_keys} /etc/openvpn`;
-const check_keys = `cd ${cert_directory}/keys && ls ${all_keys}`;
+const buildDh = `${certBegin} && ${certDirectory}/build-dh`;
+const buildHmac = `openvpn --genkey --secret ${certDirectory}/keys/ta.key`;
+const allKeys = 'ca.crt ca.key server.crt server.key ta.key dh2048.pem';
+const copyKeys = `cd ${certDirectory}/keys && sudo cp ${allKeys} /etc/openvpn`;
+const checkKeys = `cd ${certDirectory}/keys && ls ${allKeys}`;
 
 
-const generate_client_key = `${cert_directory}/pkitool --batch`;
-const conf_file = `/etc/openvpn/server.conf`;
-const client_conf_base_file = `~/client-configs/base.conf`;
-const client_keys_dir = `~/openvpn-ca/keys`;
-const client_output_dir = `~/client-configs/files`;
-let ccd_dir = '/etc/openvpn/ccd'; // it should be able to reassigned by server configuration
+const generateClientKey = `${certDirectory}/pkitool --batch`;
+const confFile = '/etc/openvpn/server.conf';
+const clientConfBaseFile = '~/client-configs/base.conf';
+const clientKeysDir = '~/openvpn-ca/keys';
+const clientOutputDir = '~/client-configs/files';
+const ccdDir = '/etc/openvpn/ccd'; // it should be able to reassigned by server configuration
 
 export default class SSH {
     constructor(dispatch, server) {
         this.dispatch = dispatch;
         this.server = server;
-        this._ssh = new NodeSSH();
+        this.ssh = new NodeSSH();
 
         this.config = {
             host: server.host,
             port: server.port,
-            username: server.username
+            username: server.username,
         };
 
         if (server.key) {
@@ -50,9 +49,8 @@ export default class SSH {
             this.config.password = server.password;
         }
 
-        this.connection = this._ssh.connect(this.config).catch((e) => {
-            return Promise.reject(this.defaultError(e));
-        });
+        this.connection = this.ssh.connect(this.config)
+            .catch(e => Promise.reject(this.defaultError(e)));
 
         this.statistics = new SSHStats(this, dispatch);
     }
@@ -61,78 +59,71 @@ export default class SSH {
         this.dispatch(addLog(msg, level, 'SSH'));
     }
 
-    setup_server() {
+    setupServer() {
         this.log('Starting setup_server', LOG.LEVEL.INFO);
 
         return new Promise((resolve, reject) => {
             this.connection
-                .then(() => {
-                    return this.aptGetUpdate()
-                        .then(() => this.aptGetInstall())
-                        .then(() => this.makeCADir())
-                        .then(() => this.configureCAVars())
-                        .then(() => this.generateServerKeys())
-                        .then(() => this.copyKeys())
-                        .then(() => this.uploadServerConfig())
-                        .then(() => this.enable_ip_forward())
-                        .then(() => this.configure_firewall())
-                        .then(() => this.start_openvpn())
-                        .then(() => this.setup_client_infrastructure())
-                        .then(resolve)
-                        .catch((e) => {
-                            this.log('Something failed...', LOG.LEVEL.ERROR);
-                            this.log(e, LOG.LEVEL.ERROR);
-                            reject(e);
-                        });
-                })
-                .catch((e) => reject(e));
+                .then(() => this.aptGetUpdate()
+                    .then(() => this.aptGetInstall())
+                    .then(() => this.makeCADir())
+                    .then(() => this.configureCAVars())
+                    .then(() => this.generateServerKeys())
+                    .then(() => this.copyKeys())
+                    .then(() => this.uploadServerConfig())
+                    .then(() => this.enableIpForward())
+                    .then(() => this.configureFirewall())
+                    .then(() => this.startVpn())
+                    .then(() => this.setupClientInfrastructure())
+                    .then(resolve)
+                    .catch((e) => {
+                        this.log('Something failed...', LOG.LEVEL.ERROR);
+                        this.log(e, LOG.LEVEL.ERROR);
+                        reject(e);
+                    }))
+                .catch(e => reject(e));
         });
     }
 
-    setup_client({id, ipAddress}) {
+    setupClient({ id, ipAddress }) {
         this.log('Starting setup_client', LOG.LEVEL.INFO);
 
         return new Promise((resolve, reject) => {
             this.connection
-                .then(() => {
-                    return this._runCommand(`ls ${client_keys_dir}/${id}.key`, {}, false)
-                        .then((response) => {
-                            if (response.code === 0) {
-                                // Cert with given name exists
-                                this.log(`Key with name ${id} already exists`, LOG.LEVEL.WARNING);
-                                return new Promise((resolve, reject) => {
-                                    this.dispatch(swal({
-                                        title: 'Key exists',
-                                        type: 'warning',
-                                        confirmButtonText: 'Yes',
-                                        cancelButtonText: 'No',
-                                        text: `Key with name ${id} already exists. Do you want to regenerate it?`,
-                                        showCancelButton: true,
-                                        closeOnConfirm: true,
-                                        onConfirm: () => resolve(response),
-                                        onCancel: () => reject(response),
-                                        allowOutsideClick: true,
-                                        onOutsideClick: () => reject(response),
-                                        onEscapeKey: () => reject(response)
-                                    }));
-                                }).then(() => {
-                                    return this._runCommand(`rm ${client_keys_dir}/${id}.key`)
-                                        .then(() => this.removeCrtFromDB(id))
-                                        .then(() => this.generateClientKey(id))
-                                        .then(() => this.generateClientConfigFiles(id)
-                                        .then(() => this.bindClientIp(id, ipAddress)));
-                                }).catch(e => e);
-                            } else if (response.code === 2) {
-                                // Cert not exist
-                                return this.generateClientKey(id)
-                                    .then(() => this.generateClientConfigFiles(id)
+                .then(() => this.runCommand(`ls ${clientKeysDir}/${id}.key`, {}, false)
+                    .then((response) => {
+                        if (response.code === 0) {
+                            // Cert with given name exists
+                            this.log(`Key with name ${id} already exists`, LOG.LEVEL.WARNING);
+                            return new Promise((responseResolve, responseReject) => {
+                                this.dispatch(swal({
+                                    title: 'Key exists',
+                                    type: 'warning',
+                                    confirmButtonText: 'Yes',
+                                    cancelButtonText: 'No',
+                                    text: `Key with name ${id} already exists. Do you want to regenerate it?`,
+                                    showCancelButton: true,
+                                    closeOnConfirm: true,
+                                    onConfirm: () => responseResolve(response),
+                                    onCancel: () => responseReject(response),
+                                    allowOutsideClick: true,
+                                    onOutsideClick: () => responseReject(response),
+                                    onEscapeKey: () => responseReject(response),
+                                }));
+                            }).then(() => this.runCommand(`rm ${clientKeysDir}/${id}.key`)
+                                .then(() => this.removeCrtFromDB(id))
+                                .then(() => this.generateClientKey(id))
+                                .then(() => this.generateClientConfigFiles(id)
+                                    .then(() => this.bindClientIp(id, ipAddress)))).catch(e => e);
+                        } else if (response.code === 2) {
+                            // Cert not exist
+                            return this.generateClientKey(id)
+                                .then(() => this.generateClientConfigFiles(id)
                                     .then(() => this.bindClientIp(id, ipAddress)));
-                            } else {
-                                throw response;
-                            }
-                        })
-                })
-                .then(() => this.restart_openvpn())
+                        }
+                        throw response;
+                    }))
+                .then(() => this.restartVpn())
                 .then(resolve)
                 .catch((e) => {
                     this.log('Something failed...', LOG.LEVEL.ERROR);
@@ -142,14 +133,14 @@ export default class SSH {
         });
     }
 
-    delete_client_files({id}) {
+    deleteClientFiles({ id }) {
         return new Promise((resolve, reject) => {
             this.connection
-                .then(() => this._runCommand(
-                    `rm -rf ${client_keys_dir}/${id}.key ${client_output_dir}/${id}.ovpn ${client_keys_dir}/${id}.crt`
+                .then(() => this.runCommand(
+                    `rm -rf ${clientKeysDir}/${id}.key ${clientOutputDir}/${id}.ovpn ${clientKeysDir}/${id}.crt`,
                 ))
                 .then(() => this.removeCrtFromDB(id))
-                .then(() => this.restart_openvpn())
+                .then(() => this.restartVpn())
                 .then(resolve)
                 .catch((e) => {
                     this.log('Something failed...', LOG.LEVEL.ERROR);
@@ -160,7 +151,7 @@ export default class SSH {
     }
 
     generateServerKeys() {
-        return this._runCommand(`${check_keys}`, {}, false).then((response) => {
+        return this.runCommand(`${checkKeys}`, {}, false).then((response) => {
             if (response.code === 0) {
                 return new Promise((resolve, reject) => {
                     this.dispatch(swal({
@@ -175,15 +166,15 @@ export default class SSH {
                         onCancel: () => reject(response),
                         allowOutsideClick: true,
                         onOutsideClick: () => reject(response),
-                        onEscapeKey: () => reject(response)
+                        onEscapeKey: () => reject(response),
                     }));
-                }).then(() => this._generateServerKeys()).catch(response => response);
+                }).then(() => this.generateAllServerKeys()).catch(keysResponse => keysResponse);
             }
-            return this._generateServerKeys();
+            return this.generateAllServerKeys();
         });
     }
 
-    _generateServerKeys() {
+    generateAllServerKeys() {
         return this.cleanAll()
             .then(() => this.buildCA())
             .then(() => this.buildKeyServer())
@@ -192,42 +183,42 @@ export default class SSH {
     }
 
     generateClientKey(id) {
-        return this._runCommand(
-            `${cert_begin} && ${generate_client_key} ${id}`
+        return this.runCommand(
+            `${certBegin} && ${generateClientKey} ${id}`,
         );
     }
 
     removeCrtFromDB(id) {
-        return this._runCommand(
-            `sed -i '/CN=${id}/d' ${client_keys_dir}/index.txt`
+        return this.runCommand(
+            `sed -i '/CN=${id}/d' ${clientKeysDir}/index.txt`,
         );
     }
 
     generateClientConfigFiles(id) {
-        return this._runCommand(
-            `cat ${client_conf_base_file} \
+        return this.runCommand(
+            `cat ${clientConfBaseFile} \
             <(echo -e '<ca>') \
-            ${client_keys_dir}/ca.crt \
+            ${clientKeysDir}/ca.crt \
             <(echo -e '</ca>\n<cert>') \
-            ${client_keys_dir}/${id}.crt \
+            ${clientKeysDir}/${id}.crt \
             <(echo -e '</cert>\n<key>') \
-            ${client_keys_dir}/${id}.key \
+            ${clientKeysDir}/${id}.key \
             <(echo -e '</key>\n<tls-auth>') \
-            ${client_keys_dir}/ta.key \
+            ${clientKeysDir}/ta.key \
             <(echo -e '</tls-auth>') \
-            > ${client_output_dir}/${id}.ovpn`
+            > ${clientOutputDir}/${id}.ovpn`,
         );
     }
 
     bindClientIp(id, ipAddress) {
-        return this._runCommand(
-            `sudo mkdir -p ${ccd_dir} && sudo touch ${ccd_dir}/${id} && echo "${ipAddress} ${this.nextIpAddress(ipAddress)}" | sudo tee ${ccd_dir}/${id}`
+        return this.runCommand(
+            `sudo mkdir -p ${ccdDir} && sudo touch ${ccdDir}/${id} && echo "${ipAddress} ${SSH.nextIpAddress(ipAddress)}" | sudo tee ${ccdDir}/${id}`,
         );
     }
 
-    nextIpAddress(ipAddress) {
+    static nextIpAddress(ipAddress) {
         const sections = ipAddress.split('.');
-        sections[3] = +(sections[3])++;
+        sections[3] = +(sections[3]) + 1;
         return sections.join('.');
     }
 
@@ -236,9 +227,9 @@ export default class SSH {
         return e;
     }
 
-    defaultSuccess(response, error_on_non_zero = true) {
-        if (error_on_non_zero && response.code !== 0) {
-            return Promise.reject(response)
+    defaultSuccess(response, errorOnNonZero = true) {
+        if (errorOnNonZero && response.code !== 0) {
+            return Promise.reject(response);
         }
 
         if (response.code !== 0) {
@@ -250,165 +241,166 @@ export default class SSH {
         return response;
     }
 
-    _runCommand(command, params = {}, error_on_non_zero = true) {
-        let log_time = (t0) => {
-            let time = (performance.now() - t0) / 1000;
+    runCommand(command, params = {}, errorOnNonZero = true) {
+        const logTime = (t0) => {
+            const time = (performance.now() - t0) / 1000;
             this.log(`${command} has finished, took: ${time} seconds`, LOG.LEVEL.INFO);
             return time;
         };
 
-        let t0 = performance.now();
+        const t0 = performance.now();
 
         this.log(`${command} has started`, LOG.LEVEL.INFO);
-        return this._ssh.execCommand(command, params).then((response) => {
-            response.command = command;
-            response.command_time = log_time(t0);
-            return response;
-        })
-            .catch((e) => this.defaultError(e))
-            .then((response) => this.defaultSuccess(response, error_on_non_zero));
-
+        return this.ssh.execCommand(command, params)
+            .then(response => ({ ...response, command, command_time: logTime(t0) }))
+            .catch(e => this.defaultError(e))
+            .then(response => this.defaultSuccess(response, errorOnNonZero));
     }
 
     ls() {
-        return this._runCommand(`ls -al ${cert_directory}`);
+        return this.runCommand(`ls -al ${certDirectory}`);
     }
 
     aptGetUpdate() {
-        return this._runCommand('sudo apt-get update');
+        return this.runCommand('sudo apt-get update');
     }
 
     aptGetInstall() {
-        return this._runCommand('sudo apt-get install openvpn easy-rsa -y');
+        return this.runCommand('sudo apt-get install openvpn easy-rsa -y');
     }
 
     makeCADir() {
-        return this._runCommand(`make-cadir ${cert_directory}`, {}, false).then((response) => {
+        return this.runCommand(`make-cadir ${certDirectory}`, {}, false).then((response) => {
             if (response.code === 0) {
                 return response;
             } else if (response.code === 1 && response.stdout.includes('openvpn-ca exists')) {
-                this.log(`Directory ${cert_directory} exists, omitting`, LOG.LEVEL.INFO);
+                this.log(`Directory ${certDirectory} exists, omitting`, LOG.LEVEL.INFO);
                 return response;
-            } else {
-                return Promise.reject(response);
             }
+            return Promise.reject(response);
         });
     }
 
     configureCAVars() {
-        let command = (command) => this._runCommand(command);
-        let server = this.server;
+        const run = command => this.runCommand(command);
+        const server = this.server;
 
-        return this._runCommand(`sed -i 's/KEY_NAME=".*"/KEY_NAME="server"/' ${vars_file}`)
-            .then((r) => command(`sed -i 's/KEY_COUNTRY=".*"/KEY_COUNTRY="${server.country}"/' ${vars_file}`))
-            .then((r) => command(`sed -i 's/KEY_PROVINCE=".*"/KEY_PROVINCE="${server.province}"/' ${vars_file}`))
-            .then((r) => command(`sed -i 's/KEY_CITY=".*"/KEY_CITY="${server.city}"/' ${vars_file}`))
-            .then((r) => command(`sed -i 's/KEY_ORG=".*"/KEY_ORG="${server.org}"/' ${vars_file}`))
-            .then((r) => command(`sed -i 's/KEY_EMAIL=".*"/KEY_EMAIL="${server.email}"/' ${vars_file}`))
-            .then((r) => command(`sed -i 's/KEY_OU=".*"/KEY_OU="${server.ou}"/' ${vars_file}`));
+        return this.runCommand(`sed -i 's/KEY_NAME=".*"/KEY_NAME="server"/' ${varsFile}`)
+            .then(() => run(`sed -i 's/KEY_COUNTRY=".*"/KEY_COUNTRY="${server.country}"/' ${varsFile}`))
+            .then(() => run(`sed -i 's/KEY_PROVINCE=".*"/KEY_PROVINCE="${server.province}"/' ${varsFile}`))
+            .then(() => run(`sed -i 's/KEY_CITY=".*"/KEY_CITY="${server.city}"/' ${varsFile}`))
+            .then(() => run(`sed -i 's/KEY_ORG=".*"/KEY_ORG="${server.org}"/' ${varsFile}`))
+            .then(() => run(`sed -i 's/KEY_EMAIL=".*"/KEY_EMAIL="${server.email}"/' ${varsFile}`))
+            .then(() => run(`sed -i 's/KEY_OU=".*"/KEY_OU="${server.ou}"/' ${varsFile}`));
     }
 
     cleanAll() {
-        return this._runCommand(
-            `${cert_begin} && ${clean_all}`
+        return this.runCommand(
+            `${certBegin} && ${cleanAll}`,
         );
     }
 
     buildCA() {
-        return this._runCommand(
-            `${cert_begin} && ${build_ca}`
+        return this.runCommand(
+            `${certBegin} && ${buildCa}`,
         );
     }
 
     buildKeyServer() {
-        return this._runCommand(
-            `${build_key_server}`
+        return this.runCommand(
+            `${buildKeyServer}`,
         );
     }
 
     buildDH() {
-        return this._runCommand(
-            `${build_dh}`
+        return this.runCommand(
+            `${buildDh}`,
         );
     }
 
     buildHMAC() {
-        return this._runCommand(
-            `${build_hmac}`
+        return this.runCommand(
+            `${buildHmac}`,
         );
     }
 
     copyKeys() {
-        return this._runCommand(
-            `${copy_keys}`
+        return this.runCommand(
+            `${copyKeys}`,
         );
     }
 
-    enable_ip_forward() {
-        return this._runCommand(
-            `sudo sed -i -r 's/#?net\.ipv4\.ip_forward\=.*/net\.ipv4\.ip_forward=1/' /etc/sysctl.conf && sudo sysctl -p`
+    enableIpForward() {
+        return this.runCommand(
+// eslint-disable-next-line no-useless-escape
+            'sudo sed -i -r \'s/#?net\.ipv4\.ip_forward\=.*/net\.ipv4\.ip_forward=1/\' /etc/sysctl.conf && sudo sysctl -p',
         );
     }
 
-    configure_firewall() {
-        let interface_name = '';
-        return this._runCommand(`ip route | grep default`).then((response) => {
-            interface_name = response.stdout.split(' ');
-            interface_name = interface_name[4];
+    configureFirewall() {
+        let interfaceName = '';
+        return this.runCommand('ip route | grep default').then((response) => {
+            interfaceName = response.stdout.split(' ');
+            interfaceName = interfaceName[4];
 
-            if (!interface_name) {
+            if (!interfaceName) {
                 throw Error('Could not find interface name');
             }
 
-            let command = `*nat\n:POSTROUTING ACCEPT [0:0]\n-A POSTROUTING -s 10.8.0.0/8 -o ${interface_name} -j MASQUERADE\nCOMMIT\n`;
+            const command = `*nat\n:POSTROUTING ACCEPT [0:0]\n-A POSTROUTING -s 10.8.0.0/8 -o ${interfaceName} -j MASQUERADE\nCOMMIT\n`;
 
-            return this._runCommand(`sudo cat /etc/ufw/before.rules`).then(response => {
-                let data = response.stdout;
+            return this.runCommand('sudo cat /etc/ufw/before.rules').then((catResponse) => {
+                const data = catResponse.stdout;
                 if (data.indexOf(command) !== -1) {
                     return;
                 }
-                return this._runCommand(`echo "${command}\n${data}" | sudo tee /etc/ufw/before.rules`);
+                return this.runCommand(`echo "${command}\n${data}" | sudo tee /etc/ufw/before.rules`);
             });
         })
-            .then(() => this._runCommand(`sudo sed -i 's/DEFAULT_FORWARD_POLICY=".*"/DEFAULT_FORWARD_POLICY="ACCEPT"/' /etc/default/ufw`))
-            .then(() => this._runCommand(`sudo ufw allow ${this.server.config.port}/udp`))
-            .then(() => this._runCommand(`sudo ufw allow OpenSSH`))
-            .then(() => this._runCommand(`sudo ufw disable && sudo ufw --force enable`)); // force is needed for non-interactive mode
+            .then(() => this.runCommand('sudo sed -i \'s/DEFAULT_FORWARD_POLICY=".*"/DEFAULT_FORWARD_POLICY="ACCEPT"/\' /etc/default/ufw'))
+            .then(() => this.runCommand(`sudo ufw allow ${this.server.config.port}/udp`))
+            .then(() => this.runCommand('sudo ufw allow OpenSSH'))
+            .then(() => this.runCommand('sudo ufw disable && sudo ufw --force enable')); // force is needed for non-interactive mode
     }
 
-    start_openvpn() {
-        return this._runCommand(`sudo systemctl start openvpn@server`)
-            .then(() => this._runCommand(`sudo systemctl status openvpn@server`))
-            .then(() => this._runCommand(`sudo systemctl enable openvpn@server`));
+    startVpn() {
+        return this.runCommand('sudo systemctl start openvpn@server')
+            .then(() => this.runCommand('sudo systemctl status openvpn@server'))
+            .then(() => this.runCommand('sudo systemctl enable openvpn@server'));
     }
 
-    restart_openvpn() {
-        return this._runCommand(`sudo systemctl restart openvpn@server`)
-            .then(() => this._runCommand(`sudo systemctl status openvpn@server`));
+    restartVpn() {
+        return this.runCommand('sudo systemctl restart openvpn@server')
+            .then(() => this.runCommand('sudo systemctl status openvpn@server'));
     }
 
-    setup_client_infrastructure() {
-        return this._runCommand(`mkdir -p ~/client-configs/files && chmod 700 ~/client-configs/files`)
+    setupClientInfrastructure() {
+        return this.runCommand('mkdir -p ~/client-configs/files && chmod 700 ~/client-configs/files')
             .then(() => this.uploadClientBaseConfig());
     }
 
     uploadServerConfig() {
-        let config_content = this._generate_server_config();
-        return this._runCommand(
-            `echo "${config_content}" | sudo tee ${conf_file}`
+        const configContent = this.generateServerConfig();
+        return this.runCommand(
+            `echo "${configContent}" | sudo tee ${confFile}`,
         );
     }
 
     uploadClientBaseConfig() {
-        let config_content = this._generate_client_base_config();
-        return this._runCommand(
-            `echo "${config_content}" | sudo tee ${client_conf_base_file}`
+        const configContent = this.generateClientBaseConfig();
+        return this.runCommand(
+            `echo "${configContent}" | sudo tee ${clientConfBaseFile}`,
         );
     }
 
-    _generate_server_config() {
-        let disabled = (x) => !x ? ';' : '';
-        let config = this.server.config;
+    generateServerConfig() {
+        const disabled = (prop) => {
+            if (prop) {
+                return '';
+            }
+            return ';';
+        };
+        const config = this.server.config;
         return `${disabled(config.local_ip_address)}local ${config.local_ip_address}
 port ${config.port}
 proto ${config.protocol}
@@ -450,10 +442,15 @@ key-direction 0
 auth ${config.auth_algorithm}`;
     }
 
-    _generate_client_base_config() {
-        let disabled = (x) => !x ? ';' : '';
-        let server = this.server;
-        let config = this.server.config;
+    generateClientBaseConfig() {
+        const disabled = (prop) => {
+            if (prop) {
+                return '';
+            }
+            return ';';
+        };
+        const server = this.server;
+        const config = this.server.config;
         return `client
 dev ${config.dev}
 ${disabled(config.dev_node)}dev-node ${config.dev_node}
@@ -485,23 +482,23 @@ auth ${config.auth_algorithm}
 # down /etc/openvpn/update-resolv-conf`;
     }
 
-    download_configuration({id}) {
+    downloadConfiguration({ id }) {
         return new Promise((resolve, reject) => {
             this.connection
                 .then(() => {
-                    let file_path = `${client_output_dir}/${id}.ovpn`;
-                    return this._runCommand(`ls ${file_path}`)
-                        .then(() => this._runCommand(`readlink -f ${file_path}`))
+                    const filePath = `${clientOutputDir}/${id}.ovpn`;
+                    return this.runCommand(`ls ${filePath}`)
+                        .then(() => this.runCommand(`readlink -f ${filePath}`))
                         .then((response) => {
-                            const absolute_filepath = response.stdout;
-                            let filename = remote.dialog.showSaveDialog(
+                            const absoluteFilePath = response.stdout;
+                            const filename = remote.dialog.showSaveDialog(
                                 remote.getCurrentWindow(),
                                 {
-                                    defaultPath: `${id}.ovpn`
-                                }
+                                    defaultPath: `${id}.ovpn`,
+                                },
                             );
 
-                            return this._ssh.getFile(filename, absolute_filepath);
+                            return this.ssh.getFile(filename, absoluteFilePath);
                         }).catch(e => reject(e));
                 })
                 .then(resolve)

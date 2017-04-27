@@ -1,21 +1,39 @@
 import React from 'react';
-import {Form} from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 
 import Label from './Label';
 import Error from './Error';
 
-export default ({input, label, helpMessage, type, required, readOnly, disabled, action, placeholder, meta: {touched, error}}) => (
-    <Form.Field>
+export default (props) => {
+    const {
+        input,
+        label,
+        helpMessage,
+        type,
+        required,
+        readOnly,
+        disabled,
+        action,
+        placeholder,
+        meta: {
+            touched,
+            error,
+        },
+    } = props;
+
+    return (
+      <Form.Field>
         <Form.Input
-            {...input}
-            action={action}
-            readOnly={readOnly}
-            placeholder={placeholder || label}
-            label={<Label helpMessage={helpMessage}>{label}</Label>}
-            type={type}
-            disabled={disabled}
-            required={required}
+                {...input}
+                action={action}
+                readOnly={readOnly}
+                placeholder={placeholder || label}
+                label={<Label helpMessage={helpMessage}>{label}</Label>}
+                type={type}
+                disabled={disabled}
+                required={required}
         />
-        <Error touched={touched} error={error} disabled={disabled}/>
-    </Form.Field>
-);
+        <Error touched={touched} error={error} disabled={disabled} />
+      </Form.Field>
+    );
+};

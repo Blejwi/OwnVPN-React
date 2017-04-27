@@ -2,8 +2,8 @@ import React from 'react';
 import ReactIScroll from 'react-iscroll';
 import iScroll from 'iscroll';
 
-export default ({children}) => (
-    <ReactIScroll
+export default ({ children }) => (
+  <ReactIScroll
         iScroll={iScroll}
         options={{
             mouseWheel: true,
@@ -11,9 +11,9 @@ export default ({children}) => (
             preventDefault: false,
             click: true,
             tap: true,
-            scrollbars: true
+            scrollbars: true,
         }}
-    >
-        {children}
-    </ReactIScroll>
+  >
+    {children}
+  </ReactIScroll>
 );

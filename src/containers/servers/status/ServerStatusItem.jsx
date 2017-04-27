@@ -1,13 +1,16 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
-import {Card, Icon, Popup} from 'semantic-ui-react';
-import './ServerStatusItem.scss';
-import {STATUS} from "../../../constants/servers";
+import { Card, Icon, Popup } from 'semantic-ui-react';
 import moment from 'moment';
+import './ServerStatusItem.scss';
+import { STATUS } from '../../../constants/servers';
 
-export default ({level, description, name, details, updated, statusFetchInProgress, handleRefresh}) => {
-    let icon, color, details_element;
+export default ({ statusFetchInProgress, handleRefresh, ...props }) => {
+    let icon;
+    let color;
+    let detailsElement;
 
-    switch (level) {
+    switch (props.level) {
         case STATUS.OK:
             icon = 'check circle';
             color = 'green';
@@ -24,40 +27,42 @@ export default ({level, description, name, details, updated, statusFetchInProgre
             icon = 'question circle';
             color = 'grey';
             break;
+        default:
+            break;
     }
 
-    let icon_element = <Icon name={icon} size="big" color={color}/>;
+    let iconElement = <Icon name={icon} size="big" color={color} />;
 
-    if (description) {
-        icon_element = (
-            <Popup
+    if (props.description) {
+        iconElement = (
+          <Popup
                 className="whitespace-pre"
-                trigger={icon_element}
-                content={description}
+                trigger={iconElement}
+                content={props.description}
                 hoverable
-            />
+          />
         );
     }
 
-    if (details) {
-        details_element = (
-            <Popup
+    if (props.details) {
+        detailsElement = (
+          <Popup
                 className="whitespace-pre"
-                trigger={<Icon name="question circle" color="grey"/>}
+                trigger={<Icon name="question circle" color="grey" />}
                 hoverable
-                wide='very'
-            >
-                <span className="details-content" dangerouslySetInnerHTML={{__html: details}}></span>
-            </Popup>
+                wide="very"
+          >
+            <span className="details-content" dangerouslySetInnerHTML={{ __html: props.details }} />
+          </Popup>
         );
     }
 
     return (
-        <Card>
-            <Card.Content>
-                {details_element}
-                {icon_element}
-                <Icon
+      <Card>
+        <Card.Content>
+          {detailsElement}
+          {iconElement}
+          <Icon
                     loading={statusFetchInProgress}
                     disabled={statusFetchInProgress}
                     onClick={handleRefresh}
@@ -66,10 +71,10 @@ export default ({level, description, name, details, updated, statusFetchInProgre
                     name="refresh"
                     size="small"
                     color="grey"
-                />
-                <Card.Header>{name}</Card.Header>
-                {updated ? <Card.Meta>Update: {moment(updated).format('YYYY-MM-DD H:mm:ss.SS')}</Card.Meta> : null}
-            </Card.Content>
-        </Card>
+          />
+          <Card.Header>{props.name}</Card.Header>
+          {props.updated ? <Card.Meta>Update: {moment(props.updated).format('YYYY-MM-DD H:mm:ss.SS')}</Card.Meta> : null}
+        </Card.Content>
+      </Card>
     );
 };

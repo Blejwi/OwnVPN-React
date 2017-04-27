@@ -1,61 +1,58 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {Container, Grid, Menu} from 'semantic-ui-react'
+import { connect } from 'react-redux';
+import { Container, Grid, Menu } from 'semantic-ui-react';
+import { Link } from 'react-router';
 import ServerMenu from '../servers/ServerMenu';
 import Logs from '../../components/logs/Logs';
-import {getLogsArray, getLogsCollapsed} from "../../selectors/logs";
+import { getLogsArray, getLogsCollapsed } from '../../selectors/logs';
 
 import './Dashboard.scss';
-import {clear, collapse} from "../../actions/logs";
-import {Link} from "react-router";
-import {closeFile} from "../../actions/authorization";
-import Scroll from "../../components/utils/Scroll";
+import { clear, collapse } from '../../actions/logs';
+import { closeFile } from '../../actions/authorization';
+import Scroll from '../../components/utils/Scroll';
 
-class Dashboard extends React.Component {
-    render() {
-        return (
-            <Container fluid className="main">
-                <Menu attached="top" inverted className="top-menu fixed">
-                    <Menu.Item header as={Link} to="/">OwnVPN</Menu.Item>
-                    <Menu.Menu position="right">
-                        <Menu.Item onClick={() => this.props.handleLogout()}>Log out</Menu.Item>
-                    </Menu.Menu>
-                </Menu>
-                <Grid padded={true} divided={true}>
-                    <Grid.Column width="3" className="sidebar-menu">
-                        <Scroll><ServerMenu/></Scroll>
-                    </Grid.Column>
-                    <Grid.Column width="13" className={`main-content`}>
-                        <Scroll>
-                            <div className={(this.props.logs_collapsed ? '' :'bottom-pad')}>
-                                {this.props.children}
-                            </div>
-                        </Scroll>
-                    </Grid.Column>
-                </Grid>
+// noinspection HtmlDeprecatedTag
+const Dashboard = props => (
+  <Container fluid className="main">
+    <Menu attached="top" inverted className="top-menu fixed">
+      <Menu.Item header as={Link} to="/">OwnVPN</Menu.Item>
+      <Menu.Menu position="right">
+        <Menu.Item onClick={() => props.handleLogout()}>Log out</Menu.Item>
+      </Menu.Menu>
+    </Menu>
+    <Grid padded divided>
+      <Grid.Column width="3" className="sidebar-menu">
+        <Scroll><ServerMenu /></Scroll>
+      </Grid.Column>
+      <Grid.Column width="13" className={'main-content'}>
+        <Scroll>
+          <div className={(props.logsCollapsed ? '' : 'bottom-pad')}>
+            {props.children}
+          </div>
+        </Scroll>
+      </Grid.Column>
+    </Grid>
 
-                <div className="logs">
-                    <Logs
-                        logs={this.props.logs}
-                        collapsed={this.props.logs_collapsed}
-                        handleCollapse={this.props.handleCollapse}
-                        handleClear={this.props.handleClear}
-                    />
-                </div>
-            </Container>
-        )
-    }
-}
+    <div className="logs">
+      <Logs
+          logs={props.logs}
+          collapsed={props.logsCollapsed}
+          handleCollapse={props.handleCollapse}
+          handleClear={props.handleClear}
+      />
+    </div>
+  </Container>
+);
 
 const mapStateToProps = state => ({
     logs: getLogsArray(state),
-    logs_collapsed: getLogsCollapsed(state)
+    logsCollapsed: getLogsCollapsed(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-    handleCollapse: server => dispatch(collapse()),
-    handleClear: server => dispatch(clear()),
-    handleLogout: server => dispatch(closeFile()),
+    handleCollapse: () => dispatch(collapse()),
+    handleClear: () => dispatch(clear()),
+    handleLogout: () => dispatch(closeFile()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

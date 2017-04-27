@@ -1,19 +1,19 @@
 import React from 'react';
-import {Header, Segment} from 'semantic-ui-react';
-import {Field} from 'redux-form';
+import { Header, Segment } from 'semantic-ui-react';
+import { Field } from 'redux-form';
 import IpAddressFields from './IpAddressFields';
 import Input from '../../form/Input';
-import {required} from '../../../utils/validators';
+import { required } from '../../../utils/validators';
 import Radio from '../../form/Radio';
 import LABELS from '../../../constants/labels';
-import {MODE} from '../../../constants/servers';
+import { MODE } from '../../../constants/servers';
 
 const isOn = serverMode => serverMode === MODE.BRIDGE;
 
-export default ({change, serverMode}) => (
-    <Segment padded={true}>
-        <Header as="h5">{LABELS.ETHERNET_SERVER_MODE}</Header>
-        <Field
+export default ({ change, serverMode }) => (
+  <Segment padded>
+    <Header as="h5">{LABELS.ETHERNET_SERVER_MODE}</Header>
+    <Field
             component={Radio}
             name="config.server_mode"
             label={LABELS.SERVER_MODE}
@@ -21,9 +21,9 @@ export default ({change, serverMode}) => (
             defaultValue={MODE.BRIDGE}
             currentValue={serverMode}
             change={change}
-        />
-        <IpAddressFields name="config.server_bridge" disabled={!isOn(serverMode)}/>
-        <Field
+    />
+    <IpAddressFields name="config.server_bridge" disabled={!isOn(serverMode)} />
+    <Field
             name="config.server_bridge.start"
             component={Input}
             label={LABELS.START}
@@ -31,8 +31,8 @@ export default ({change, serverMode}) => (
             disabled={!isOn(serverMode)}
             required={isOn(serverMode)}
             validate={isOn(serverMode) && [required]}
-        />
-        <Field
+    />
+    <Field
             name="config.server_bridge.end"
             component={Input}
             label={LABELS.END}
@@ -40,6 +40,6 @@ export default ({change, serverMode}) => (
             disabled={!isOn(serverMode)}
             required={isOn(serverMode)}
             validate={isOn(serverMode) && [required]}
-        />
-    </Segment>
+    />
+  </Segment>
 );

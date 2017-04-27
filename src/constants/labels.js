@@ -48,5 +48,5 @@ export default {
     PERSIST_TUN: 'Persist tunnel',
     VERB: 'Log level',
     MUTE: 'Mute',
-    EXPLICIT_EXIT_NOTIFY: 'Notify the client when the server restarts'
+    EXPLICIT_EXIT_NOTIFY: 'Notify the client when the server restarts',
 };

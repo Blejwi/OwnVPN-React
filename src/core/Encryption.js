@@ -4,8 +4,8 @@ import $q from 'q';
 
 let instance = null;
 export default class Encryption {
-    constructor(filepath=null, encryptionKey=null, runChecks=true) {
-        if(instance) {
+    constructor(filepath = null, encryptionKey = null, runChecks = true) {
+        if (instance) {
             return instance;
         }
 
@@ -30,7 +30,7 @@ export default class Encryption {
 
     fileExists() {
         try {
-            fs.accessSync(this.filepath)
+            fs.accessSync(this.filepath);
         } catch (e) {
             return false;
         }
@@ -51,7 +51,7 @@ export default class Encryption {
     }
 
     decrypt(data) {
-        const bytes  = CryptoJS.AES.decrypt(data.toString(), this.encryptionKey);
+        const bytes = CryptoJS.AES.decrypt(data.toString(), this.encryptionKey);
         return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     }
 
@@ -70,9 +70,9 @@ export default class Encryption {
         return deferred.promise;
     }
 
-    save(data, flag='w') {
+    save(data, flag = 'w') {
         const deferred = $q.defer();
-        fs.writeFile(this.filepath, this.encrypt(data), {encoding: 'utf8', flag: flag}, (error) => {
+        fs.writeFile(this.filepath, this.encrypt(data), { encoding: 'utf8', flag }, (error) => {
             if (error) {
                 deferred.reject(error);
                 return;

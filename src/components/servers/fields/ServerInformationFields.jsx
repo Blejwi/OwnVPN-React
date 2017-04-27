@@ -1,36 +1,36 @@
 import React from 'react';
-import {Header, Segment} from 'semantic-ui-react';
-import {Field} from 'redux-form';
+import { Header, Segment } from 'semantic-ui-react';
+import { Field } from 'redux-form';
 import LABELS from '../../../constants/labels';
 import Input from '../../form/Input';
 import File from '../../form/File';
-import {required, minValue, maxValue} from "../../../utils/validators";
+import { required, minValue, maxValue } from '../../../utils/validators';
 
 
-export default ({change}) => (
-    <Segment vertical>
-        <Header as="h2">Server information</Header>
-        <Field
+export default ({ change }) => (
+  <Segment vertical>
+    <Header as="h2">Server information</Header>
+    <Field
             component={Input}
             name="name"
             label={LABELS.NAME}
             required
             validate={[required]}
-        />
-        <Field
+    />
+    <Field
             component={Input}
             name="host"
             label={LABELS.HOST}
             required
             validate={[required]}
-        />
-        <Field
+    />
+    <Field
             component={Input}
             name="password"
             label={LABELS.PASSWORD}
             type="password"
-        />
-        <Field
+    />
+    <Field
             component={Input}
             name="port"
             label={LABELS.PORT}
@@ -40,20 +40,20 @@ export default ({change}) => (
             step="1"
             required
             validate={[required, minValue(1), maxValue(65535)]}
-        />
-        <Field
+    />
+    <Field
             component={Input}
             name="username"
             label={LABELS.USERNAME}
             required
             validate={[required]}
-        />
-        <Field
+    />
+    <Field
             component={File}
             change={change}
             type="text"
             name="key"
             label={LABELS.KEY}
-        />
-    </Segment>
+    />
+  </Segment>
 );
