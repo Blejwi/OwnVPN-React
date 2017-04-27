@@ -17,7 +17,7 @@ export default ({input, label, required, disabled, defaultValue, currentValue, c
                 value={defaultValue}
                 disabled={disabled}
             />
-            <Error touched={touched} error={error}/>
+            <Error touched={touched} error={error} disabled={disabled}/>
         </Form.Field>
     );
 };
