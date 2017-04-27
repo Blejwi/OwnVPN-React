@@ -5,3 +5,4 @@ export const number = value => value && isNaN(Number(value)) ? 'Must be a number
 export const minValue = min => value => value && value < min ? `Must be at least ${min}` : undefined;
 export const maxValue = max => value => value && value > max ? `Must be lower than ${max}` : undefined;
 export const email = value => value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? 'Invalid email address' : undefined;
+export const ipAddress = value => value && !/^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/.test(value) ? 'Invalid IPv4 address' : undefined;
