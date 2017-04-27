@@ -15,29 +15,42 @@ export default class SSHStats {
     }
 
     getMachineStatus() {
-        // TODO: need refactoring sic!
-
         let details = '';
         return new Promise((resolve, reject) => {
             this.ssh.connection
-                .then(() => this.ssh.runCommand('free -m')
-                    .then((r) => {
-                        details += `<h5>Memory</h5><pre>${' '.repeat(15)}${r.stdout}</pre>`;
-                    })
-                    .catch(() => details += '<h5>Memory</h5><pre>Could not get memory details, check logs for details</pre>'))
-                .then(() => this.ssh.runCommand('top -bn 1 | head -n 5')
-                    .then((r) => {
-                        details += `<h5>System details</h5><pre>${r.stdout}</pre>`;
-                    })
-                    .catch(() => details += '<h5>System details</h5><pre>Could not get system details, check logs for details</pre>'))
-                .then(() => this.ssh.runCommand('top -bn1 | grep openvpn && top -bn 1 -d 0.01 | grep \'openvpn\\|^  PID\'')
-                    .then((r) => {
-                        details += `<h5>OpenVPN - top</h5><pre>${r.stdout}</pre>`;
-                    })
-                    .catch(() => details += '<h5>OpenVPN - top</h5><pre>Could not get vpn details, check logs for details</pre>'))
+                .then(() => this.getMemoryStats().then((message) => {
+                    details += message;
+                }))
+                .then(() => this.getSystemStats(details).then((message) => {
+                    details += message;
+                }))
+                .then(() => this.getVpnStats().then((message) => {
+                    details += message;
+                }))
                 .then(() => resolve(details))
                 .catch(reject);
         });
+    }
+
+    getVpnStats() {
+        const title = '<h5>OpenVPN - top</h5>';
+        return this.ssh.runCommand('top -bn1 | grep openvpn && top -bn 1 -d 0.01 | grep \'openvpn\\|^  PID\'')
+            .then(r => `${title}<pre>${r.stdout}</pre>`)
+            .catch(() => `${title}<pre>Could not get vpn details, check logs for details</pre>`);
+    }
+
+    getSystemStats() {
+        const title = '<h5>System details</h5>';
+        return this.ssh.runCommand('top -bn 1 | head -n 5')
+            .then(r => `${title}<pre>${r.stdout}</pre>`)
+            .catch(() => `${title}<pre>Could not get system details, check logs for details</pre>`);
+    }
+
+    getMemoryStats() {
+        const title = '<h5>Memory</h5>';
+        return this.ssh.runCommand('free -m')
+            .then(r => `${title}<pre>${' '.repeat(15)}${r.stdout}</pre>`)
+            .catch(() => `${title}<pre>Could not get memory details, check logs for details</pre>`);
     }
 
     getUsersStats() {

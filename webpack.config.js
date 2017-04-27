@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -11,20 +12,20 @@ const options = {
             exclude: /node_modules/,
             loader: 'babel-loader',
             query: {
-                presets: ['es2015', 'es2016', 'stage-0', 'react', 'react-hmre']
-            }
+                presets: ['es2015', 'es2016', 'stage-0', 'react', 'react-hmre'],
+            },
         }, {
             test: /\.json$/,
-            loaders: ['json-loader']
+            loaders: ['json-loader'],
         }, {
             test: /\.css$/,
-            loader: "style-loader!css-loader"
+            loader: 'style-loader!css-loader',
         }, {
             test: /\.scss$/,
-            loaders: ['style-loader', 'css-loader', 'sass-loader']
+            loaders: ['style-loader', 'css-loader', 'sass-loader'],
         }, {
             test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-            loader: 'url-loader'
+            loader: 'url-loader',
         }],
     },
     output: {
@@ -37,7 +38,7 @@ const options = {
         packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
     },
     entry: [
-        './src/render.jsx'
+        './src/render.jsx',
     ],
     devtool: 'inline-source-map',
     target: 'electron-main',
@@ -45,9 +46,9 @@ const options = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'src/resource/index.html'),
             filename: 'index.html',
-            inject: 'body'
-        })
-    ]
+            inject: 'body',
+        }),
+    ],
 };
 
 /**
@@ -57,8 +58,8 @@ const options = {
  */
 options.postcss = [
     autoprefixer({
-        browsers: ['last 2 version']
-    })
+        browsers: ['last 2 version'],
+    }),
 ];
 
 module.exports = options;
