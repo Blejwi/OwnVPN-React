@@ -1,7 +1,8 @@
 import {createSelector} from 'reselect';
 import {Map} from 'immutable';
 import {formValueSelector} from 'redux-form';
-import {DEFAULT_SERVER_STATUS} from "../constants/servers";
+import {DEFAULT_SERVER_STATUS} from '../constants/servers';
+import ConfigurationGenerator from '../core/ConfigurationGenerator';
 
 export const getServersMap = state => state.servers.list;
 export const getSetupInProgressMap = state => state.servers.setupInProgress;
@@ -34,3 +35,7 @@ export const getServerFetchStatus = createSelector([
 ], (map, id) => map.get(id, false));
 
 export const getFormSelector = formValueSelector('server');
+
+export const getPreview = createSelector([
+    state => getFormSelector(state, 'config')
+], config => ConfigurationGenerator.generate(config));

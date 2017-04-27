@@ -3,6 +3,7 @@ import moment from 'moment';
 import uuid from 'uuid';
 import {isUndefined, keyBy, omit} from 'lodash';
 import {Map} from 'immutable';
+import {MODE} from '../constants/servers';
 
 const DEFAULT_SERVER_CONFIG = {
     local_ip_address: '',
@@ -10,7 +11,7 @@ const DEFAULT_SERVER_CONFIG = {
     protocol: 'udp',
     dev: 'tun',
     topology: 'net30',
-    server_mode: 'server',
+    server_mode: MODE.SERVER,
     server: {
         network: '10.8.0.0',
         mask: '255.255.255.0'
@@ -22,7 +23,15 @@ const DEFAULT_SERVER_CONFIG = {
         end: '10.8.0.100'
     },
     allow_subnet: '0',
+    allow_subnet_route: {
+        network: '',
+        mask: '',
+    },
     assign_ip: '0',
+    assign_ip_route: {
+        network: '',
+        mask: ''
+    },
     ifconfig_pool_persist: '1',
     routes: [],
     learn_address: '',
@@ -39,7 +48,7 @@ const DEFAULT_SERVER_CONFIG = {
     duplicate_cn: '0',
     keep_alive: {
         ping: 10,
-        during: 120
+        duration: 120
     },
     tls_auth: '1',
     auth_algorithm: 'SHA256',

@@ -4,8 +4,9 @@ import {Field} from 'redux-form';
 import Radio from '../../form/Radio';
 import IpAddressFields from './IpAddressFields';
 import LABELS from '../../../constants/labels';
+import {MODE} from '../../../constants/servers';
 
-const isOn = serverMode => serverMode === 'server';
+const isOn = serverMode => serverMode === MODE.SERVER;
 
 export default ({change, serverMode}) => (
     <Segment padded={true}>
@@ -16,7 +17,7 @@ export default ({change, serverMode}) => (
             label={LABELS.ENABLED}
             radio
             change={change}
-            defaultValue="server"
+            defaultValue={MODE.SERVER}
             currentValue={serverMode}
         />
         <IpAddressFields name="config.server" disabled={!isOn(serverMode)}/>

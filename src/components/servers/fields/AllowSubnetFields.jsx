@@ -4,9 +4,10 @@ import {Field} from 'redux-form';
 import Checkbox from '../../form/Checkbox';
 import IpAddressFields from './IpAddressFields';
 import LABELS from '../../../constants/labels';
+import {MODE} from '../../../constants/servers';
 
 export default ({serverMode, devMode, assignIp, allowSubnet, change}) => (
-    (!assignIp && serverMode === 'server' && devMode === 'tun') ? (
+    (!assignIp && serverMode === MODE.SERVER && devMode === 'tun') ? (
         <Segment padded={true}>
             <Header as="h5">{LABELS.ALLOW_SUBNET}</Header>
             <Field

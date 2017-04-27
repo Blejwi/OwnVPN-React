@@ -6,8 +6,9 @@ import Input from '../../form/Input';
 import {required} from '../../../utils/validators';
 import Radio from '../../form/Radio';
 import LABELS from '../../../constants/labels';
+import {MODE} from '../../../constants/servers';
 
-const isOn = serverMode => serverMode === 'bridge';
+const isOn = serverMode => serverMode === MODE.BRIDGE;
 
 export default ({change, serverMode}) => (
     <Segment padded={true}>
@@ -17,7 +18,7 @@ export default ({change, serverMode}) => (
             name="config.server_mode"
             label={LABELS.SERVER_MODE}
             radio
-            defaultValue="bridge"
+            defaultValue={MODE.BRIDGE}
             currentValue={serverMode}
             change={change}
         />
