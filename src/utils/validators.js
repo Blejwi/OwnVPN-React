@@ -23,3 +23,8 @@ export const email = (value) => {
         return 'Invalid email address';
     }
 };
+export const ipAddress = (value) => {
+    if (value && !/^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/.test(value)) {
+        return 'Invalid IPv4 address';
+    }
+};

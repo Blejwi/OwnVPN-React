@@ -11,6 +11,7 @@ const render = ({ fields }) => (
             icon="add"
             content="Add"
             labelPosition="left"
+            type="button"
             onClick={() => fields.push({})}
     />
     {fields.map((field, index) => (
