@@ -10,6 +10,6 @@ export default ({input, label, options, helpMessage, required, disabled, meta: {
         <select {...input} placeholder={label} required={required} disabled={disabled}>
             {map(options, (option, key) => <option key={key} value={option.value} >{option.text}</option>)}
         </select>
-        <Error touched={touched} error={error}/>
+        <Error touched={touched} error={error} disabled={disabled}/>
     </Form.Field>
 );

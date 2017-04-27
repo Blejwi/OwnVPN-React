@@ -16,6 +16,6 @@ export default ({input, label, helpMessage, type, required, readOnly, disabled, 
             disabled={disabled}
             required={required}
         />
-        <Error touched={touched} error={error}/>
+        <Error touched={touched} error={error} disabled={disabled}/>
     </Form.Field>
 );
