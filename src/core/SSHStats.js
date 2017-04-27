@@ -34,7 +34,7 @@ export default class SSHStats {
 
     getVpnStats() {
         const title = '<h5>OpenVPN - top</h5>';
-        return this.ssh.runCommand('top -bn1 | grep openvpn && top -bn 1 -d 0.01 | grep \'openvpn\\|^  PID\'')
+        return this.ssh.runCommand('top -bn1 | top -bn 1 -d 0.01 | grep \'openvpn\\|^  PID\'')
             .then(r => `${title}<pre>${r.stdout}</pre>`)
             .catch(() => `${title}<pre>Could not get vpn details, check logs for details</pre>`);
     }
