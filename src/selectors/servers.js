@@ -1,7 +1,7 @@
-import {createSelector} from 'reselect';
-import {Map} from 'immutable';
-import {formValueSelector} from 'redux-form';
-import {DEFAULT_SERVER_STATUS} from '../constants/servers';
+import { createSelector } from 'reselect';
+import { Map } from 'immutable';
+import { formValueSelector } from 'redux-form';
+import { DEFAULT_SERVER_STATUS } from '../constants/servers';
 import ConfigurationGenerator from '../core/ConfigurationGenerator';
 
 export const getServersMap = state => state.servers.list;
@@ -11,31 +11,37 @@ export const getServerFetchStatusMap = state => state.servers.statusFetch;
 
 export const getServerArray = createSelector(
     [getServersMap],
-    map => (Map.isMap(map)) ? map.toArray() : []
+    (map) => {
+        if (Map.isMap(map)) {
+            return map.toArray();
+        }
+
+        return [];
+    },
 );
 
 export const getServer = createSelector([
     getServersMap,
-    (_, {params}) => params.id
+    (_, { params }) => params.id,
 ], (map, id) => map.get(id));
 
 export const getSetupInProgress = createSelector([
     getSetupInProgressMap,
-    (_, {params}) => String(params.id)
+    (_, { params }) => String(params.id),
 ], (map, id) => map.get(id, false));
 
 export const getServerStatus = createSelector([
     getServerStatusMap,
-    (_, {server}) => String(server.id)
+    (_, { server }) => String(server.id),
 ], (map, id) => map.get(id, DEFAULT_SERVER_STATUS));
 
 export const getServerFetchStatus = createSelector([
     getServerFetchStatusMap,
-    (_, {server}) => String(server.id)
+    (_, { server }) => String(server.id),
 ], (map, id) => map.get(id, false));
 
 export const getFormSelector = formValueSelector('server');
 
 export const getPreview = createSelector([
-    state => getFormSelector(state, 'config')
+    state => getFormSelector(state, 'config'),
 ], config => ConfigurationGenerator.generate(config));

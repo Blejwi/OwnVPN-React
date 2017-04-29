@@ -1,17 +1,17 @@
 import React from 'react';
-import {Form, Checkbox} from 'semantic-ui-react';
+import { Form, Checkbox } from 'semantic-ui-react';
 import Error from './Error';
 
-const handleChange = (change, name) => (event, {name, checked}) => change(name, checked);
+const handleChange = change => (event, { name, checked }) => change(name, checked);
 
-export default ({input, label, required, change, meta: {touched, error}}) => (
-    <Form.Field>
-        <Checkbox
+export default ({ input, label, required, change, meta: { touched, error } }) => (
+  <Form.Field>
+    <Checkbox
             {...input}
-            label={{children: label}}
+            label={{ children: label }}
             required={required}
             onChange={handleChange(change)}
-        />
-        <Error touched={touched} error={error}/>
-    </Form.Field>
+    />
+    <Error touched={touched} error={error} />
+  </Form.Field>
 );

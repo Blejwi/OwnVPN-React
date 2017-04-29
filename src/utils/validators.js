@@ -1,8 +1,30 @@
-export const required = value => value ? undefined : 'Required';
-export const minLength = min => value => value && value.length < min ? `Must be ${min} characters or more` : undefined;
-export const maxLength = max => value => value && value.length > max ? `Must be ${max} characters or less` : undefined;
-export const number = value => value && isNaN(Number(value)) ? 'Must be a number' : undefined;
-export const minValue = min => value => value && value < min ? `Must be at least ${min}` : undefined;
-export const maxValue = max => value => value && value > max ? `Must be lower than ${max}` : undefined;
-export const email = value => value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? 'Invalid email address' : undefined;
-export const ipAddress = value => value && !/^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/.test(value) ? 'Invalid IPv4 address' : undefined;
+export const required = (value) => {
+    if (!value) {
+        return 'Required';
+    }
+};
+export const minLength = min => (value) => {
+    if (value && value.length < min) {
+        return `Must be ${min} characters or more`;
+    }
+};
+export const minValue = min => (value) => {
+    if (value && value < min) {
+        return `Must be at least ${min}`;
+    }
+};
+export const maxValue = max => (value) => {
+    if (value && value > max) {
+        return `Must be lower than ${max}`;
+    }
+};
+export const email = (value) => {
+    if (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+        return 'Invalid email address';
+    }
+};
+export const ipAddress = (value) => {
+    if (value && !/^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/.test(value)) {
+        return 'Invalid IPv4 address';
+    }
+};

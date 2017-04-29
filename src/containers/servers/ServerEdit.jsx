@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {edit, preview} from '../../actions/servers';
-import {getServer, getFormSelector, getPreview} from '../../selectors/servers';
+import { connect } from 'react-redux';
+import { edit, preview } from '../../actions/servers';
+import { getServer, getFormSelector, getPreview } from '../../selectors/servers';
 import ServerForm from '../../components/servers/ServerForm';
 
 class ServerEdit extends React.Component {
@@ -21,16 +21,16 @@ const mapStateToProps = (state, ownProps) => ({
     allowSubnet: getFormSelector(state, 'config.allow_subnet'),
     assignIp: getFormSelector(state, 'config.assign_ip'),
     redirectGateway: getFormSelector(state, 'config.redirect_gateway'),
-    config: getPreview(state)
+    config: getPreview(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-    onSubmit: server => {
+    onSubmit: (server) => {
         dispatch(edit(server));
     },
-    handlePreview: config => {
+    handlePreview: (config) => {
         dispatch(preview(config));
-    }
+    },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServerEdit);
