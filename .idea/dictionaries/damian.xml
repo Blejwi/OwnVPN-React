@@ -2,6 +2,7 @@
   <dictionary name="damian">
     <words>
       <w>autoprefixer</w>
+      <w>eslint</w>
       <w>ovpn</w>
       <w>unmount</w>
     </words>

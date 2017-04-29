@@ -2,10 +2,10 @@ import NodeSSH from 'node-ssh';
 import fs from 'fs';
 import { remote } from 'electron';
 import { swal } from 'react-redux-sweetalert';
-import { map } from 'lodash';
 import { add as addLog } from '../actions/logs';
 import * as LOG from '../constants/logs';
 import SSHStats from './SSHStats';
+import ConfigurationGenerator from './ConfigurationGenerator';
 
 const certDirectory = '~/openvpn-ca';
 const varsFile = `${certDirectory}/vars`;
@@ -394,52 +394,7 @@ export default class SSH {
     }
 
     generateServerConfig() {
-        const disabled = (prop) => {
-            if (prop) {
-                return '';
-            }
-            return ';';
-        };
-        const config = this.server.config;
-        return `${disabled(config.local_ip_address)}local ${config.local_ip_address}
-port ${config.port}
-proto ${config.protocol}
-dev ${config.dev}
-${disabled(config.dev_node)}dev-node ${config.dev_node}
-ca ca.crt
-cert server.crt
-key server.key
-dh dh2048.pem
-;topology subnet
-server 10.8.0.0 255.255.255.0
-ifconfig-pool-persist ipp.txt
-;server-bridge 10.8.0.4 255.255.255.0 10.8.0.50 10.8.0.100
-;server-bridge
-${map(config.routes, route => `push "route ${route.network} ${route.mask}"\n`)}
-${disabled(config.dev === 'tun')}client-config-dir ccd
-;route 192.168.40.128 255.255.255.248
-;learn-address ./script
-;push "redirect-gateway def1 bypass-dhcp"
-;push "dhcp-option DNS 208.67.222.222"
-;push "dhcp-option DNS 208.67.220.220"
-;client-to-client
-;duplicate-cn
-keepalive 10 120
-${disabled(config.tls_auth)}tls-auth ta.key 0
-cipher ${config.cipher_algorithm}
-comp-lzo
-${disabled(config.max_clients)}max-clients ${config.max_clients}
-${disabled(config.user_privilege)}user ${config.user_privilege}
-${disabled(config.group_privilege)}group ${config.group_privilege}
-persist-key
-persist-tun
-status openvpn-status.log
-;log         openvpn.log
-;log-append  openvpn.log
-verb 3
-;mute 20
-key-direction 0
-auth ${config.auth_algorithm}`;
+        return ConfigurationGenerator.generate(this.server.config);
     }
 
     generateClientBaseConfig() {

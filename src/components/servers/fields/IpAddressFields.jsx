@@ -44,7 +44,7 @@ export default ({ name, handleRemove, helpMessage, disabled }) => (
         placeholder="192.168.10.0"
         required={!disabled}
         disabled={disabled}
-        validate={[required, ipAddress]}
+        validate={!disabled ? [required, ipAddress] : []}
         helpMessage={helpMessage}
         normalize={normalizeIpAddress}
     />
@@ -55,7 +55,7 @@ export default ({ name, handleRemove, helpMessage, disabled }) => (
         placeholder="255.255.255.0"
         required={!disabled}
         disabled={disabled}
-        validate={[required, ipAddress]}
+        validate={!disabled ? [required, ipAddress] : []}
         normalize={normalizeIpAddress}
     />
   </div>

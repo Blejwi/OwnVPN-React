@@ -1,11 +1,12 @@
 .main {
   height: calc(100% - 41px);
   padding-bottom: 40px;
+  overflow: hidden;
   > div.grid {
     height: 100%;
     .sidebar-menu {
       padding: 0 !important;
-      .menu {
+      > .menu {
         border-radius: 0;
         height: 100%;
         position: fixed;
@@ -34,14 +35,17 @@
   }
 
   .main-content {
-    height: calc(100vh - 80px);
-    min-height: calc(100vh - 80px);
+    max-height: calc(100vh - 80px);
+    overflow: auto;
     box-shadow: none !important;
     > div {
       padding: 1px;
     }
     .bottom-pad {
       padding-bottom: 300px;
+    }
+    &.logs-expanded {
+      max-height: calc(100vh - 380px);
     }
   }
 }

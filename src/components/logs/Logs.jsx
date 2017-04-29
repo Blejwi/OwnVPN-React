@@ -4,10 +4,9 @@ import { Icon, List } from 'semantic-ui-react';
 
 import './Logs.scss';
 import LogItem from './LogItem';
-import Scroll from '../utils/Scroll';
 
 export default ({ logs, collapsed, handleCollapse, handleClear }) => (
-  <div className={`logs-container ${collapsed ? 'collapsed' : ''}`}>
+  <div className="logs-container">
     <Icon
             onClick={handleCollapse}
             title={collapsed ? 'Expand' : 'Collapse'}
@@ -20,14 +19,12 @@ export default ({ logs, collapsed, handleCollapse, handleClear }) => (
             className="collapse pointer hover-enlarge-1_5"
             name="trash outline"
     />
-    <Scroll>
-      <pre className="smooth-scroll">
-        <List divided inverted>
-          {map(logs, (data, key) => (
-            <LogItem key={key} {...data} />
-          ))}
-        </List>
-      </pre>
-    </Scroll>
+    <pre className={(collapsed ? 'collapsed' : '')}>
+      <List divided inverted>
+        {map(logs, (data, key) => (
+          <LogItem key={key} {...data} />
+        ))}
+      </List>
+    </pre>
   </div>
 );
