@@ -63,14 +63,14 @@ export default ({ statusFetchInProgress, handleRefresh, ...props }) => {
           {detailsElement}
           {iconElement}
           <Icon
-                    loading={statusFetchInProgress}
-                    disabled={statusFetchInProgress}
-                    onClick={handleRefresh}
-                    title="Refresh"
-                    className="spinner-icon pointer"
-                    name="refresh"
-                    size="small"
-                    color="grey"
+                loading={statusFetchInProgress}
+                disabled={statusFetchInProgress}
+                onClick={handleRefresh}
+                title="Refresh"
+                className="spinner-icon pointer"
+                name="refresh"
+                size="small"
+                color="grey"
           />
           <Card.Header>{props.name}</Card.Header>
           {props.updated ? <Card.Meta>Update: {moment(props.updated).format('YYYY-MM-DD H:mm:ss.SS')}</Card.Meta> : null}

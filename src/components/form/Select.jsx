@@ -19,11 +19,13 @@ export default (props) => {
     } = props;
 
     return (
-      <Form.Field>
+      <Form.Field className={required ? 'required' : ''}>
         <Label helpMessage={helpMessage}>{label}</Label>
         <select {...input} placeholder={label} required={required} disabled={disabled}>
           {map(options, (option, key) => (
-            <option key={key} value={option.value}>{option.text}</option>
+            <option key={key} value={option.value}>
+              {option.text}
+            </option>
           ))}
         </select>
         <Error touched={touched} error={error} disabled={disabled} />

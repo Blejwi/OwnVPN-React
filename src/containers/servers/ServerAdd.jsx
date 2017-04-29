@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import ServerForm from '../../components/servers/ServerForm';
 import { add, preview } from '../../actions/servers';
 import { getPreview } from '../../selectors/servers';
+import { DEFAULT_SERVER_CONFIG } from '../../constants/servers';
 
 class ServerAdd extends React.Component {
     onPreview() {
@@ -16,16 +17,9 @@ class ServerAdd extends React.Component {
 
 const mapStateToProps = state => ({
     initialValues: {
+        port: 22,
         config: {
-            port: '1194',
-            protocol: 'udp',
-            dev: 'tun',
-            tls_auth: true,
-            user_privilege: 'nobody',
-            group_privilege: 'nogroup',
-            max_clients: '',
-            auth_algorithm: 'SHA256',
-            cipher_algorithm: 'BF-CBC',
+            ...DEFAULT_SERVER_CONFIG,
         },
     },
     config: getPreview(state),

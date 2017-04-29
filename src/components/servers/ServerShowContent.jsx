@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Header, Table, TableBody } from 'semantic-ui-react';
 import { Link } from 'react-router';
-import Spinner from 'react-spinkit';
 import UserList from '../users/UserList';
 import UserWarning from '../users/UserWarning';
 import ServerShowContentRow from './ServerShowContentRow';
@@ -119,10 +118,9 @@ export default (props) => {
         </Table>
         <div>
           <Link to={`/server/edit/${server.id}`}><Button>Edit</Button></Link>
-          <Button primary disabled={setupInProgress} onClick={() => handleSetup(server)}>
-            { setupInProgress ? <Spinner spinnerName="circle" className="button-spinner" /> : null }
-                    Setup
-                </Button>
+          <Button primary disabled={setupInProgress} onClick={() => handleSetup(server)} loading={setupInProgress}>
+            Setup
+          </Button>
         </div>
         <Header as="h1">Users</Header>
         <UserWarning show={server.config.dev !== 'tun'} />

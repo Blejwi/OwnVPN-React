@@ -9,7 +9,6 @@ import { getLogsArray, getLogsCollapsed } from '../../selectors/logs';
 import './Dashboard.scss';
 import { clear, collapse } from '../../actions/logs';
 import { closeFile } from '../../actions/authorization';
-import Scroll from '../../components/utils/Scroll';
 
 // noinspection HtmlDeprecatedTag
 const Dashboard = props => (
@@ -22,14 +21,12 @@ const Dashboard = props => (
     </Menu>
     <Grid padded divided>
       <Grid.Column width="3" className="sidebar-menu">
-        <Scroll><ServerMenu /></Scroll>
+        <ServerMenu />
       </Grid.Column>
-      <Grid.Column width="13" className={'main-content'}>
-        <Scroll>
-          <div className={(props.logsCollapsed ? '' : 'bottom-pad')}>
-            {props.children}
-          </div>
-        </Scroll>
+      <Grid.Column width="13" className={`main-content ${props.logsCollapsed ? '' : 'logs-expanded'}`}>
+        <div>
+          {props.children}
+        </div>
       </Grid.Column>
     </Grid>
 

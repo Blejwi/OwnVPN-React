@@ -8,6 +8,7 @@ import VpnConfigurationFields from './fields/VpnConfigurationFields';
 
 const ServerForm = (props) => {
     const {
+        error,
         handleSubmit,
         onSubmit,
         onPreview,
@@ -32,6 +33,7 @@ const ServerForm = (props) => {
             <Button onClick={onPreview} type="button">Preview</Button>
           </Actions>
         </Segment>
+        {error && <strong>{error}</strong>}
       </Form>
     );
 };
