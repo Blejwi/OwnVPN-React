@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const electron = require('electron');
-// const electronContextMenu = require('electron-context-menu');
 
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -13,8 +12,6 @@ app.on('window-all-closed', () => {
     }
     return null;
 });
-
-// electronContextMenu();
 
 app.on('ready', () => {
     mainWindow = new BrowserWindow({ width: 1024, height: 728 });
