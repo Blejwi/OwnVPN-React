@@ -30,13 +30,8 @@ export default class ConfigurationGenerator {
             lines.push(`port ${config.port}`);
         }
 
-        if (ConfigurationGenerator.isSet(config.protocol)) {
-            lines.push(`proto ${config.protocol}`);
-        }
-
-        if (ConfigurationGenerator.isSet(config.dev)) {
-            lines.push(`dev ${config.dev}`);
-        }
+        this.addProto(config, lines);
+        this.addDev(config, lines);
 
         lines.push('ca ca.crt');
         lines.push('cert server.crt');
@@ -108,13 +103,8 @@ export default class ConfigurationGenerator {
             lines.push('tls-auth ta.key 0');
         }
 
-        if (ConfigurationGenerator.isSet(config.auth_algorithm)) {
-            lines.push(`auth ${config.auth_algorithm}`);
-        }
-
-        if (ConfigurationGenerator.isSet(config.cipher_algorithm)) {
-            lines.push(`cipher ${config.cipher_algorithm}`);
-        }
+        this.addAuth(config, lines);
+        this.addCipher(config, lines);
 
         if (ConfigurationGenerator.isOn(config.compress)) {
             lines.push('compress lz4-v2');
@@ -125,14 +115,89 @@ export default class ConfigurationGenerator {
             lines.push(`max-clients ${config.max_clients}`);
         }
 
-        if (ConfigurationGenerator.isSet(config.user_privilege)) {
-            lines.push(`user ${config.user_privilege}`);
+        this.addPrivilege(config, lines);
+        this.addPersist(config, lines);
+        this.addVerb(config, lines);
+        this.addMute(config, lines);
+
+        if (ConfigurationGenerator.isOn(config.explicit_exit_notify)) {
+            lines.push('explicit-exit-notify 1');
         }
 
-        if (ConfigurationGenerator.isSet(config.group_privilege)) {
-            lines.push(`group ${config.group_privilege}`);
+        return lines.join('\n');
+    }
+
+    static generateUser(config, server) {
+        const lines = ['client'];
+
+        if (!ConfigurationGenerator.isSet(config) || !ConfigurationGenerator.isSet(server)) {
+            return '';
         }
 
+        this.addDev(config, lines);
+        this.addProto(config, lines);
+
+        if (this.isRemoteServerSet(server, config)) {
+            lines.push(`remote ${server.host} ${config.port}`);
+        }
+
+        lines.push('resolve-retry infinite');
+        lines.push('nobind');
+
+        this.addPrivilege(config, lines);
+        this.addPersist(config, lines);
+
+        if (ConfigurationGenerator.isOn(config.tls_auth)) {
+            lines.push('remote-cert-tls server');
+            lines.push('tls-auth ta.key 1');
+        }
+
+        this.addCipher(config, lines);
+
+        lines.push('comp-lzo');
+
+        this.addVerb(config, lines);
+        this.addMute(config, lines);
+
+        lines.push('key-direction 1');
+
+        this.addAuth(config, lines);
+
+        return lines.join('\n');
+    }
+
+    static isRemoteServerSet(server, config) {
+        return (
+            ConfigurationGenerator.isSet(server.host) &&
+            ConfigurationGenerator.isSet(config.port)
+        );
+    }
+
+    static addAuth(config, lines) {
+        if (ConfigurationGenerator.isSet(config.auth_algorithm)) {
+            lines.push(`auth ${config.auth_algorithm}`);
+        }
+    }
+
+    static addMute(config, lines) {
+        if (ConfigurationGenerator.isSet(config.mute)) {
+            lines.push(`mute ${config.mute}`);
+        }
+    }
+
+    static addVerb(config, lines) {
+        if (ConfigurationGenerator.isSet(config.verb)) {
+            lines.push(`verb ${config.verb}`);
+        }
+    }
+
+    static addCipher(config, lines) {
+        if (ConfigurationGenerator.isSet(config.cipher_algorithm)) {
+            lines.push(`cipher ${config.cipher_algorithm}`);
+        }
+    }
+
+    static addPersist(config, lines) {
         if (ConfigurationGenerator.isOn(config.persist_key)) {
             lines.push('persist-key');
         }
@@ -140,20 +205,28 @@ export default class ConfigurationGenerator {
         if (ConfigurationGenerator.isOn(config.persist_tun)) {
             lines.push('persist-tun');
         }
+    }
 
-        if (ConfigurationGenerator.isSet(config.verb)) {
-            lines.push(`verb ${config.verb}`);
+    static addPrivilege(config, lines) {
+        if (ConfigurationGenerator.isSet(config.user_privilege)) {
+            lines.push(`user ${config.user_privilege}`);
         }
 
-        if (ConfigurationGenerator.isSet(config.mute)) {
-            lines.push(`mute ${config.mute}`);
+        if (ConfigurationGenerator.isSet(config.group_privilege)) {
+            lines.push(`group ${config.group_privilege}`);
         }
+    }
 
-        if (ConfigurationGenerator.isOn(config.explicit_exit_notify)) {
-            lines.push('explicit-exit-notify 1');
+    static addProto(config, lines) {
+        if (ConfigurationGenerator.isSet(config.protocol)) {
+            lines.push(`proto ${config.protocol}`);
         }
+    }
 
-        return lines.join('\n');
+    static addDev(config, lines) {
+        if (ConfigurationGenerator.isSet(config.dev)) {
+            lines.push(`dev ${config.dev}`);
+        }
     }
 
     static addRedirectGateway(lines, redirectGateway) {

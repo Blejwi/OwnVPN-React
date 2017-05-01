@@ -398,43 +398,9 @@ export default class SSH {
     }
 
     generateClientBaseConfig() {
-        const disabled = (prop) => {
-            if (prop) {
-                return '';
-            }
-            return ';';
-        };
         const server = this.server;
         const config = this.server.config;
-        return `client
-dev ${config.dev}
-${disabled(config.dev_node)}dev-node ${config.dev_node}
-proto ${config.protocol}
-remote ${server.host} ${config.port}
-;remote my-server-2 1194
-;remote-random
-resolv-retry infinite
-nobind
-${disabled(config.user_privilege)}user ${config.user_privilege}
-${disabled(config.group_privilege)}group ${config.group_privilege}
-persist-key
-persist-tun
-;http-proxy-retry
-;http-proxy [proxy server] [proxy port
-;mute-replay-warnings
-remote-cert-tls server
-${disabled(config.tls_auth)}tls-auth ta.key 1
-cipher ${config.cipher_algorithm}
-comp-lzo
-verb 3
-;mute 20
-key-direction 1
-auth ${config.auth_algorithm}
-
-# Uncomment these lines on linux machine
-# script-security 2
-# up /etc/openvpn/update-resolv-conf
-# down /etc/openvpn/update-resolv-conf`;
+        return ConfigurationGenerator.generateUser(config, server);
     }
 
     downloadConfiguration({ id }) {
