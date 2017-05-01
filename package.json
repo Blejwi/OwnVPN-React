@@ -1,10 +1,12 @@
 {
   "name": "ownVpn",
+  "productName": "OwnVpn",
   "version": "0.0.1",
   "dependencies": {
     "crypto-js": "^3.1.9-1",
     "electron": "^1.6.1",
     "electron-context-menu": "^0.8.0",
+    "electron-is-dev": "^0.1.2",
     "electron-settings": "^3.0.14",
     "html-webpack-plugin": "^2.26.0",
     "immutable": "^3.8.1",
@@ -41,6 +43,7 @@
     "css-loader": "^0.26.1",
     "electron-debug": "^1.1.0",
     "electron-devtools-installer": "^2.0.1",
+    "electron-packager": "^8.6.0",
     "electron-prebuilt": "^1.4.13",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^14.1.0",
@@ -61,6 +64,9 @@
   "scripts": {
     "server": "webpack-dev-server --progress --inline --hot --history-api-fallback",
     "run": "electron . --disable-gpu",
-    "start": "npm run-script server & npm run-script run"
+    "start": "npm run-script server & npm run-script run",
+    "build-src": "rimraf build && webpack --bail --progress --profile && cp package.json ./build/ && cp index.prod.js ./build/index.js",
+    "build": "npm run build-src && electron-packager ./build --overwrite --out ./dist",
+    "build-all": "npm run build-src && electron-packager ./build --all --overwrite --out ./dist"
   }
 }

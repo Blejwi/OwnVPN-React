@@ -2,8 +2,14 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
 const autoprefixer = require('autoprefixer');
+
+/**
+ * Env
+ * Get npm lifecycle event to identify the environment
+ */
+const ENV = process.env.npm_lifecycle_event;
+const isProd = ENV === 'build' || ENV === 'build-all' || ENV === 'build-src';
 
 const options = {
     module: {
@@ -40,7 +46,6 @@ const options = {
     entry: [
         './src/render.jsx',
     ],
-    devtool: 'inline-source-map',
     target: 'electron-main',
     plugins: [
         new HtmlWebpackPlugin({
@@ -61,5 +66,9 @@ options.postcss = [
         browsers: ['last 2 version'],
     }),
 ];
+
+if (!isProd) {
+    options.devtool = 'inline-source-map';
+}
 
 module.exports = options;
