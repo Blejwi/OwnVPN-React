@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const BabiliPlugin = require('babili-webpack-plugin');
 
 /**
  * Env
@@ -69,6 +70,12 @@ options.postcss = [
 
 if (!isProd) {
     options.devtool = 'inline-source-map';
+} else {
+    options.plugins.push(
+        new webpack.optimize.CommonsChunkPlugin('common.js'),
+        new webpack.optimize.DedupePlugin(),
+        new BabiliPlugin(),
+        new webpack.optimize.AggressiveMergingPlugin());
 }
 
 module.exports = options;

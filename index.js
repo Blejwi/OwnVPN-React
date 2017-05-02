@@ -1,11 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
-const electron = require('electron');
+const { app, BrowserWindow } = require('electron');
 const developerTools = require('electron-devtools-installer');
 const electronDebug = require('electron-debug');
 const electronContextMenu = require('electron-context-menu');
-
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
 
 let mainWindow = null;
 
