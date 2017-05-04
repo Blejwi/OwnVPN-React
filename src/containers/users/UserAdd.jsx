@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { add } from '../../actions/users';
 import UserForm from '../../components/users/UserForm';
+import { validateUser } from '../../utils/validators';
 
 const UserAdd = props => <UserForm {...props} />;
 
@@ -14,6 +15,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
     onSubmit: (user) => {
+        validateUser(user);
         dispatch(add(user));
         dispatch(push(`/server/show/${user.serverId}`));
     },

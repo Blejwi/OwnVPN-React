@@ -85,7 +85,7 @@ export default class SSH {
         });
     }
 
-    setupClient({ id, ipAddress }) {
+    setupClient({ id, ipAddress, config }) {
         this.log('Starting setup_client', LOG.LEVEL.INFO);
 
         return new Promise((resolve, reject) => {
@@ -113,13 +113,19 @@ export default class SSH {
                             }).then(() => this.runCommand(`rm ${clientKeysDir}/${id}.key`)
                                 .then(() => this.removeCrtFromDB(id))
                                 .then(() => this.generateClientKey(id))
-                                .then(() => this.generateClientConfigFiles(id)
-                                    .then(() => this.bindClientIp(id, ipAddress)))).catch(e => e);
+                                .then(() => this.generateClientConfigFiles(id, config))
+                                .then(() => this.bindClientIp(id, ipAddress)))
+                            // eslint-disable-next-line arrow-body-style
+                            .catch(() => {
+                                return this.shouldRegenerateOvpn(response)
+                                    .then(() => this.generateClientConfigFiles(id, config))
+                                    .catch(() => {});
+                            });
                         } else if (response.code === 2) {
                             // Cert not exist
                             return this.generateClientKey(id)
-                                .then(() => this.generateClientConfigFiles(id)
-                                    .then(() => this.bindClientIp(id, ipAddress)));
+                                .then(() => this.generateClientConfigFiles(id, config)
+                                .then(() => this.bindClientIp(id, ipAddress)));
                         }
                         throw response;
                     }))
@@ -130,6 +136,25 @@ export default class SSH {
                     this.log(e, LOG.LEVEL.ERROR);
                     reject(e);
                 });
+        });
+    }
+
+    shouldRegenerateOvpn(response) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => this.dispatch(swal({
+                title: 'Key exists',
+                type: 'warning',
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                text: 'Do you want to regenerate ovpn file??',
+                showCancelButton: true,
+                closeOnConfirm: true,
+                onConfirm: () => resolve(response),
+                onCancel: () => reject(response),
+                allowOutsideClick: true,
+                onOutsideClick: () => reject(response),
+                onEscapeKey: () => reject(response),
+            })), 200);
         });
     }
 
@@ -194,9 +219,10 @@ export default class SSH {
         );
     }
 
-    generateClientConfigFiles(id) {
+    generateClientConfigFiles(id, userConfig) {
         return this.runCommand(
-            `cat ${clientConfBaseFile} \
+            `cat /dev/null \
+            <(echo -e '${this.generateClientConfig(userConfig)}') \
             <(echo -e '<ca>') \
             ${clientKeysDir}/ca.crt \
             <(echo -e '</ca>\n<cert>') \
@@ -375,8 +401,8 @@ export default class SSH {
     }
 
     setupClientInfrastructure() {
-        return this.runCommand('mkdir -p ~/client-configs/files && chmod 700 ~/client-configs/files')
-            .then(() => this.uploadClientBaseConfig());
+        return this.runCommand(
+            'mkdir -p ~/client-configs/files && chmod 700 ~/client-configs/files');
     }
 
     uploadServerConfig() {
@@ -386,55 +412,14 @@ export default class SSH {
         );
     }
 
-    uploadClientBaseConfig() {
-        const configContent = this.generateClientBaseConfig();
-        return this.runCommand(
-            `echo "${configContent}" | sudo tee ${clientConfBaseFile}`,
-        );
-    }
-
     generateServerConfig() {
         return ConfigurationGenerator.generate(this.server.config);
     }
 
-    generateClientBaseConfig() {
-        const disabled = (prop) => {
-            if (prop) {
-                return '';
-            }
-            return ';';
-        };
+    generateClientConfig(userConfig) {
         const server = this.server;
         const config = this.server.config;
-        return `client
-dev ${config.dev}
-${disabled(config.dev_node)}dev-node ${config.dev_node}
-proto ${config.protocol}
-remote ${server.host} ${config.port}
-;remote my-server-2 1194
-;remote-random
-resolv-retry infinite
-nobind
-${disabled(config.user_privilege)}user ${config.user_privilege}
-${disabled(config.group_privilege)}group ${config.group_privilege}
-persist-key
-persist-tun
-;http-proxy-retry
-;http-proxy [proxy server] [proxy port
-;mute-replay-warnings
-remote-cert-tls server
-${disabled(config.tls_auth)}tls-auth ta.key 1
-cipher ${config.cipher_algorithm}
-comp-lzo
-verb 3
-;mute 20
-key-direction 1
-auth ${config.auth_algorithm}
-
-# Uncomment these lines on linux machine
-# script-security 2
-# up /etc/openvpn/update-resolv-conf
-# down /etc/openvpn/update-resolv-conf`;
+        return ConfigurationGenerator.generateUser(config, server, userConfig);
     }
 
     downloadConfiguration({ id }) {

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { edit, preview } from '../../actions/servers';
 import { getServer, getFormSelector, getPreview } from '../../selectors/servers';
 import ServerForm from '../../components/servers/ServerForm';
+import { validateServer } from '../../utils/validators';
 
 class ServerEdit extends React.Component {
     onPreview() {
@@ -26,6 +27,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
     onSubmit: (server) => {
+        validateServer(server);
         dispatch(edit(server));
     },
     handlePreview: (config) => {

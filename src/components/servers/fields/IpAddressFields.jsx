@@ -6,7 +6,7 @@ import Input from '../../form/Input';
 import { ipAddress, required } from '../../../utils/validators';
 import LABELS from '../../../constants/labels';
 
-const normalizeIpAddress = (value) => {
+export const normalizeIpAddress = (value) => {
     if (!value) {
         return value;
     }

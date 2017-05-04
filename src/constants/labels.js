@@ -49,4 +49,8 @@ export default {
     VERB: 'Log level',
     MUTE: 'Mute',
     EXPLICIT_EXIT_NOTIFY: 'Notify the client when the server restarts',
+    MUTE_REPLAY_WARNINGS: 'Mute replay warnings',
+    HTTP_PROXY_SERVER: 'HTTP proxy\'s server',
+    HTTP_PROXY_PORT: 'HTTP proxy\'s port',
+    HTTP_PROXY_RETRY: 'Retry HTTP proxy',
 };
