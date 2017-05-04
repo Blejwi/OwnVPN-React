@@ -1,4 +1,5 @@
 import { Map, List } from 'immutable';
+import sha256 from 'crypto-js/sha256';
 import * as AUTH from '../constants/authorization';
 
 const DEFAULT_STATE = {
@@ -13,7 +14,7 @@ const DEFAULT_STATE = {
     recentFiles: List(),
 };
 
-const hash = password => password; // TODO: select hash function and add salt
+const hash = password => sha256(`${password}shOYpJ11dpoEsmll3xnl`);
 
 export default (state = DEFAULT_STATE, { type, payload }) => {
     switch (type) {
