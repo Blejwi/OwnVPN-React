@@ -127,7 +127,7 @@ export default class ConfigurationGenerator {
         return lines.join('\n');
     }
 
-    static generateUser(config, server) {
+    static generateUser(config, server, userConfig) {
         const lines = ['client'];
 
         if (!ConfigurationGenerator.isSet(config) || !ConfigurationGenerator.isSet(server)) {
@@ -146,6 +146,19 @@ export default class ConfigurationGenerator {
 
         this.addPrivilege(config, lines);
         this.addPersist(config, lines);
+
+        if (ConfigurationGenerator.isOn(userConfig.httpProxyRetry)) {
+            lines.push('http-proxy-retry');
+        }
+
+        if (ConfigurationGenerator.isSet(userConfig.httpProxyServer) &&
+            ConfigurationGenerator.isSet(userConfig.httpProxyPort)) {
+            lines.push(`http-proxy ${userConfig.httpProxyServer} ${userConfig.httpProxyPort}`);
+        }
+
+        if (ConfigurationGenerator.isOn(userConfig.muteReplayWarnings)) {
+            lines.push('mute-replay-warnings');
+        }
 
         if (ConfigurationGenerator.isOn(config.tls_auth)) {
             lines.push('remote-cert-tls server');

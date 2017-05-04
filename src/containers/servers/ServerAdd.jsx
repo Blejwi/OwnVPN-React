@@ -4,6 +4,7 @@ import ServerForm from '../../components/servers/ServerForm';
 import { add, preview } from '../../actions/servers';
 import { getPreview } from '../../selectors/servers';
 import { DEFAULT_SERVER_CONFIG } from '../../constants/servers';
+import { validateServer } from '../../utils/validators';
 
 class ServerAdd extends React.Component {
     onPreview() {
@@ -26,7 +27,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    onSubmit: server => dispatch(add(server)),
+    onSubmit: (server) => {
+        validateServer(server);
+        dispatch(add(server));
+    },
     handlePreview: config => dispatch(preview(config)),
 });
 
