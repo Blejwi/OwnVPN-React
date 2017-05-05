@@ -7,6 +7,7 @@ import SSH from '../core/SSH';
 import { add as addLog } from '../actions/logs';
 import * as LOG from '../constants/logs';
 import { save } from './authorization';
+import { compileMessage } from '../utils/messages';
 
 export const fetch = servers => ({
     type: SERVER.FETCH,
@@ -66,7 +67,7 @@ export const setup = server => (dispatch) => {
         ssh = new SSH(dispatch, server);
     } catch (e) {
         dispatch(addLog('Server setup failure', LOG.LEVEL.ERROR, 'SERVER'));
-        dispatch(addLog(`${e}`, LOG.LEVEL.ERROR, 'SSH'));
+        dispatch(addLog(compileMessage(e), LOG.LEVEL.ERROR, 'SSH'));
         toastr.error('Server', 'Failure during server setup');
         return dispatch(setupFailure(server));
     }
@@ -118,7 +119,7 @@ export const updateStatus = server => (dispatch) => {
         payload.server.level = SERVER.STATUS.OK;
     } catch (e) {
         dispatch(addLog(`Error getting server status (${server.name})`, LOG.LEVEL.ERROR, 'SERVER'));
-        dispatch(addLog(`${e}`, LOG.LEVEL.ERROR, 'SERVER'));
+        dispatch(addLog(compileMessage(e), LOG.LEVEL.ERROR, 'SERVER'));
         return dispatch({
             type: SERVER.STATUS_CHANGE,
             payload,
@@ -128,7 +129,7 @@ export const updateStatus = server => (dispatch) => {
     ssh.statistics.getMachineStatus().then((details) => {
         payload.server.details = details;
     }).catch((e) => {
-        payload.server.details = `Could not get details, ${e}`;
+        payload.server.details = compileMessage('Could not get details', e);
     }).then(() => ssh.statistics.getVpnStatus().then((data) => {
         payload = {
             ...payload,
@@ -142,7 +143,7 @@ export const updateStatus = server => (dispatch) => {
             server: {
                 level: SERVER.STATUS.ERROR,
                 description: 'Error during VPN status check',
-                details: `${e}`,
+                details: compileMessage(e),
             },
         };
     }))
@@ -159,7 +160,7 @@ export const updateStatus = server => (dispatch) => {
                 users: {
                     level: SERVER.STATUS.ERROR,
                     description: 'Error during getting VPN statistics',
-                    details: `${e}`,
+                    details: compileMessage(e),
                 },
             };
         }))

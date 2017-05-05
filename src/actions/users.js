@@ -8,6 +8,7 @@ import { setupSuccess as setupSuccessServer, setupFailure as setupFailureServer 
 import { save } from './authorization';
 import * as LOG from '../constants/logs';
 import * as SERVER from '../constants/servers';
+import { compileMessage } from '../utils/messages';
 
 export const add = user => (dispatch) => {
     dispatch({
@@ -41,8 +42,8 @@ const removeUserFiles = (server, user) => (dispatch) => {
         ssh = new SSH(dispatch, server);
     } catch (e) {
         dispatch(addLog('Delete failure', LOG.LEVEL.ERROR, 'FILE'));
-        dispatch(addLog(`${e}`, LOG.LEVEL.ERROR, 'SSH'));
-        toastr.error('User', `There was a problem during deleting user (${user.name}) files: ${e}`);
+        dispatch(addLog(compileMessage(e), LOG.LEVEL.ERROR, 'SSH'));
+        toastr.error('User', compileMessage(`There was a problem during deleting user (${user.name}) files`, e));
         return dispatch(setupFailureServer(server));
     }
 
@@ -52,7 +53,7 @@ const removeUserFiles = (server, user) => (dispatch) => {
         dispatch(setupSuccessServer(server));
         dispatch(save());
     }).catch((e) => {
-        toastr.error('User', `There was a problem during deleting user (${user.name}) files: ${e}`);
+        toastr.error('User', compileMessage(`There was a problem during deleting user (${user.name}) files`, e));
         dispatch(setupFailureServer(server));
     });
 };
@@ -96,36 +97,65 @@ const setupFailure = user => ({
     },
 });
 
-export const setupClient = (server, user) => (dispatch) => {
+const setupClientPromise = (dispatch, server, user) => new Promise((resolve, reject) => {
     let ssh;
-    dispatch({ type: SERVER.SETUP, payload: { server } });
-    dispatch({ type: USER.SETUP, payload: { server, user } });
-
     try {
         ssh = new SSH(dispatch, server);
     } catch (e) {
-        dispatch(addLog('Client setup failure', LOG.LEVEL.ERROR, 'USER'));
-        dispatch(addLog(`${e}`, LOG.LEVEL.ERROR, 'SSH'));
-        toastr.error('User', 'Failure during client setup');
-        dispatch(setupFailureServer(server));
-        return dispatch(setupFailure(user));
+        dispatch(addLog(compileMessage(e), LOG.LEVEL.ERROR, 'SSH'));
+        return reject();
     }
 
     ssh.setupClient(user)
+            .then(resolve)
+            .catch(reject);
+});
+
+const setupClientPromiseResolve = (dispatch, server, user, changeServerProgress) => {
+    dispatch({ type: USER.SETUP, payload: { server, user } });
+    return setupClientPromise(dispatch, server, user)
         .then(() => {
-            dispatch(addLog('Client setup success', LOG.LEVEL.INFO, 'USER'));
-            toastr.success('User', 'Successful client setup');
-            dispatch(setupSuccessServer(server));
+            dispatch(addLog(`Client (${user.name}) setup success`, LOG.LEVEL.INFO, 'USER'));
+            toastr.success('User', `Successful client setup (${user.name})`);
+            if (changeServerProgress) {
+                dispatch(setupSuccessServer(server));
+            }
             dispatch(setupSuccess(user, server.id));
             return dispatch(save());
         })
         .catch(() => {
-            dispatch(addLog('Client setup failure', LOG.LEVEL.ERROR, 'USER'));
-            toastr.error('User', 'Failure during client setup');
-            dispatch(setupFailureServer(server));
+            dispatch(addLog(`Client (${user.name}) setup failure`, LOG.LEVEL.ERROR, 'USER'));
+            toastr.error('User', `Failure during client setup (${user.name})`);
+            if (changeServerProgress) {
+                dispatch(setupFailureServer(server));
+            }
             return dispatch(setupFailure(user));
         });
 };
+
+export const setupClient = (server, user) => (dispatch) => {
+    dispatch({ type: SERVER.SETUP, payload: { server } });
+    setupClientPromiseResolve(dispatch, server, user, true);
+};
+
+const setupAllClientsRecursive = (dispatch, server, users) => {
+    const user = users[0];
+    if (user) {
+        return setupClientPromiseResolve(dispatch, server, user, false)
+            .then(() => setupAllClientsRecursive(dispatch, server, users.splice(1)))
+            .catch(e => dispatch(addLog(compileMessage(`Failure during client (${user.name}) setup:`, e))));
+    }
+};
+
+export const setupAllClients = (server, users) => (dispatch) => {
+    dispatch({ type: SERVER.SETUP, payload: { server } });
+    setupAllClientsRecursive(dispatch, server, users).then(() => {
+        dispatch(setupSuccessServer(server));
+    }).catch(() => {
+        dispatch(setupFailureServer(server));
+    });
+};
+
 
 export const downloadConfiguration = (server, user) => (dispatch) => {
     dispatch({ type: SERVER.SETUP, payload: { server } });
@@ -135,7 +165,7 @@ export const downloadConfiguration = (server, user) => (dispatch) => {
         ssh = new SSH(dispatch, server);
     } catch (e) {
         dispatch(addLog('Download failure', LOG.LEVEL.ERROR, 'FILE'));
-        dispatch(addLog(`${e}`, LOG.LEVEL.ERROR, 'SSH'));
+        dispatch(addLog(compileMessage(e), LOG.LEVEL.ERROR, 'SSH'));
         toastr.error('User', 'Failure during file download');
         return dispatch(setupFailureServer(server));
     }
@@ -144,7 +174,8 @@ export const downloadConfiguration = (server, user) => (dispatch) => {
         toastr.success('Download', 'Successfully downloaded ovpn file');
         dispatch(setupSuccessServer(server));
     }).catch((e) => {
-        toastr.error('Download', `There was a problem during file download: ${e}`);
+        toastr.error('Download', compileMessage('There was a problem during file download', e));
+        dispatch(addLog(e, LOG.LEVEL.ERROR, 'FILE'));
         dispatch(setupFailureServer(server));
     });
 };

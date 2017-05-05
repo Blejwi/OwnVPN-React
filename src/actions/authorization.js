@@ -9,6 +9,7 @@ import Encryption from '../core/Encryption';
 import store from '../store/index';
 import { fetch } from './servers';
 import { fetch as fetchUsers } from './users';
+import {compileMessage} from "../utils/messages";
 
 export const save = (closeFileOnSuccess = false) => (dispatch) => {
     const state = store.getState();
@@ -40,7 +41,7 @@ export const save = (closeFileOnSuccess = false) => (dispatch) => {
             dispatch(push('/login'));
         }
     }).catch((e) => {
-        toastr.error('Authorization', `Problem during file save: ${e}`);
+        toastr.error('Authorization', compileMessage('Problem during file save', e));
         dispatch({
             type: AUTH.SAVE_FAILURE,
             payload: null,
@@ -77,7 +78,7 @@ export const load = (file, filename) => (dispatch) => {
             type: AUTH.LOAD_FAILURE,
             payload: null,
         });
-        toastr.error('Authorization', `Problem during file opening: ${e}`);
+        toastr.error('Authorization', compileMessage('Problem during file opening', e));
     }
 };
 
@@ -94,7 +95,7 @@ export const newFile = file => (dispatch) => {
         addRecent(file.filename);
         dispatch(push('/'));
     }).catch((e) => {
-        toastr.error('Authorization', `Problem during file creation: ${e}`);
+        toastr.error('Authorization', compileMessage('Problem during file creation', e));
     });
 };
 

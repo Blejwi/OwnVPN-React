@@ -430,19 +430,15 @@ export default class SSH {
             this.connection
                 .then(() => {
                     const filePath = `${clientOutputDir}/${id}.ovpn`;
-                    return this.runCommand(`ls ${filePath}`)
-                        .then(() => this.runCommand(`readlink -f ${filePath}`))
+                    return this.runCommand(`ls ${filePath}`, {}, false)
                         .then((response) => {
-                            const absoluteFilePath = response.stdout;
-                            const filename = remote.dialog.showSaveDialog(
-                                remote.getCurrentWindow(),
-                                {
-                                    defaultPath: `${id}.ovpn`,
-                                },
-                            );
-
-                            return this.ssh.getFile(filename, absoluteFilePath);
-                        }).catch(e => reject(e));
+                            if (response.code === 0) {
+                                return this.downloadConfigFile(filePath, id, reject);
+                            } else if (response.code === 2) {
+                                return reject('File does not exists');
+                            }
+                            return reject(response);
+                        });
                 })
                 .then(resolve)
                 .catch((e) => {
@@ -451,6 +447,20 @@ export default class SSH {
                     reject(e);
                 });
         });
+    }
+
+    downloadConfigFile(filePath, id, reject) {
+        return this.runCommand(`readlink -f ${filePath}`).then((response) => {
+            const absoluteFilePath = response.stdout;
+            const filename = remote.dialog.showSaveDialog(
+                remote.getCurrentWindow(),
+                {
+                    defaultPath: `${id}.ovpn`,
+                },
+            );
+
+            return this.ssh.getFile(filename, absoluteFilePath);
+        }).catch(e => reject(e));
     }
 }
 
