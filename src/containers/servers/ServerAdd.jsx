@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import ServerForm from '../../components/servers/ServerForm';
 import { add, preview } from '../../actions/servers';
-import { getPreview } from '../../selectors/servers';
+import { getFormSelector, getPreview } from '../../selectors/servers';
 import { DEFAULT_SERVER_CONFIG } from '../../constants/servers';
 import { validateServer } from '../../utils/validators';
 
@@ -23,6 +23,11 @@ const mapStateToProps = state => ({
             ...DEFAULT_SERVER_CONFIG,
         },
     },
+    serverMode: getFormSelector(state, 'config.server_mode'),
+    devMode: getFormSelector(state, 'config.dev'),
+    allowSubnet: getFormSelector(state, 'config.allow_subnet'),
+    assignIp: getFormSelector(state, 'config.assign_ip'),
+    redirectGateway: getFormSelector(state, 'config.redirect_gateway'),
     config: getPreview(state),
 });
 
