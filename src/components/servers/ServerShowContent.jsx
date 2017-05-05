@@ -22,16 +22,22 @@ export default (props) => {
         userSetupInProgress,
         handleSetup,
         handleSetupClient,
+        handleSSHTerminal,
         handleSetupAllClients,
         handleRemoveClient,
         handleDownloadConfiguration,
         users,
+        canOpenTerminal,
     } = props;
 
     return (
       <div>
         <Header as="h1">Server information</Header>
         <ServerStatus server={server} />
+        <br/>
+        {canOpenTerminal ? <Button primary onClick={() => handleSSHTerminal(server)}>
+              Open ssh terminal
+          </Button> : null}
         <Table definition>
           <TableBody>
             <ServerShowContentRow label={LABELS.NAME} value={server.name} />

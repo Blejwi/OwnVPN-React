@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { Map } from 'immutable';
 import { formValueSelector } from 'redux-form';
+import os from 'os';
 import { DEFAULT_SERVER_STATUS } from '../constants/servers';
 import ConfigurationGenerator from '../core/ConfigurationGenerator';
 
@@ -8,6 +9,7 @@ export const getServersMap = state => state.servers.list;
 export const getSetupInProgressMap = state => state.servers.setupInProgress;
 export const getServerStatusMap = state => state.servers.status;
 export const getServerFetchStatusMap = state => state.servers.statusFetch;
+export const canOpenTerminal = () => os.platform() === 'linux';
 
 export const getServerArray = createSelector(
     [getServersMap],

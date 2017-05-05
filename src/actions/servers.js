@@ -1,7 +1,9 @@
 import { push } from 'react-router-redux';
 import uuid from 'uuid';
+import os from 'os';
 import { toastr } from 'react-redux-toastr';
 import { swal } from 'react-redux-sweetalert';
+import { spawn } from 'child_process';
 import * as SERVER from '../constants/servers';
 import SSH from '../core/SSH';
 import { add as addLog } from '../actions/logs';
@@ -174,4 +176,23 @@ export const preview = config => (dispatch) => {
         text: `<pre>${config}</pre>`,
         html: true,
     }));
+};
+
+export const handleSSHTerminal = server => (dispatch) => {
+    if (os.platform() !== 'linux') {
+        return;
+    }
+
+    let sshCommand;
+    if (server.key) {
+        sshCommand = `ssh -i "${server.key}" ${server.username}@${server.host} -p ${server.port}`;
+    } else {
+        sshCommand = `ssh ${server.username}@${server.host} -p ${server.port}`;
+    }
+
+    try {
+        spawn('x-terminal-emulator', ['-e', 'bash', '-c', `${sshCommand};bash`]);
+    } catch (e) {
+        dispatch(addLog(compileMessage('Could not open ssh in terminal', e)));
+    }
 };
