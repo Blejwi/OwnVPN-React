@@ -81,10 +81,11 @@ export const remove = (server, user) => (dispatch) => {
     }));
 };
 
-const setupSuccess = user => ({
+const setupSuccess = (user, serverId) => ({
     type: USER.SETUP_SUCCESS,
     payload: {
         user,
+        serverId,
     },
 });
 
@@ -115,7 +116,8 @@ export const setupClient = (server, user) => (dispatch) => {
             dispatch(addLog('Client setup success', LOG.LEVEL.INFO, 'USER'));
             toastr.success('User', 'Successful client setup');
             dispatch(setupSuccessServer(server));
-            return dispatch(setupSuccess(user));
+            dispatch(setupSuccess(user, server.id));
+            return dispatch(save());
         })
         .catch(() => {
             dispatch(addLog('Client setup failure', LOG.LEVEL.ERROR, 'USER'));

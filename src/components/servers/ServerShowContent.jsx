@@ -19,6 +19,7 @@ export default (props) => {
     const {
         server,
         setupInProgress,
+        userSetupInProgress,
         handleSetup,
         handleSetupClient,
         handleRemoveClient,
@@ -131,6 +132,7 @@ export default (props) => {
                 handleRemoveClient={handleRemoveClient}
                 handleDownloadConfiguration={handleDownloadConfiguration}
                 setupInProgress={setupInProgress}
+                userSetupInProgress={userSetupInProgress}
         />
         <Link to={`/server/${server.id}/user/add`}><Button>Add User</Button></Link>
       </div>

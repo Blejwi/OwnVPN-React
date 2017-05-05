@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { TableRow, TableCell, Button, Popup } from 'semantic-ui-react';
+import { TableRow, TableCell, Button, Popup, Icon, Loader } from 'semantic-ui-react';
 
 export default (props) => {
     const {
@@ -11,6 +11,7 @@ export default (props) => {
         handleRemoveClient,
         handleDownloadConfiguration,
         setupInProgress,
+        userSetupInProgress,
     } = props;
 
     return (
@@ -18,6 +19,11 @@ export default (props) => {
         <TableCell>{index + 1}</TableCell>
         <TableCell>{user.name}</TableCell>
         <TableCell>{user.ipAddress}</TableCell>
+        <TableCell className="loaderContainer">
+          {userSetupInProgress ? <span><Loader active size="small" /></span> : user.ranSetup ?
+            <Icon name="checkmark" title="User was already setup" /> :
+            <Icon name="remove" title="User was not setup yet" />}
+        </TableCell>
         <TableCell>
           <Button.Group>
             <Popup
