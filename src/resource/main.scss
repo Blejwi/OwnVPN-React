@@ -50,3 +50,12 @@ body {
     border-color: #85b7d9;
   }
 }
+
+.sweet-alert-textarea {
+  width: 100%;
+  min-height: 200px;
+  border: 1px solid rgba(34,36,38,.15);
+  color: rgba(0,0,0,.87);
+  border-radius: .28571429rem;
+  box-shadow: 0 0 0 0 transparent inset;
+}

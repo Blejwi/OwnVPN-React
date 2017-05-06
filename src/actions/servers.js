@@ -8,6 +8,7 @@ import { add as addLog } from '../actions/logs';
 import * as LOG from '../constants/logs';
 import { save } from './authorization';
 import ConfigurationReader from '../core/ConfigurationReader';
+import ConfigurationGenerator from '../core/ConfigurationGenerator';
 
 export const fetch = servers => ({
     type: SERVER.FETCH,
@@ -176,6 +177,31 @@ export const preview = config => (dispatch) => {
     }));
 };
 
+const confirmPreview = (server, config) => (dispatch) => {
+    setTimeout(() => dispatch(swal({
+        title: 'Preview configuration',
+        text: `<pre>${ConfigurationGenerator.generate(config)}</pre>`,
+        html: true,
+        showCancelButton: true,
+        closeOnConfirm: true,
+        onCancel: () => dispatch(setupSuccess(server)),
+        allowOutsideClick: true,
+        onOutsideClick: () => dispatch(setupSuccess(server)),
+        onEscapeKey: () => dispatch(setupSuccess(server)),
+        onConfirm: () => {
+            dispatch({
+                type: SERVER.UPDATE_CONFIG,
+                payload: {
+                    server,
+                    config,
+                },
+            });
+            dispatch(setupSuccess(server));
+            return dispatch(save());
+        },
+    })), 200);
+};
+
 export const loadConfigFromServer = server => (dispatch) => {
     dispatch(swal({
         title: 'Config path',
@@ -203,20 +229,38 @@ export const loadConfigFromServer = server => (dispatch) => {
                 const configReader = new ConfigurationReader();
                 const config = configReader.read(response.stdout);
 
-                dispatch({
-                    type: SERVER.UPDATE_CONFIG,
-                    payload: {
-                        server,
-                        config,
-                    },
-                });
-                dispatch(setupSuccess(server));
-                return dispatch(save());
+                return dispatch(confirmPreview(server, config));
             }).catch((e) => {
                 dispatch(addLog(e, LOG.LEVEL.ERROR, 'SERVER'));
                 toastr.error('Server', 'Failure during getting file');
                 return dispatch(setupFailure(server));
             });
+        },
+        onCancel: () => {},
+        allowOutsideClick: true,
+        onOutsideClick: () => {},
+        onEscapeKey: () => {},
+    }));
+};
+
+export const loadConfigTextArea = server => (dispatch) => {
+    dispatch(swal({
+        title: 'Paste config',
+        text: '<textarea id=\'config-text\' class="sweet-alert-textarea"></textarea>',
+        html: true,
+        inputPlaceholder: 'Paste file here...',
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        showCancelButton: true,
+        closeOnConfirm: true,
+        onConfirm: () => {
+            const val = document.getElementById('config-text').value;
+            if (val) {
+                const configReader = new ConfigurationReader();
+                const config = configReader.read(val);
+
+                return dispatch(confirmPreview(server, config));
+            }
         },
         onCancel: () => {},
         allowOutsideClick: true,
