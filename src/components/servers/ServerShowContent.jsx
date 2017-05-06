@@ -36,7 +36,7 @@ export default (props) => {
         <ServerStatus server={server} />
         <br/>
         {canOpenTerminal ? <Button primary onClick={() => handleSSHTerminal(server)}>
-              Open ssh terminal
+              Open SSH terminal
           </Button> : null}
         <Table definition>
           <TableBody>

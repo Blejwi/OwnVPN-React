@@ -310,17 +310,21 @@ export default class SSH {
         });
     }
 
+    setCAVar(key, value) {
+        return `sed -i 's/${key}=".*"/${key}="${value || ''}"/' ${varsFile}`;
+    }
+
     configureCAVars() {
         const run = command => this.runCommand(command);
         const server = this.server;
 
-        return this.runCommand(`sed -i 's/KEY_NAME=".*"/KEY_NAME="server"/' ${varsFile}`)
-            .then(() => run(`sed -i 's/KEY_COUNTRY=".*"/KEY_COUNTRY="${server.country || ''}"/' ${varsFile}`))
-            .then(() => run(`sed -i 's/KEY_PROVINCE=".*"/KEY_PROVINCE="${server.province || ''}"/' ${varsFile}`))
-            .then(() => run(`sed -i 's/KEY_CITY=".*"/KEY_CITY="${server.city || ''}"/' ${varsFile}`))
-            .then(() => run(`sed -i 's/KEY_ORG=".*"/KEY_ORG="${server.org || ''}"/' ${varsFile}`))
-            .then(() => run(`sed -i 's/KEY_EMAIL=".*"/KEY_EMAIL="${server.email || ''}"/' ${varsFile}`))
-            .then(() => run(`sed -i 's/KEY_OU=".*"/KEY_OU="${server.ou || ''}"/' ${varsFile}`));
+        return this.runCommand(this.setCAVar('KEY_NAME', 'server'))
+            .then(() => run(this.setCAVar('KEY_COUNTRY', server.country)))
+            .then(() => run(this.setCAVar('KEY_PROVINCE', server.province)))
+            .then(() => run(this.setCAVar('KEY_CITY', server.city)))
+            .then(() => run(this.setCAVar('KEY_ORG', server.org)))
+            .then(() => run(this.setCAVar('KEY_EMAIL', server.email)))
+            .then(() => run(this.setCAVar('KEY_OU', server.ou)));
     }
 
     cleanAll() {
