@@ -449,5 +449,9 @@ export default class SSH {
                 });
         });
     }
+
+    catFile(path) {
+        return this.connection.then(() => this.runCommand(`cat ${path}`));
+    }
 }
 

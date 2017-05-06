@@ -1,6 +1,6 @@
 import { MODE } from '../constants/servers';
 
-class ConfigurationReader {
+export default class ConfigurationReader {
     readProperty(key) {
         const regex = new RegExp(`^${key} (.*)$`, 'm');
         const matches = regex.exec(this.content);

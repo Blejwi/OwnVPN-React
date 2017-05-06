@@ -24,6 +24,17 @@ export default (state = DEFAULT_STATE, { type, payload }) => {
                 payload.server.id = uuid.v1();
             }
             return { ...state, list: state.list.set(payload.server.id, payload.server) };
+
+        case SERVER.UPDATE_CONFIG:
+            return {
+                ...state,
+                list: state.list.update(payload.server.id, (item) => {
+                    return {
+                        ...item,
+                        config: payload.config,
+                    }
+                }),
+            };
         case SERVER.FETCH:
             return { ...state, list: Map(keyBy(payload, 'id')) };
         case SERVER.SETUP:

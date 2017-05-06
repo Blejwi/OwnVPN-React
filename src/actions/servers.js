@@ -7,6 +7,7 @@ import SSH from '../core/SSH';
 import { add as addLog } from '../actions/logs';
 import * as LOG from '../constants/logs';
 import { save } from './authorization';
+import ConfigurationReader from '../core/ConfigurationReader';
 
 export const fetch = servers => ({
     type: SERVER.FETCH,
@@ -172,5 +173,54 @@ export const preview = config => (dispatch) => {
         title: 'Preview configuration',
         text: `<pre>${config}</pre>`,
         html: true,
+    }));
+};
+
+export const loadConfigFromServer = server => (dispatch) => {
+    dispatch(swal({
+        title: 'Config path',
+        type: 'input',
+        inputValue: '/etc/openvpn/server.conf',
+        inputPlaceholder: 'Path...',
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        text: 'Type path of config file on server',
+        showCancelButton: true,
+        closeOnConfirm: true,
+        onConfirm: (path) => {
+            let ssh;
+            dispatch({ type: SERVER.SETUP, payload: { server } });
+
+            try {
+                ssh = new SSH(dispatch, server);
+            } catch (e) {
+                dispatch(addLog(e, LOG.LEVEL.ERROR, 'SSH'));
+                toastr.error('Server', 'Failure during getting file');
+                return dispatch(setupFailure(server));
+            }
+
+            ssh.catFile(path).then((response) => {
+                const configReader = new ConfigurationReader();
+                const config = configReader.read(response.stdout);
+
+                dispatch({
+                    type: SERVER.UPDATE_CONFIG,
+                    payload: {
+                        server,
+                        config,
+                    },
+                });
+                dispatch(setupSuccess(server));
+                return dispatch(save());
+            }).catch((e) => {
+                dispatch(addLog(e, LOG.LEVEL.ERROR, 'SERVER'));
+                toastr.error('Server', 'Failure during getting file');
+                return dispatch(setupFailure(server));
+            });
+        },
+        onCancel: () => {},
+        allowOutsideClick: true,
+        onOutsideClick: () => {},
+        onEscapeKey: () => {},
     }));
 };

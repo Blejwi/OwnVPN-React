@@ -23,6 +23,7 @@ export default (props) => {
         handleSetupClient,
         handleRemoveClient,
         handleDownloadConfiguration,
+        handleLoadConfigFromServer,
         users,
     } = props;
 
@@ -30,6 +31,10 @@ export default (props) => {
       <div>
         <Header as="h1">Server information</Header>
         <ServerStatus server={server} />
+        <br />
+        <Button primary onClick={() => handleLoadConfigFromServer(server)} loading={setupInProgress}>
+          Loan configuration from file
+        </Button>
         <Table definition>
           <TableBody>
             <ServerShowContentRow label={LABELS.NAME} value={server.name} />
