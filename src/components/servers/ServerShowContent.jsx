@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Header, Table, TableBody } from 'semantic-ui-react';
+import { Button, Dropdown, Header, Table, TableBody } from 'semantic-ui-react';
 import { Link } from 'react-router';
 import UserList from '../users/UserList';
 import UserWarning from '../users/UserWarning';
@@ -23,6 +23,8 @@ export default (props) => {
         handleSetupClient,
         handleRemoveClient,
         handleDownloadConfiguration,
+        handleLoadConfigFromServer,
+        handleLoadConfigTextArea,
         users,
     } = props;
 
@@ -30,6 +32,13 @@ export default (props) => {
       <div>
         <Header as="h1">Server information</Header>
         <ServerStatus server={server} />
+        <br />
+        <Dropdown floating button text="Load configuration" loading={setupInProgress}>
+          <Dropdown.Menu>
+            <Dropdown.Item disabled={setupInProgress} onClick={() => handleLoadConfigFromServer(server)}>From server file</Dropdown.Item>
+            <Dropdown.Item disabled={setupInProgress} onClick={() => handleLoadConfigTextArea(server)}>Paste configuration</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
         <Table definition>
           <TableBody>
             <ServerShowContentRow label={LABELS.NAME} value={server.name} />

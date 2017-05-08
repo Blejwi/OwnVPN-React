@@ -3,6 +3,7 @@ export const FETCH = 'SERVER_FETCH';
 export const ADD_SUCCESS = 'SERVER_ADD_SUCCESS';
 
 export const EDIT_SUCCESS = 'SERVER_EDIT_SUCCESS';
+export const UPDATE_CONFIG = 'SERVER_UPDATE_CONFIG';
 
 export const SETUP = 'SERVER_SETUP';
 export const SETUP_SUCCESS = 'SERVER_SETUP_SUCCESS';
