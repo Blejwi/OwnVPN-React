@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { canOpenTerminal, getServer, getSetupInProgress } from '../../selectors/servers';
 import { getSetupInProgressMap, getUsersArray } from '../../selectors/users';
-import { handleSSHTerminal, setup } from '../../actions/servers';
+import { handleSSHTerminal, loadConfigFromServer, loadConfigTextArea, setup } from '../../actions/servers';
 import ServerShowContent from '../../components/servers/ServerShowContent';
 import { setupClient, remove, downloadConfiguration, setupAllClients } from '../../actions/users';
 
@@ -25,6 +25,8 @@ const mapDispatchToProps = dispatch => ({
     handleSetupAllClients: (server, users) => dispatch(setupAllClients(server, users)),
     handleRemoveClient: (server, user) => dispatch(remove(server, user)),
     handleDownloadConfiguration: (server, user) => dispatch(downloadConfiguration(server, user)),
+    handleLoadConfigFromServer: server => dispatch(loadConfigFromServer(server)),
+    handleLoadConfigTextArea: server => dispatch(loadConfigTextArea(server)),
     handleSSHTerminal: server => dispatch(handleSSHTerminal(server)),
 });
 

@@ -466,5 +466,9 @@ export default class SSH {
             return this.ssh.getFile(filename, absoluteFilePath);
         }).catch(e => reject(e));
     }
+
+    catFile(path) {
+        return this.connection.then(() => this.runCommand(`cat ${path}`));
+    }
 }
 
