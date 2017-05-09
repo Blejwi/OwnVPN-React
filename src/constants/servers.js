@@ -78,7 +78,7 @@ export const DEFAULT_SERVER_STATUS = {
     },
 };
 
-export const UPDATE_SERVER_STATUS_CACHE_TIME = 60 * 1000;
+export const UPDATE_SERVER_STATUS_CACHE_TIME = 5 * 60 * 1000;
 
 export const MODE = {
     SERVER: 'server',

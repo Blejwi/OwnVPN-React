@@ -48,10 +48,26 @@ export default class SSH {
             this.config.password = server.password;
         }
 
+        this.sudoPasswordRequired = false;
+
         this.connection = this.ssh.connect(this.config)
-            .catch(e => Promise.reject(this.defaultError(e)));
+            .catch(e => Promise.reject(this.defaultError(e)))
+            .then(() => this.determineSudoPasswordNeeded());
 
         this.statistics = new SSHStats(this, dispatch);
+    }
+
+    determineSudoPasswordNeeded() {
+        return this.runCommand('sudo -n true').then(() => null).catch((e) => {
+            if (e.stderr.indexOf('password is required') !== -1) {
+                // Got sudo access but password is required
+                this.sudoPasswordRequired = true;
+                return this.runCommand(`echo "${this.config.password}" | sudo -S -v`)
+                    .then(() => null)
+                    .catch(error => Promise.reject(this.defaultError(error)));
+            }
+            return Promise.reject(this.defaultError(e));
+        });
     }
 
     log(msg, level) {
@@ -72,7 +88,7 @@ export default class SSH {
                     .then(() => this.uploadServerConfig())
                     .then(() => this.enableIpForward())
                     .then(() => this.configureFirewall())
-                    .then(() => this.startVpn())
+                    .then(() => this.restartVpn())
                     .then(() => this.setupClientInfrastructure())
                     .then(resolve)
                     .catch((e) => {
@@ -187,7 +203,10 @@ export default class SSH {
                         confirmButtonText: 'Yes',
                         cancelButtonText: 'No',
                         type: 'warning',
-                        text: 'Server keys already exists. Do you want to regenerate them?',
+                        text: 'Server keys already exists. ' +
+                        'Do you want to regenerate them? ' +
+                        'Please note that this action will erase all server and client keys from the server and ' +
+                        'this action cannot be undone',
                         showCancelButton: true,
                         closeOnConfirm: true,
                         onConfirm: () => resolve(response),
@@ -280,7 +299,13 @@ export default class SSH {
         const t0 = performance.now();
 
         this.log(`${command} has started`, LOG.LEVEL.INFO);
-        return this.ssh.execCommand(command, params)
+
+        let finalCommand = command;
+        if (this.sudoPasswordRequired && command.indexOf('sudo') !== -1) {
+            finalCommand = `echo "${this.config.password}" | sudo -S -v && ${command}`
+        }
+
+        return this.ssh.execCommand(finalCommand, params)
             .then(response => ({ ...response, command, command_time: logTime(t0) }))
             .catch(e => this.defaultError(e))
             .then(response => this.defaultSuccess(response, errorOnNonZero));
@@ -325,6 +350,16 @@ export default class SSH {
             .then(() => run(this.setCAVar('KEY_ORG', server.org)))
             .then(() => run(this.setCAVar('KEY_EMAIL', server.email)))
             .then(() => run(this.setCAVar('KEY_OU', server.ou)));
+    }
+
+    setCaCommonNameVar() {
+        return this.runCommand(`cat ${varsFile}`).then((response) => {
+            if (response.stdout.match(/^export KEY_CN=".*"/gm)) {
+                return this.runCommand(this.setCAVar('KEY_CN', 'server'));
+            } else {
+                return this.runCommand(`echo 'export KEY_CN="server"' >> ${varsFile}`);
+            }
+        });
     }
 
     cleanAll() {
