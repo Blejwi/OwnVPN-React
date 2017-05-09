@@ -10,6 +10,10 @@ const UserAdd = props => <UserForm {...props} />;
 const mapStateToProps = (state, ownProps) => ({
     initialValues: {
         serverId: ownProps.params.id,
+        config: {
+            muteReplayWarnings: '0',
+            httpProxyRetry: '0',
+        }
     },
 });
 

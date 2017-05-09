@@ -19,26 +19,45 @@ export default (props) => {
     const {
         server,
         setupInProgress,
+        userSetupInProgress,
         handleSetup,
         handleSetupClient,
+        handleSSHTerminal,
+        handleSetupAllClients,
         handleRemoveClient,
         handleDownloadConfiguration,
         handleLoadConfigFromServer,
         handleLoadConfigTextArea,
         users,
+        canOpenTerminal,
     } = props;
 
     return (
       <div>
         <Header as="h1">Server information</Header>
         <ServerStatus server={server} />
+
         <br />
+        {canOpenTerminal ? <Button primary onClick={() => handleSSHTerminal(server)}>
+              Open SSH terminal
+          </Button> : null}
         <Dropdown floating button text="Load configuration" loading={setupInProgress}>
           <Dropdown.Menu>
-            <Dropdown.Item disabled={setupInProgress} onClick={() => handleLoadConfigFromServer(server)}>From server file</Dropdown.Item>
-            <Dropdown.Item disabled={setupInProgress} onClick={() => handleLoadConfigTextArea(server)}>Paste configuration</Dropdown.Item>
+            <Dropdown.Item
+                disabled={setupInProgress}
+                onClick={() => handleLoadConfigFromServer(server)}
+            >
+                From server file
+            </Dropdown.Item>
+            <Dropdown.Item
+                disabled={setupInProgress}
+                onClick={() => handleLoadConfigTextArea(server)}
+            >
+                Paste configuration
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
+
         <Table definition>
           <TableBody>
             <ServerShowContentRow label={LABELS.NAME} value={server.name} />
@@ -140,7 +159,10 @@ export default (props) => {
                 handleRemoveClient={handleRemoveClient}
                 handleDownloadConfiguration={handleDownloadConfiguration}
                 setupInProgress={setupInProgress}
+                userSetupInProgress={userSetupInProgress}
+                handleSetupAllClients={handleSetupAllClients}
         />
+        <br />
         <Link to={`/server/${server.id}/user/add`}><Button>Add User</Button></Link>
       </div>
     );

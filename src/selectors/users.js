@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
 import { Map } from 'immutable';
 
+export const getSetupInProgressMap = state => state.users.setupInProgress;
+
 export const getUsersMap = createSelector([
     state => state.users.list,
     (_, { params }) => params.id,

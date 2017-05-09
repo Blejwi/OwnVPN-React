@@ -1,7 +1,9 @@
 import { push } from 'react-router-redux';
 import uuid from 'uuid';
+import os from 'os';
 import { toastr } from 'react-redux-toastr';
 import { swal } from 'react-redux-sweetalert';
+import { spawn } from 'child_process';
 import * as SERVER from '../constants/servers';
 import SSH from '../core/SSH';
 import { add as addLog } from '../actions/logs';
@@ -9,6 +11,7 @@ import * as LOG from '../constants/logs';
 import { save } from './authorization';
 import ConfigurationReader from '../core/ConfigurationReader';
 import ConfigurationGenerator from '../core/ConfigurationGenerator';
+import { compileMessage } from '../utils/messages';
 
 export const fetch = servers => ({
     type: SERVER.FETCH,
@@ -68,7 +71,7 @@ export const setup = server => (dispatch) => {
         ssh = new SSH(dispatch, server);
     } catch (e) {
         dispatch(addLog('Server setup failure', LOG.LEVEL.ERROR, 'SERVER'));
-        dispatch(addLog(`${e}`, LOG.LEVEL.ERROR, 'SSH'));
+        dispatch(addLog(compileMessage(e), LOG.LEVEL.ERROR, 'SSH'));
         toastr.error('Server', 'Failure during server setup');
         return dispatch(setupFailure(server));
     }
@@ -120,7 +123,7 @@ export const updateStatus = server => (dispatch) => {
         payload.server.level = SERVER.STATUS.OK;
     } catch (e) {
         dispatch(addLog(`Error getting server status (${server.name})`, LOG.LEVEL.ERROR, 'SERVER'));
-        dispatch(addLog(`${e}`, LOG.LEVEL.ERROR, 'SERVER'));
+        dispatch(addLog(compileMessage(e), LOG.LEVEL.ERROR, 'SERVER'));
         return dispatch({
             type: SERVER.STATUS_CHANGE,
             payload,
@@ -130,7 +133,7 @@ export const updateStatus = server => (dispatch) => {
     ssh.statistics.getMachineStatus().then((details) => {
         payload.server.details = details;
     }).catch((e) => {
-        payload.server.details = `Could not get details, ${e}`;
+        payload.server.details = compileMessage('Could not get details', e);
     }).then(() => ssh.statistics.getVpnStatus().then((data) => {
         payload = {
             ...payload,
@@ -144,7 +147,7 @@ export const updateStatus = server => (dispatch) => {
             server: {
                 level: SERVER.STATUS.ERROR,
                 description: 'Error during VPN status check',
-                details: `${e}`,
+                details: compileMessage(e),
             },
         };
     }))
@@ -161,7 +164,7 @@ export const updateStatus = server => (dispatch) => {
                 users: {
                     level: SERVER.STATUS.ERROR,
                     description: 'Error during getting VPN statistics',
-                    details: `${e}`,
+                    details: compileMessage(e),
                 },
             };
         }))
@@ -175,6 +178,25 @@ export const preview = config => (dispatch) => {
         text: `<pre>${config}</pre>`,
         html: true,
     }));
+};
+
+export const handleSSHTerminal = server => (dispatch) => {
+    if (os.platform() !== 'linux') {
+        return;
+    }
+
+    let sshCommand;
+    if (server.key) {
+        sshCommand = `ssh -i "${server.key}" ${server.username}@${server.host} -p ${server.port}`;
+    } else {
+        sshCommand = `ssh ${server.username}@${server.host} -p ${server.port}`;
+    }
+
+    try {
+        spawn('x-terminal-emulator', ['-e', 'bash', '-c', `${sshCommand};bash`]);
+    } catch (e) {
+        dispatch(addLog(compileMessage('Could not open ssh in terminal', e)));
+    }
 };
 
 const confirmPreview = (server, config) => (dispatch) => {

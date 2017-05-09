@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { TableRow, TableCell, Button, Popup } from 'semantic-ui-react';
+import { TableRow, TableCell, Button, Popup, Icon, Loader } from 'semantic-ui-react';
 
 export default (props) => {
     const {
@@ -11,13 +11,23 @@ export default (props) => {
         handleRemoveClient,
         handleDownloadConfiguration,
         setupInProgress,
+        userSetupInProgress,
     } = props;
 
     return (
       <TableRow>
-        <TableCell>{index + 1}</TableCell>
+        <TableCell>
+          <Popup hoverable trigger={<span>{index + 1}</span>}>
+            <Popup.Content>{`User id: ${user.id}`}</Popup.Content>
+          </Popup>
+        </TableCell>
         <TableCell>{user.name}</TableCell>
         <TableCell>{user.ipAddress}</TableCell>
+        <TableCell className="loaderContainer">
+          {userSetupInProgress ? <span><Loader active size="small" /></span> : user.ranSetup ?
+            <Icon name="checkmark" title="User was already setup" /> :
+            <Icon name="remove" title="User was not setup yet" />}
+        </TableCell>
         <TableCell>
           <Button.Group>
             <Popup
@@ -34,13 +44,13 @@ export default (props) => {
             />
             <Popup
                         trigger={(
-                          <Link to={`/server/${server.id}/user/edit/${user.id}`}>
-                            <Button
-                                    icon="write"
-                                    disabled={setupInProgress}
-                                    loading={setupInProgress}
-                            />
-                          </Link>
+                          <Button
+                                as={Link}
+                                icon="write"
+                                disabled={setupInProgress}
+                                loading={setupInProgress}
+                                to={`/server/${server.id}/user/edit/${user.id}`}
+                          />
                         )}
                         content={`Edit ${user.name}`}
             />
@@ -55,7 +65,7 @@ export default (props) => {
                         )}
                         content={`Remove ${user.name}`}
             />
-            <Popup
+            {user.ranSetup ? <Popup
                         trigger={(
                           <Button
                                 icon="download"
@@ -65,7 +75,7 @@ export default (props) => {
                           />
                         )}
                         content={`Download configuration for ${user.name}`}
-            />
+            /> : null}
           </Button.Group>
         </TableCell>
       </TableRow>

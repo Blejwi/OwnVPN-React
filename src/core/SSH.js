@@ -24,7 +24,6 @@ const checkKeys = `cd ${certDirectory}/keys && ls ${allKeys}`;
 
 const generateClientKey = `${certDirectory}/pkitool --batch`;
 const confFile = '/etc/openvpn/server.conf';
-const clientConfBaseFile = '~/client-configs/base.conf';
 const clientKeysDir = '~/openvpn-ca/keys';
 const clientOutputDir = '~/client-configs/files';
 const ccdDir = '/etc/openvpn/ccd'; // it should be able to reassigned by server configuration
@@ -89,8 +88,9 @@ export default class SSH {
         this.log('Starting setup_client', LOG.LEVEL.INFO);
 
         return new Promise((resolve, reject) => {
+            const checkUserFilesCommand = `ls ${clientKeysDir}/${id}.key && ls ${clientKeysDir}/${id}.crt && ls ${clientKeysDir}/${id}.csr`;
             this.connection
-                .then(() => this.runCommand(`ls ${clientKeysDir}/${id}.key`, {}, false)
+                .then(() => this.runCommand(checkUserFilesCommand, {}, false)
                     .then((response) => {
                         if (response.code === 0) {
                             // Cert with given name exists
@@ -117,9 +117,12 @@ export default class SSH {
                                 .then(() => this.bindClientIp(id, ipAddress)))
                             // eslint-disable-next-line arrow-body-style
                             .catch(() => {
-                                return this.shouldRegenerateOvpn(response)
-                                    .then(() => this.generateClientConfigFiles(id, config))
-                                    .catch(() => {});
+                                // eslint-disable-next-line arrow-body-style
+                                return this.runCommand(`ls ${clientOutputDir}/${id}.ovpn`).then(() => {
+                                    return this.shouldRegenerateOvpn(response)
+                                        .then(() => this.generateClientConfigFiles(id, config))
+                                        .catch(() => {});
+                                }).catch(() => {});
                             });
                         } else if (response.code === 2) {
                             // Cert not exist
@@ -307,17 +310,21 @@ export default class SSH {
         });
     }
 
+    setCAVar(key, value) {
+        return `sed -i 's/${key}=".*"/${key}="${value || ''}"/' ${varsFile}`;
+    }
+
     configureCAVars() {
         const run = command => this.runCommand(command);
         const server = this.server;
 
-        return this.runCommand(`sed -i 's/KEY_NAME=".*"/KEY_NAME="server"/' ${varsFile}`)
-            .then(() => run(`sed -i 's/KEY_COUNTRY=".*"/KEY_COUNTRY="${server.country}"/' ${varsFile}`))
-            .then(() => run(`sed -i 's/KEY_PROVINCE=".*"/KEY_PROVINCE="${server.province}"/' ${varsFile}`))
-            .then(() => run(`sed -i 's/KEY_CITY=".*"/KEY_CITY="${server.city}"/' ${varsFile}`))
-            .then(() => run(`sed -i 's/KEY_ORG=".*"/KEY_ORG="${server.org}"/' ${varsFile}`))
-            .then(() => run(`sed -i 's/KEY_EMAIL=".*"/KEY_EMAIL="${server.email}"/' ${varsFile}`))
-            .then(() => run(`sed -i 's/KEY_OU=".*"/KEY_OU="${server.ou}"/' ${varsFile}`));
+        return this.runCommand(this.setCAVar('KEY_NAME', 'server'))
+            .then(() => run(this.setCAVar('KEY_COUNTRY', server.country)))
+            .then(() => run(this.setCAVar('KEY_PROVINCE', server.province)))
+            .then(() => run(this.setCAVar('KEY_CITY', server.city)))
+            .then(() => run(this.setCAVar('KEY_ORG', server.org)))
+            .then(() => run(this.setCAVar('KEY_EMAIL', server.email)))
+            .then(() => run(this.setCAVar('KEY_OU', server.ou)));
     }
 
     cleanAll() {
@@ -358,7 +365,7 @@ export default class SSH {
 
     enableIpForward() {
         return this.runCommand(
-// eslint-disable-next-line no-useless-escape
+            // eslint-disable-next-line no-useless-escape
             'sudo sed -i -r \'s/#?net\.ipv4\.ip_forward\=.*/net\.ipv4\.ip_forward=1/\' /etc/sysctl.conf && sudo sysctl -p',
         );
     }
@@ -427,19 +434,15 @@ export default class SSH {
             this.connection
                 .then(() => {
                     const filePath = `${clientOutputDir}/${id}.ovpn`;
-                    return this.runCommand(`ls ${filePath}`)
-                        .then(() => this.runCommand(`readlink -f ${filePath}`))
+                    return this.runCommand(`ls ${filePath}`, {}, false)
                         .then((response) => {
-                            const absoluteFilePath = response.stdout;
-                            const filename = remote.dialog.showSaveDialog(
-                                remote.getCurrentWindow(),
-                                {
-                                    defaultPath: `${id}.ovpn`,
-                                },
-                            );
-
-                            return this.ssh.getFile(filename, absoluteFilePath);
-                        }).catch(e => reject(e));
+                            if (response.code === 0) {
+                                return this.downloadConfigFile(filePath, id, reject);
+                            } else if (response.code === 2) {
+                                return reject('File does not exists');
+                            }
+                            return reject(response);
+                        });
                 })
                 .then(resolve)
                 .catch((e) => {
@@ -448,6 +451,20 @@ export default class SSH {
                     reject(e);
                 });
         });
+    }
+
+    downloadConfigFile(filePath, id, reject) {
+        return this.runCommand(`readlink -f ${filePath}`).then((response) => {
+            const absoluteFilePath = response.stdout;
+            const filename = remote.dialog.showSaveDialog(
+                remote.getCurrentWindow(),
+                {
+                    defaultPath: `${id}.ovpn`,
+                },
+            );
+
+            return this.ssh.getFile(filename, absoluteFilePath);
+        }).catch(e => reject(e));
     }
 
     catFile(path) {
