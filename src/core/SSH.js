@@ -505,5 +505,9 @@ export default class SSH {
     catFile(path) {
         return this.connection.then(() => this.runCommand(`cat ${path}`));
     }
+
+    reboot() {
+        return this.connection.then(() => this.runCommand('sudo reboot'));
+    }
 }
 
