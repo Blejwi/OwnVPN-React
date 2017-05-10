@@ -10,7 +10,9 @@ export default class SSHStats {
     getVpnStatus() {
         return new Promise((resolve, reject) => {
             this.ssh.connection
-                .then(() => this.isActive(resolve, reject)).catch(reject);
+                .then(() => this.isInstalled(resolve, reject))
+                .then(() => this.isActive(resolve, reject))
+                .catch(reject);
         });
     }
 
@@ -132,6 +134,20 @@ export default class SSHStats {
                     details: r.stdout,
                 });
             }).catch(reject);
+    }
+
+    isInstalled(resolve, reject) {
+        return this.ssh.runCommand('openvpn', {}, false)
+            .then((r) => {
+                if (r.code === 127) {
+                    return this.resolveFunction(
+                        resolve, reject, STATUS.ERROR, 'Openvpn is not installed',
+                    );
+                } else if (r.code === 1) {
+                    return null;
+                }
+            })
+            .catch(reject);
     }
 
     isActive(resolve, reject) {

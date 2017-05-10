@@ -124,6 +124,8 @@ export default class ConfigurationGenerator {
             lines.push('explicit-exit-notify 1');
         }
 
+        lines.push('status openvpn-status.log');
+
         return lines.join('\n');
     }
 

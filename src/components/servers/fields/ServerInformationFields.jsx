@@ -26,12 +26,6 @@ export default ({ change }) => (
     />
     <Field
             component={Input}
-            name="password"
-            label={LABELS.PASSWORD}
-            type="password"
-    />
-    <Field
-            component={Input}
             name="port"
             label={LABELS.PORT}
             type="number"
@@ -47,6 +41,12 @@ export default ({ change }) => (
             label={LABELS.USERNAME}
             required
             validate={[required]}
+    />
+    <Field
+      component={Input}
+      name="password"
+      label={LABELS.PASSWORD}
+      type="password"
     />
     <Field
             component={File}
