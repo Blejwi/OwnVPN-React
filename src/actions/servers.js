@@ -4,6 +4,7 @@ import os from 'os';
 import { toastr } from 'react-redux-toastr';
 import { swal } from 'react-redux-sweetalert';
 import { spawn } from 'child_process';
+import { capitalize, lowerCase } from 'lodash';
 import * as SERVER from '../constants/servers';
 import SSH from '../core/SSH';
 import { add as addLog } from '../actions/logs';
@@ -315,7 +316,7 @@ const runAction = (action, server) => (dispatch) => {
         return Promise.reject(null);
     }
 
-    return ssh[action]();
+    return ssh.runAction(action);
 };
 
 export const rebootServer = server => (dispatch) => {
@@ -331,4 +332,23 @@ export const rebootServer = server => (dispatch) => {
         }
         return dispatch(actionDefaultError(server, 'reboot', e));
     });
+};
+
+export const vpnAction = (server, action) => (dispatch) => {
+    const successMessage = `${capitalize(lowerCase(action))} command sent`;
+
+    dispatch(runAction(action, server)).then(() => {
+        toastr.success('Server', successMessage);
+        dispatch(setupSuccess(server));
+    }).catch(e => dispatch(actionDefaultError(server, action, e)));
+};
+
+export const reuploadConfig = server => (dispatch) => {
+    const successMessage = 'Config successfully uploaded and service restarted';
+    const action = 'uploadConfig';
+
+    dispatch(runAction(action, server)).then(() => {
+        toastr.success('Server', successMessage);
+        dispatch(setupSuccess(server));
+    }).catch(e => dispatch(actionDefaultError(server, action, e)));
 };

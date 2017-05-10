@@ -100,6 +100,21 @@ export default class SSH {
         });
     }
 
+    uploadConfig() {
+        return new Promise((resolve, reject) => {
+            this.connection
+                .then(() => this.uploadServerConfig()
+                    .then(() => this.restartVpn())
+                    .then(resolve)
+                    .catch((e) => {
+                        this.log('Something failed...', LOG.LEVEL.ERROR);
+                        this.log(e, LOG.LEVEL.ERROR);
+                        reject(e);
+                    }))
+                .catch(e => reject(e));
+        });
+    }
+
     setupClient({ id, ipAddress, config }) {
         this.log('Starting setup_client', LOG.LEVEL.INFO);
 
@@ -431,17 +446,6 @@ export default class SSH {
             .then(() => this.runCommand('sudo ufw disable && sudo ufw --force enable')); // force is needed for non-interactive mode
     }
 
-    startVpn() {
-        return this.runCommand('sudo systemctl start openvpn@server')
-            .then(() => this.runCommand('sudo systemctl status openvpn@server'))
-            .then(() => this.runCommand('sudo systemctl enable openvpn@server'));
-    }
-
-    restartVpn() {
-        return this.runCommand('sudo systemctl restart openvpn@server')
-            .then(() => this.runCommand('sudo systemctl status openvpn@server'));
-    }
-
     setupClientInfrastructure() {
         return this.runCommand(
             'mkdir -p ~/client-configs/files && chmod 700 ~/client-configs/files');
@@ -507,7 +511,26 @@ export default class SSH {
     }
 
     reboot() {
-        return this.connection.then(() => this.runCommand('sudo reboot'));
+        return this.runCommand('sudo reboot');
+    }
+
+    startVpn() {
+        return this.runCommand('sudo systemctl start openvpn@server')
+            .then(() => this.runCommand('sudo systemctl status openvpn@server'))
+            .then(() => this.runCommand('sudo systemctl enable openvpn@server'));
+    }
+
+    stopVpn() {
+        return this.runCommand('sudo systemctl stop openvpn@server');
+    }
+
+    restartVpn() {
+        return this.runCommand('sudo systemctl restart openvpn@server')
+            .then(() => this.runCommand('sudo systemctl status openvpn@server'));
+    }
+
+    runAction(action) {
+        return this.connection.then(() => this[action]());
     }
 }
 
