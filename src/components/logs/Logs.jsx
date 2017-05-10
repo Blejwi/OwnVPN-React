@@ -21,8 +21,8 @@ export default ({ logs, collapsed, handleCollapse, handleClear }) => (
     />
     <pre className={(collapsed ? 'collapsed' : '')}>
       <List divided inverted>
-        {map(logs, (data, key) => (
-          <LogItem key={key} {...data} />
+        {map(logs, data => (
+          <LogItem key={data.id} {...data} />
         ))}
       </List>
     </pre>

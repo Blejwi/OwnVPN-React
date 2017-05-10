@@ -1,5 +1,6 @@
 import { isObject } from 'lodash';
 import moment from 'moment';
+import uuid from 'uuid';
 import * as LOG from '../constants/logs';
 
 export const add = (inputMessage, level, module = 'APP') => {
@@ -31,7 +32,13 @@ export const add = (inputMessage, level, module = 'APP') => {
 
     return {
         type: LOG.ADD,
-        payload: { message, level, module, time },
+        payload: {
+            id: uuid.v1(),
+            message,
+            level,
+            module,
+            time,
+        },
     };
 };
 
