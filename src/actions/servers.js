@@ -4,6 +4,7 @@ import os from 'os';
 import { toastr } from 'react-redux-toastr';
 import { swal } from 'react-redux-sweetalert';
 import { spawn } from 'child_process';
+import { capitalize, lowerCase } from 'lodash';
 import * as SERVER from '../constants/servers';
 import SSH from '../core/SSH';
 import { add as addLog } from '../actions/logs';
@@ -289,4 +290,65 @@ export const loadConfigTextArea = server => (dispatch) => {
         onOutsideClick: () => {},
         onEscapeKey: () => {},
     }));
+};
+
+// Server actions
+
+
+const actionDefaultError = (server, action, error) => (dispatch) => {
+    const message = `Failure during ${action} action`;
+    dispatch(addLog(message, LOG.LEVEL.ERROR, 'SERVER'));
+    if (error) {
+        dispatch(addLog(compileMessage(error), LOG.LEVEL.ERROR, 'SSH'));
+    }
+    toastr.error('Server', message);
+    return dispatch(setupFailure(server));
+};
+
+const runAction = (action, server) => (dispatch) => {
+    let ssh;
+    dispatch({ type: SERVER.SETUP, payload: { server } });
+
+    try {
+        ssh = new SSH(dispatch, server);
+    } catch (e) {
+        dispatch(actionDefaultError(server, action, e));
+        return Promise.reject(null);
+    }
+
+    return ssh.runAction(action);
+};
+
+export const rebootServer = server => (dispatch) => {
+    const action = 'reboot';
+
+    dispatch(runAction(action, server)).then(() => {
+        toastr.success('Server', 'Reboot command sent');
+        dispatch(setupSuccess(server));
+    }).catch((e) => {
+        if (e.stderr && e.stderr.indexOf('password for') !== -1) {
+            toastr.success('Server', 'Reboot command sent');
+            return dispatch(setupSuccess(server));
+        }
+        return dispatch(actionDefaultError(server, 'reboot', e));
+    });
+};
+
+export const vpnAction = (server, action) => (dispatch) => {
+    const successMessage = `${capitalize(lowerCase(action))} command sent`;
+
+    dispatch(runAction(action, server)).then(() => {
+        toastr.success('Server', successMessage);
+        dispatch(setupSuccess(server));
+    }).catch(e => dispatch(actionDefaultError(server, action, e)));
+};
+
+export const reuploadConfig = server => (dispatch) => {
+    const successMessage = 'Config successfully uploaded and service restarted';
+    const action = 'uploadConfig';
+
+    dispatch(runAction(action, server)).then(() => {
+        toastr.success('Server', successMessage);
+        dispatch(setupSuccess(server));
+    }).catch(e => dispatch(actionDefaultError(server, action, e)));
 };

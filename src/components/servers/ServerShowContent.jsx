@@ -6,6 +6,7 @@ import UserWarning from '../users/UserWarning';
 import ServerShowContentRow from './ServerShowContentRow';
 import ServerStatus from '../../containers/servers/status/ServerStatus';
 import LABELS from '../../constants/labels';
+import ServerActions from '../../containers/servers/ServerActions';
 
 const showBoolean = (value) => {
     if (value === '1') {
@@ -57,6 +58,7 @@ export default (props) => {
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
+        <ServerActions server={server} setupInProgress={setupInProgress} />
 
         <Table definition>
           <TableBody>
@@ -146,7 +148,12 @@ export default (props) => {
         </Table>
         <div>
           <Link to={`/server/edit/${server.id}`}><Button>Edit</Button></Link>
-          <Button primary disabled={setupInProgress} onClick={() => handleSetup(server)} loading={setupInProgress}>
+          <Button
+              primary
+              disabled={setupInProgress}
+              onClick={() => handleSetup(server)}
+              loading={setupInProgress}
+          >
             Setup
           </Button>
         </div>
