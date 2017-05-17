@@ -5,11 +5,11 @@ import { swal } from 'react-redux-sweetalert';
 import { filter, uniq, slice } from 'lodash';
 import settings from 'electron-settings';
 import * as AUTH from '../constants/authorization';
-import Encryption from '../core/Encryption';
+import Encryption, { deleteInstance } from '../core/Encryption';
 import store from '../store/index';
 import { fetch } from './servers';
 import { fetch as fetchUsers } from './users';
-import {compileMessage} from "../utils/messages";
+import { compileMessage } from '../utils/messages';
 
 export const save = (closeFileOnSuccess = false) => (dispatch) => {
     const state = store.getState();
@@ -161,4 +161,8 @@ export const fetchRecent = () => (dispatch) => {
 
 export const closeFile = () => (dispatch) => {
     dispatch(save(true));
+    dispatch({
+        type: AUTH.CLEAR_STATE,
+    });
+    deleteInstance();
 };

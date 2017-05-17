@@ -2,6 +2,7 @@ import { Map } from 'immutable';
 import uuid from 'uuid';
 import { omit, isUndefined, forIn } from 'lodash';
 import * as USER from '../constants/users';
+import * as AUTH from '../constants/authorization';
 
 const DEFAULT_STATE = {
     list: Map(),
@@ -64,6 +65,10 @@ export default (state = DEFAULT_STATE, { type, payload }) => {
             });
 
             return { ...state, list: newList };
+        case AUTH.CLEAR_STATE:
+            return {
+                ...DEFAULT_STATE,
+            };
         default:
             return state;
     }

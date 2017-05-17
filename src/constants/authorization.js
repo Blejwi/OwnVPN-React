@@ -6,3 +6,4 @@ export const NEW = 'AUTH_NEW';
 export const OPEN = 'AUTH_OPEN';
 export const CLOSE = 'AUTH_CLOSE';
 export const FETCH_RECENT = 'AUTH_FETCH_RECENT';
+export const CLEAR_STATE = 'AUTH_CLEAR_STATE';

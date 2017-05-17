@@ -3,6 +3,11 @@ import CryptoJS from 'crypto-js';
 import $q from 'q';
 
 let instance = null;
+
+export const deleteInstance = () => {
+    instance = null;
+};
+
 export default class Encryption {
     constructor(filepath = null, encryptionKey = null, runChecks = true) {
         if (instance) {

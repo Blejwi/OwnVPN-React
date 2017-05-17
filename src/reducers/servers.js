@@ -3,6 +3,7 @@ import uuid from 'uuid';
 import { isUndefined, keyBy, omit } from 'lodash';
 import { Map } from 'immutable';
 import * as SERVER from '../constants/servers';
+import * as AUTH from '../constants/authorization';
 
 const DEFAULT_STATE = {
     list: Map(),
@@ -59,6 +60,10 @@ export default (state = DEFAULT_STATE, { type, payload }) => {
             return {
                 ...state,
                 statusFetch: state.statusFetch.set(payload.serverId, true),
+            };
+        case AUTH.CLEAR_STATE:
+            return {
+                ...DEFAULT_STATE,
             };
         default:
             return state;
