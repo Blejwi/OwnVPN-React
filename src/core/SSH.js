@@ -506,6 +506,10 @@ export default class SSH {
         }).catch(e => reject(e));
     }
 
+    getConfigFromServer() {
+        return this.catFile(confFile);
+    }
+
     catFile(path) {
         return this.connection.then(() => this.runCommand(`cat ${path}`));
     }
