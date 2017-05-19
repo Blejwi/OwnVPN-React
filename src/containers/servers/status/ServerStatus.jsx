@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Message, Button, Icon } from 'semantic-ui-react';
+import { Card, Message, Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { loadConfigFromServer, reuploadConfig, updateStatus } from '../../../actions/servers';
 import { getServerStatus, getServerFetchStatus, getSetupInProgress } from '../../../selectors/servers';
@@ -56,8 +56,8 @@ class ServerStatus extends React.Component {
     render() {
         const configDifferent = this.props.serverStatus.config && this.props.serverStatus.config.different;
         return (
-          <div>
-            <Card.Group className="server-status" itemsPerRow="3">
+          <div className="server-status">
+            <Card.Group itemsPerRow="3">
               <ServerStatusItem
                     name="Server status"
                     statusFetchInProgress={this.props.serverStatusFetchInProgress}
@@ -86,20 +86,21 @@ class ServerStatus extends React.Component {
                 <div>
                     There is config difference between saved config and config file on server.
                 </div>
-                <Button
-                    disabled={this.props.setupInProgress}
-                    onClick={() => this.props.handleLoadConfigFromServer(this.props.server)}
-                >
-                    Load config from server
-                </Button>
-                <Button
-                    disabled={this.props.setupInProgress}
-                    onClick={() => this.props.handleReuploadConfig(this.props.server)}
-                >
-                    Upload config to server
-                </Button>
+                <div className="action-buttons">
+                  <Button
+                      disabled={this.props.setupInProgress}
+                      onClick={() => this.props.handleLoadConfigFromServer(this.props.server)}
+                  >
+                      Load config from server
+                  </Button>
+                  <Button
+                      disabled={this.props.setupInProgress}
+                      onClick={() => this.props.handleReuploadConfig(this.props.server)}
+                  >
+                      Upload config to server
+                  </Button>
+                </div>
               </Message.Content>
-
             </Message> : null}
           </div>
         );
