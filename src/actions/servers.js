@@ -5,6 +5,7 @@ import { toastr } from 'react-redux-toastr';
 import { swal } from 'react-redux-sweetalert';
 import { spawn } from 'child_process';
 import { capitalize, lowerCase } from 'lodash';
+import store from '../store/index';
 import * as SERVER from '../constants/servers';
 import SSH from '../core/SSH';
 import { add as addLog } from '../actions/logs';
@@ -13,6 +14,7 @@ import { save } from './authorization';
 import ConfigurationReader from '../core/ConfigurationReader';
 import ConfigurationGenerator from '../core/ConfigurationGenerator';
 import { compileMessage } from '../utils/messages';
+import { getServer } from '../selectors/servers';
 
 export const fetch = servers => ({
     type: SERVER.FETCH,
@@ -90,7 +92,10 @@ export const setup = server => (dispatch) => {
         });
 };
 
-export const updateStatus = server => (dispatch) => {
+export const updateStatus = ({ id }) => (dispatch) => {
+    const state = store.getState();
+    const server = getServer(state, { params: { id } });
+
     dispatch(addLog(`Checking server (${server.name}) status`, LOG.LEVEL.INFO, 'SERVER'));
     dispatch({
         type: SERVER.STATUS_FETCH_START,
