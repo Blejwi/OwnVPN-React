@@ -117,6 +117,9 @@ export const updateStatus = server => (dispatch) => {
             description: null,
             details: null,
         },
+        config: {
+            different: null,
+        },
     };
 
     try {
@@ -169,6 +172,15 @@ export const updateStatus = server => (dispatch) => {
                 },
             };
         }))
+        .then(() => ssh.getConfigFromServer().then((response) => {
+            const config = ConfigurationGenerator.generate(server.config);
+            payload = {
+                ...payload,
+                config: {
+                    different: config !== response.stdout,
+                },
+            };
+        }).catch(() => null))
         .then(() => dispatch({ type: SERVER.STATUS_CHANGE, payload }))
         .catch(() => dispatch({ type: SERVER.STATUS_CHANGE, payload }));
 };
@@ -200,7 +212,7 @@ export const handleSSHTerminal = server => (dispatch) => {
     }
 };
 
-const confirmPreview = (server, config) => (dispatch) => {
+const confirmPreview = (server, config, callback = null) => (dispatch) => {
     setTimeout(() => dispatch(swal({
         title: 'Preview configuration',
         text: `<pre>${ConfigurationGenerator.generate(config)}</pre>`,
@@ -220,12 +232,15 @@ const confirmPreview = (server, config) => (dispatch) => {
                 },
             });
             dispatch(setupSuccess(server));
+            if (callback) {
+                callback();
+            }
             return dispatch(save());
         },
     })), 200);
 };
 
-export const loadConfigFromServer = server => (dispatch) => {
+export const loadConfigFromServer = (server, callback = null) => (dispatch) => {
     dispatch(swal({
         title: 'Config path',
         type: 'input',
@@ -252,7 +267,7 @@ export const loadConfigFromServer = server => (dispatch) => {
                 const configReader = new ConfigurationReader();
                 const config = configReader.read(response.stdout);
 
-                return dispatch(confirmPreview(server, config));
+                return dispatch(confirmPreview(server, config, callback));
             }).catch((e) => {
                 dispatch(addLog(e, LOG.LEVEL.ERROR, 'SERVER'));
                 toastr.error('Server', 'Failure during getting file');
@@ -343,12 +358,15 @@ export const vpnAction = (server, action) => (dispatch) => {
     }).catch(e => dispatch(actionDefaultError(server, action, e)));
 };
 
-export const reuploadConfig = server => (dispatch) => {
+export const reuploadConfig = (server, callback = null) => (dispatch) => {
     const successMessage = 'Config successfully uploaded and service restarted';
     const action = 'uploadConfig';
 
     dispatch(runAction(action, server)).then(() => {
         toastr.success('Server', successMessage);
         dispatch(setupSuccess(server));
+        if (callback) {
+            callback();
+        }
     }).catch(e => dispatch(actionDefaultError(server, action, e)));
 };

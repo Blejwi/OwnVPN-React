@@ -29,7 +29,7 @@ export const getServer = createSelector([
 
 export const getSetupInProgress = createSelector([
     getSetupInProgressMap,
-    (_, { params }) => String(params.id),
+    (_, { params, id }) => String(params ? params.id : id),
 ], (map, id) => map.get(id, false));
 
 export const getServerStatus = createSelector([
