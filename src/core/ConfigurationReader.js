@@ -61,7 +61,7 @@ export default class ConfigurationReader {
 
         config.local_ip_address = this.readProperty('local');
         config.port = this.readProperty('port');
-        config.proto = this.readProperty('proto');
+        config.protocol = this.readProperty('proto');
         config.dev = this.readProperty('dev');
         config.topology = this.readProperty('topology');
 
@@ -74,7 +74,7 @@ export default class ConfigurationReader {
         }
 
         config.ifconfig_pool_persist = this.readBoolProperty('ifconfig-pool-persist');
-        config.learn_address = this.readBoolProperty('learn-address');
+        config.learn_address = this.readProperty('learn-address');
         config.routes = this.readRoutes();
 
         if (this.readBoolProperty('client-config-dir')) {
@@ -89,7 +89,6 @@ export default class ConfigurationReader {
             }
         }
 
-        config.learn_address = this.readBoolProperty('learn-address');
         config.client_to_client = this.readBoolProperty('client-to-client');
         config.duplicate_cn = this.readBoolProperty('duplicate-cn');
 
@@ -103,8 +102,8 @@ export default class ConfigurationReader {
         }
 
         config.tls_auth = this.readBoolProperty('tls-auth');
-        config.auth = this.readBoolProperty('auth');
-        config.cipher_algorithm = this.readBoolProperty('cipher');
+        config.auth_algorithm = this.readProperty('auth');
+        config.cipher_algorithm = this.readProperty('cipher');
         config.compress = this.readBoolProperty('compress');
         config.max_clients = this.readProperty('max-clients');
         config.user_privilege = this.readProperty('user');

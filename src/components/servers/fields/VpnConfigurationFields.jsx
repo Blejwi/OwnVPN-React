@@ -97,7 +97,7 @@ export default ({ change, serverMode, devMode, allowSubnet, assignIp, redirectGa
     />
     <RoutesFields />
     <Field
-            component={File}
+            component={Input}
             change={change}
             name="config.learn_address"
             label={LABELS.LEARN_ADDRESS}

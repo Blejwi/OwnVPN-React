@@ -82,7 +82,7 @@ export default class ConfigurationGenerator {
         }
 
         if (ConfigurationGenerator.isSet(config.learn_address)) {
-            lines.push('learn-address ./script');
+            lines.push(`learn-address ${config.learn_address}`);
         }
 
         ConfigurationGenerator.addRedirectGateway(lines, config.redirect_gateway);

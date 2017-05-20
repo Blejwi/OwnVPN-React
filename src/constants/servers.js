@@ -114,7 +114,7 @@ export const DEFAULT_SERVER_CONFIG = {
     },
     ifconfig_pool_persist: '1',
     routes: [],
-    learn_address: '',
+    learn_address: './script',
     redirect_gateway: {
         local: '0',
         auto_local: '0',
