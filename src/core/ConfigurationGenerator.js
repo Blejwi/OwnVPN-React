@@ -143,7 +143,7 @@ export default class ConfigurationGenerator {
             lines.push(`remote ${server.host} ${config.port}`);
         }
 
-        lines.push('resolve-retry infinite');
+        lines.push('resolv-retry infinite');
         lines.push('nobind');
 
         this.addPrivilege(config, lines);
@@ -168,8 +168,6 @@ export default class ConfigurationGenerator {
         }
 
         this.addCipher(config, lines);
-
-        lines.push('comp-lzo');
 
         this.addVerb(config, lines);
         this.addMute(config, lines);

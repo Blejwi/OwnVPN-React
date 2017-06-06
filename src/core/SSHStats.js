@@ -98,7 +98,7 @@ export default class SSHStats {
         const reg = new RegExp(/(Virtual Address.*)\n(.*?)\nGLOBAL STATS/im);
         const result = reg.exec(response.stdout);
         if (result && result.length > 2 && result[1] && result[2]) {
-            return `<b>Routing table</b>${this.getPart(result[1], result[2])}<div class="ui divider"></div>`;
+            return `<b>Routing table</b>${SSHStats.getPart(result[1], result[2])}<div class="ui divider"></div>`;
         }
         return '';
     }
@@ -107,7 +107,7 @@ export default class SSHStats {
         const reg = new RegExp(/(Common Name.*)\n(.*?)\nROUTING TABLE/im);
         const result = reg.exec(response.stdout);
         if (result && result.length > 2 && result[1] && result[2]) {
-            return `<b>Client list</b>${this.getPart(result[1], result[2])}<div class="ui divider"></div>`;
+            return `<b>Client list</b>${SSHStats.getPart(result[1], result[2])}<div class="ui divider"></div>`;
         }
         return '';
     }
