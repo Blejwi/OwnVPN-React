@@ -441,7 +441,7 @@ export default class SSH {
             });
         })
             .then(() => this.runCommand('sudo sed -i \'s/DEFAULT_FORWARD_POLICY=".*"/DEFAULT_FORWARD_POLICY="ACCEPT"/\' /etc/default/ufw'))
-            .then(() => this.runCommand(`sudo ufw allow ${this.server.config.port}/udp`))
+            .then(() => this.runCommand(`sudo ufw allow ${this.server.config.port}/${this.server.config.protocol}`))
             .then(() => this.runCommand('sudo ufw allow OpenSSH'))
             .then(() => this.runCommand('sudo ufw disable && sudo ufw --force enable')); // force is needed for non-interactive mode
     }
