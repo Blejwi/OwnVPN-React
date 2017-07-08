@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/actions/servers.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">actions</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addRecent">addRecent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-closeFile">closeFile</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fetchRecent">fetchRecent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-load">load</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-newFile">newFile</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-openFile">openFile</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-openFilePassword">openFilePassword</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-save">save</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-add">add</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-clear">clear</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-collapse">collapse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-add">add</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-edit">edit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fetch">fetch</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-handleSSHTerminal">handleSSHTerminal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-loadConfigFromServer">loadConfigFromServer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-loadConfigTextArea">loadConfigTextArea</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-preview">preview</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-rebootServer">rebootServer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-reuploadConfig">reuploadConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setup">setup</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setupFailure">setupFailure</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setupSuccess">setupSuccess</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-updateStatus">updateStatus</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-vpnAction">vpnAction</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-add">add</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-downloadConfiguration">downloadConfiguration</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-edit">edit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fetch">fetch</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-remove">remove</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setupAllClients">setupAllClients</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setupClient">setupClient</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/authorization</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Authorization">Authorization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-LoginWrapper">LoginWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-RecentFiles">RecentFiles</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Actions">Actions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Checkbox">Checkbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Error">Error</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-File">File</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Input">Input</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Label">Label</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Radio">Radio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/logs</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/logs/LogItem.jsx~LogItem.html">LogItem</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Logs">Logs</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/servers</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-AddServerButton">AddServerButton</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ServerList">ServerList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ServerListItem">ServerListItem</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ServerShowContent">ServerShowContent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ServerShowContentRow">ServerShowContentRow</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/servers/fields</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-AllowSubnetFields">AllowSubnetFields</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-AssignSpecificIpFields">AssignSpecificIpFields</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-BridgingModeFields">BridgingModeFields</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-CertificateInformationFields">CertificateInformationFields</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-IpAddressFields">IpAddressFields</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-normalizeIpAddress">normalizeIpAddress</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-KeepAliveFields">KeepAliveFields</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-RedirectGatewayFields">RedirectGatewayFields</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-RoutesFields">RoutesFields</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ServerInformationFields">ServerInformationFields</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ServerModeFields">ServerModeFields</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-VpnConfigurationFields">VpnConfigurationFields</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/users</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-UserList">UserList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-UserListItem">UserListItem</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-UserWarning">UserWarning</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">constants</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CLEAR_STATE">CLEAR_STATE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CLOSE">CLOSE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FETCH_RECENT">FETCH_RECENT</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-LOAD_FAILURE">LOAD_FAILURE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-LOAD_SUCCESS">LOAD_SUCCESS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-NEW">NEW</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-OPEN">OPEN</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SAVE_FAILURE">SAVE_FAILURE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SAVE_SUCCESS">SAVE_SUCCESS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CIPHER_ALGORITHM">CIPHER_ALGORITHM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-COUNTRY">COUNTRY</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEV">DEV</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-GROUP_PRIVILEGE">GROUP_PRIVILEGE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-LEARN_ADDRESS">LEARN_ADDRESS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-LOCAL_IP_ADDRESS">LOCAL_IP_ADDRESS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-MAX_CLIENTS">MAX_CLIENTS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-MUTE">MUTE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-PORT">PORT</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-PROTOCOL">PROTOCOL</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TLS_AUTH">TLS_AUTH</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TOPOLOGY">TOPOLOGY</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-USER_PRIVILEGE">USER_PRIVILEGE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-ADD">ADD</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CLEAR">CLEAR</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-LEVEL">LEVEL</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TOGGLE_COLLAPSE">TOGGLE_COLLAPSE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-ADD_SUCCESS">ADD_SUCCESS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AUTH_OPTIONS">AUTH_OPTIONS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CIPHER_OPTIONS">CIPHER_OPTIONS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEFAULT_SERVER_CONFIG">DEFAULT_SERVER_CONFIG</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEFAULT_SERVER_STATUS">DEFAULT_SERVER_STATUS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEV_OPTIONS">DEV_OPTIONS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EDIT_SUCCESS">EDIT_SUCCESS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FETCH">FETCH</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-LOG_LEVEL_OPIONS">LOG_LEVEL_OPIONS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-MODE">MODE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-PROTOCOL_OPTIONS">PROTOCOL_OPTIONS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SETUP">SETUP</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SETUP_FAILURE">SETUP_FAILURE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SETUP_SUCCESS">SETUP_SUCCESS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-STATUS">STATUS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-STATUS_CHANGE">STATUS_CHANGE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-STATUS_FETCH_START">STATUS_FETCH_START</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TOPOLOGY_OPTIONS">TOPOLOGY_OPTIONS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-UPDATE_CONFIG">UPDATE_CONFIG</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-UPDATE_SERVER_STATUS_CACHE_TIME">UPDATE_SERVER_STATUS_CACHE_TIME</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-YES_NO_OPTIONS">YES_NO_OPTIONS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-ADD">ADD</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DOWNLOAD">DOWNLOAD</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EDIT">EDIT</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FETCH">FETCH</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-REMOVE">REMOVE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SETUP">SETUP</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SETUP_FAILURE">SETUP_FAILURE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SETUP_SUCCESS">SETUP_SUCCESS</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">containers</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-App">App</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">containers/home</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Home">Home</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">containers/servers/status</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ServerStatusItem">ServerStatusItem</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">core</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/ConfigurationGenerator.js~ConfigurationGenerator.html">ConfigurationGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/ConfigurationReader.js~ConfigurationReader.html">ConfigurationReader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Encryption.js~Encryption.html">Encryption</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/SSH.js~SSH.html">SSH</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/SSHStats.js~SSHStats.html">SSHStats</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-deleteInstance">deleteInstance</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">reducers</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-authorization">authorization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-logs">logs</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-menu">menu</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-servers">servers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-users">users</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">selectors</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFileMap">getFileMap</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLogsCollapsed">getLogsCollapsed</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLogsList">getLogsList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-canOpenTerminal">canOpenTerminal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getServerFetchStatusMap">getServerFetchStatusMap</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getServerStatusMap">getServerStatusMap</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getServersMap">getServersMap</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getSetupInProgressMap">getSetupInProgressMap</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getSetupInProgressMap">getSetupInProgressMap</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-getRecentFiles">getRecentFiles</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-isFileOpen">isFileOpen</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-getLogsArray">getLogsArray</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-getFormSelector">getFormSelector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-getPreview">getPreview</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-getServer">getServer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-getServerArray">getServerArray</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-getServerFetchStatus">getServerFetchStatus</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-getServerStatus">getServerStatus</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-getSetupInProgress">getSetupInProgress</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-getUser">getUser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-getUsersArray">getUsersArray</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-getUsersMap">getUsersMap</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">store</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-history">history</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-store">store</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils</div><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-compileMessage">compileMessage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-email">email</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ipAddress">ipAddress</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-maxValue">maxValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-minLength">minLength</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-minValue">minValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-required">required</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-validateServer">validateServer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-validateUser">validateUser</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/actions/servers.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { push } from &apos;react-router-redux&apos;;
+import uuid from &apos;uuid&apos;;
+import os from &apos;os&apos;;
+import { toastr } from &apos;react-redux-toastr&apos;;
+import { swal } from &apos;react-redux-sweetalert&apos;;
+import { spawn } from &apos;child_process&apos;;
+import { capitalize, lowerCase } from &apos;lodash&apos;;
+import store from &apos;../store/index&apos;;
+import * as SERVER from &apos;../constants/servers&apos;;
+import SSH from &apos;../core/SSH&apos;;
+import { add as addLog } from &apos;../actions/logs&apos;;
+import * as LOG from &apos;../constants/logs&apos;;
+import { save } from &apos;./authorization&apos;;
+import ConfigurationReader from &apos;../core/ConfigurationReader&apos;;
+import ConfigurationGenerator from &apos;../core/ConfigurationGenerator&apos;;
+import { compileMessage } from &apos;../utils/messages&apos;;
+import { getServer } from &apos;../selectors/servers&apos;;
+
+export const fetch = servers =&gt; ({
+    type: SERVER.FETCH,
+    payload: servers,
+});
+
+const addSuccess = server =&gt; (dispatch) =&gt; {
+    dispatch({
+        type: SERVER.ADD_SUCCESS,
+        payload: {
+            server,
+        },
+    });
+    dispatch(save());
+};
+
+export const add = inputServer =&gt; (dispatch) =&gt; {
+    const server = { ...inputServer, id: uuid.v1() };
+    dispatch(addSuccess(server));
+    dispatch(push(`/server/show/${server.id}`));
+};
+
+const editSuccess = server =&gt; (dispatch) =&gt; {
+    dispatch({
+        type: SERVER.EDIT_SUCCESS,
+        payload: {
+            server,
+        },
+    });
+    dispatch(save());
+};
+
+export const edit = server =&gt; (dispatch) =&gt; {
+    dispatch(editSuccess(server));
+    dispatch(push(`/server/show/${server.id}`));
+};
+
+export const setupSuccess = server =&gt; ({
+    type: SERVER.SETUP_SUCCESS,
+    payload: {
+        server,
+    },
+});
+
+export const setupFailure = server =&gt; ({
+    type: SERVER.SETUP_FAILURE,
+    payload: {
+        server,
+    },
+});
+
+export const setup = server =&gt; (dispatch) =&gt; {
+    let ssh;
+    dispatch({ type: SERVER.SETUP, payload: { server } });
+
+    try {
+        ssh = new SSH(dispatch, server);
+    } catch (e) {
+        dispatch(addLog(&apos;Server setup failure&apos;, LOG.LEVEL.ERROR, &apos;SERVER&apos;));
+        dispatch(addLog(compileMessage(e), LOG.LEVEL.ERROR, &apos;SSH&apos;));
+        toastr.error(&apos;Server&apos;, &apos;Failure during server setup&apos;);
+        return dispatch(setupFailure(server));
+    }
+
+    ssh.setupServer()
+        .then(() =&gt; {
+            dispatch(addLog(&apos;Server setup success&apos;, LOG.LEVEL.INFO, &apos;SERVER&apos;));
+            toastr.success(&apos;Server&apos;, &apos;Successful server setup&apos;);
+            return dispatch(setupSuccess(server));
+        })
+        .catch(() =&gt; {
+            dispatch(addLog(&apos;Server setup failure&apos;, LOG.LEVEL.ERROR, &apos;SERVER&apos;));
+            toastr.error(&apos;Server&apos;, &apos;Failure during server setup&apos;);
+            return dispatch(setupFailure(server));
+        });
+};
+
+export const updateStatus = ({ id }) =&gt; (dispatch) =&gt; {
+    const state = store.getState();
+    const server = getServer(state, { params: { id } });
+
+    dispatch(addLog(`Checking server (${server.name}) status`, LOG.LEVEL.INFO, &apos;SERVER&apos;));
+    dispatch({
+        type: SERVER.STATUS_FETCH_START,
+        payload: {
+            serverId: server.id,
+        },
+    });
+
+    let ssh;
+    let payload = {
+        serverId: server.id,
+        server: {
+            level: SERVER.STATUS.UNKNOWN,
+            description: null,
+            details: null,
+        },
+        vpn: {
+            level: SERVER.STATUS.UNKNOWN,
+            description: null,
+            details: null,
+        },
+        users: {
+            level: SERVER.STATUS.UNKNOWN,
+            description: null,
+            details: null,
+        },
+        config: {
+            different: null,
+        },
+    };
+
+    try {
+        ssh = new SSH(dispatch, server);
+        payload.server.level = SERVER.STATUS.OK;
+    } catch (e) {
+        dispatch(addLog(`Error getting server status (${server.name})`, LOG.LEVEL.ERROR, &apos;SERVER&apos;));
+        dispatch(addLog(compileMessage(e), LOG.LEVEL.ERROR, &apos;SERVER&apos;));
+        return dispatch({
+            type: SERVER.STATUS_CHANGE,
+            payload,
+        });
+    }
+
+    ssh.statistics.getMachineStatus().then((details) =&gt; {
+        payload.server.details = details;
+    }).catch((e) =&gt; {
+        payload.server.details = compileMessage(&apos;Could not get details&apos;, e);
+    }).then(() =&gt; ssh.statistics.getVpnStatus().then((data) =&gt; {
+        payload = {
+            ...payload,
+            vpn: {
+                ...data,
+            },
+        };
+    }).catch((e) =&gt; {
+        payload = {
+            ...payload,
+            server: {
+                level: SERVER.STATUS.ERROR,
+                description: &apos;Error during VPN status check&apos;,
+                details: compileMessage(e),
+            },
+        };
+    }))
+        .then(() =&gt; ssh.statistics.getUsersStats().then(({ level, description, details }) =&gt; {
+            payload = {
+                ...payload,
+                users: {
+                    level, description, details,
+                },
+            };
+        }).catch((e) =&gt; {
+            payload = {
+                ...payload,
+                users: {
+                    level: SERVER.STATUS.ERROR,
+                    description: &apos;Error during getting VPN statistics&apos;,
+                    details: compileMessage(e),
+                },
+            };
+        }))
+        .then(() =&gt; ssh.getConfigFromServer().then((response) =&gt; {
+            const config = ConfigurationGenerator.generate(server.config);
+            payload = {
+                ...payload,
+                config: {
+                    different: config !== response.stdout,
+                },
+            };
+        }).catch(() =&gt; null))
+        .then(() =&gt; dispatch({ type: SERVER.STATUS_CHANGE, payload }))
+        .catch(() =&gt; dispatch({ type: SERVER.STATUS_CHANGE, payload }));
+};
+
+export const preview = config =&gt; (dispatch) =&gt; {
+    dispatch(swal({
+        title: &apos;Preview configuration&apos;,
+        text: `&lt;pre&gt;${config}&lt;/pre&gt;`,
+        html: true,
+    }));
+};
+
+export const handleSSHTerminal = server =&gt; (dispatch) =&gt; {
+    if (os.platform() !== &apos;linux&apos;) {
+        return;
+    }
+
+    let sshCommand;
+    if (server.key) {
+        sshCommand = `ssh -i &quot;${server.key}&quot; ${server.username}@${server.host} -p ${server.port}`;
+    } else {
+        sshCommand = `ssh ${server.username}@${server.host} -p ${server.port}`;
+    }
+
+    try {
+        spawn(&apos;x-terminal-emulator&apos;, [&apos;-e&apos;, &apos;bash&apos;, &apos;-c&apos;, `${sshCommand};bash`]);
+    } catch (e) {
+        dispatch(addLog(compileMessage(&apos;Could not open ssh in terminal&apos;, e)));
+    }
+};
+
+const confirmPreview = (server, config, callback = null) =&gt; (dispatch) =&gt; {
+    setTimeout(() =&gt; dispatch(swal({
+        title: &apos;Preview configuration&apos;,
+        text: `&lt;pre&gt;${ConfigurationGenerator.generate(config)}&lt;/pre&gt;`,
+        html: true,
+        showCancelButton: true,
+        closeOnConfirm: true,
+        onCancel: () =&gt; dispatch(setupSuccess(server)),
+        allowOutsideClick: true,
+        onOutsideClick: () =&gt; dispatch(setupSuccess(server)),
+        onEscapeKey: () =&gt; dispatch(setupSuccess(server)),
+        onConfirm: () =&gt; {
+            dispatch({
+                type: SERVER.UPDATE_CONFIG,
+                payload: {
+                    server,
+                    config,
+                },
+            });
+            dispatch(setupSuccess(server));
+            if (callback) {
+                callback();
+            }
+            return dispatch(save());
+        },
+    })), 200);
+};
+
+export const loadConfigFromServer = (server, callback = null) =&gt; (dispatch) =&gt; {
+    dispatch(swal({
+        title: &apos;Config path&apos;,
+        type: &apos;input&apos;,
+        inputValue: &apos;/etc/openvpn/server.conf&apos;,
+        inputPlaceholder: &apos;Path...&apos;,
+        confirmButtonText: &apos;Confirm&apos;,
+        cancelButtonText: &apos;Cancel&apos;,
+        text: &apos;Type path of config file on server&apos;,
+        showCancelButton: true,
+        closeOnConfirm: true,
+        onConfirm: (path) =&gt; {
+            let ssh;
+            dispatch({ type: SERVER.SETUP, payload: { server } });
+
+            try {
+                ssh = new SSH(dispatch, server);
+            } catch (e) {
+                dispatch(addLog(e, LOG.LEVEL.ERROR, &apos;SSH&apos;));
+                toastr.error(&apos;Server&apos;, &apos;Failure during getting file&apos;);
+                return dispatch(setupFailure(server));
+            }
+
+            ssh.catFile(path).then((response) =&gt; {
+                const configReader = new ConfigurationReader();
+                const config = configReader.read(response.stdout);
+
+                return dispatch(confirmPreview(server, config, callback));
+            }).catch((e) =&gt; {
+                dispatch(addLog(e, LOG.LEVEL.ERROR, &apos;SERVER&apos;));
+                toastr.error(&apos;Server&apos;, &apos;Failure during getting file&apos;);
+                return dispatch(setupFailure(server));
+            });
+        },
+        onCancel: () =&gt; {},
+        allowOutsideClick: true,
+        onOutsideClick: () =&gt; {},
+        onEscapeKey: () =&gt; {},
+    }));
+};
+
+export const loadConfigTextArea = server =&gt; (dispatch) =&gt; {
+    dispatch(swal({
+        title: &apos;Paste config&apos;,
+        text: &apos;&lt;textarea id=\&apos;config-text\&apos; class=&quot;sweet-alert-textarea&quot;&gt;&lt;/textarea&gt;&apos;,
+        html: true,
+        inputPlaceholder: &apos;Paste file here...&apos;,
+        confirmButtonText: &apos;Confirm&apos;,
+        cancelButtonText: &apos;Cancel&apos;,
+        showCancelButton: true,
+        closeOnConfirm: true,
+        onConfirm: () =&gt; {
+            const val = document.getElementById(&apos;config-text&apos;).value;
+            if (val) {
+                const configReader = new ConfigurationReader();
+                const config = configReader.read(val);
+
+                return dispatch(confirmPreview(server, config));
+            }
+        },
+        onCancel: () =&gt; {},
+        allowOutsideClick: true,
+        onOutsideClick: () =&gt; {},
+        onEscapeKey: () =&gt; {},
+    }));
+};
+
+// Server actions
+
+
+const actionDefaultError = (server, action, error) =&gt; (dispatch) =&gt; {
+    const message = `Failure during ${action} action`;
+    dispatch(addLog(message, LOG.LEVEL.ERROR, &apos;SERVER&apos;));
+    if (error) {
+        dispatch(addLog(compileMessage(error), LOG.LEVEL.ERROR, &apos;SSH&apos;));
+    }
+    toastr.error(&apos;Server&apos;, message);
+    return dispatch(setupFailure(server));
+};
+
+const runAction = (action, server) =&gt; (dispatch) =&gt; {
+    let ssh;
+    dispatch({ type: SERVER.SETUP, payload: { server } });
+
+    try {
+        ssh = new SSH(dispatch, server);
+    } catch (e) {
+        dispatch(actionDefaultError(server, action, e));
+        return Promise.reject(null);
+    }
+
+    return ssh.runAction(action);
+};
+
+export const rebootServer = server =&gt; (dispatch) =&gt; {
+    const action = &apos;reboot&apos;;
+
+    dispatch(runAction(action, server)).then(() =&gt; {
+        toastr.success(&apos;Server&apos;, &apos;Reboot command sent&apos;);
+        dispatch(setupSuccess(server));
+    }).catch((e) =&gt; {
+        if (e.stderr &amp;&amp; e.stderr.indexOf(&apos;password for&apos;) !== -1) {
+            toastr.success(&apos;Server&apos;, &apos;Reboot command sent&apos;);
+            return dispatch(setupSuccess(server));
+        }
+        return dispatch(actionDefaultError(server, &apos;reboot&apos;, e));
+    });
+};
+
+export const vpnAction = (server, action) =&gt; (dispatch) =&gt; {
+    const successMessage = `${capitalize(lowerCase(action))} command sent`;
+
+    dispatch(runAction(action, server)).then(() =&gt; {
+        toastr.success(&apos;Server&apos;, successMessage);
+        dispatch(setupSuccess(server));
+    }).catch(e =&gt; dispatch(actionDefaultError(server, action, e)));
+};
+
+export const reuploadConfig = (server, callback = null) =&gt; (dispatch) =&gt; {
+    const successMessage = &apos;Config successfully uploaded and service restarted&apos;;
+    const action = &apos;uploadConfig&apos;;
+
+    dispatch(runAction(action, server)).then(() =&gt; {
+        toastr.success(&apos;Server&apos;, successMessage);
+        dispatch(setupSuccess(server));
+        if (callback) {
+            callback();
+        }
+    }).catch(e =&gt; dispatch(actionDefaultError(server, action, e)));
+};
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

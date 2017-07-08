@@ -11,6 +11,11 @@ import { fetch } from './servers';
 import { fetch as fetchUsers } from './users';
 import { compileMessage } from '../utils/messages';
 
+
+/**
+ * Save configuration to file
+ * @param {bool} closeFileOnSuccess If set, it redirects to login page and dispatch close action
+ */
 export const save = (closeFileOnSuccess = false) => (dispatch) => {
     const state = store.getState();
     // Get all necessary data from store
