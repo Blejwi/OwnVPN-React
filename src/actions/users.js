@@ -147,6 +147,12 @@ const setupAllClientsRecursive = (dispatch, server, users) => {
     }
 };
 
+
+/**
+ * Function that runs OpenVPN setup on server for all clients recursively
+ * @param {server} server Server object
+ * @param {user[]} users List of users to setup on server
+ */
 export const setupAllClients = (server, users) => (dispatch) => {
     dispatch({ type: SERVER.SETUP, payload: { server } });
     setupAllClientsRecursive(dispatch, server, users).then(() => {
