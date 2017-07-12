@@ -8,6 +8,11 @@ import { MODE } from '../../../constants/servers';
 
 const isOn = serverMode => serverMode === MODE.SERVER;
 
+/**
+ * Server mode custom field
+ * @param {function} change
+ * @param {string} serverMode Server mode config option
+ */
 export default ({ change, serverMode }) => (
   <Segment padded>
     <Header as="h5">{LABELS.SERVER_MODE}</Header>

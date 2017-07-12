@@ -10,6 +10,10 @@ import * as LOG from '../constants/logs';
 import * as SERVER from '../constants/servers';
 import { compileMessage } from '../utils/messages';
 
+/**
+ * Function used to add user
+ * @param {object} user User object
+ */
 export const add = user => (dispatch) => {
     dispatch({
         type: USER.ADD,
@@ -18,6 +22,10 @@ export const add = user => (dispatch) => {
     dispatch(save());
 };
 
+/**
+ * Function used to edit user
+ * @param {object} user User object
+ */
 export const edit = user => (dispatch) => {
     dispatch({
         type: USER.EDIT,
@@ -26,6 +34,11 @@ export const edit = user => (dispatch) => {
     dispatch(save());
 };
 
+/**
+ * Function used to remove user
+ * @param {object} server Server that user is assigned to
+ * @param {object} user User object
+ */
 const confirmedRemove = (server, user) => ({
     type: USER.REMOVE,
     payload: {
@@ -34,6 +47,11 @@ const confirmedRemove = (server, user) => ({
     },
 });
 
+/**
+ * Function used to remove user files from destination server
+ * @param {object} server Server object
+ * @param {object} user User object
+ */
 const removeUserFiles = (server, user) => (dispatch) => {
     dispatch({ type: SERVER.SETUP, payload: { server } });
     let ssh;
@@ -58,6 +76,11 @@ const removeUserFiles = (server, user) => (dispatch) => {
     });
 };
 
+/**
+ * Function used to show confirmation popup about deleting user
+ * @param {object} server Server that user belongs to
+ * @param {object} user User object to be deleted
+ */
 export const remove = (server, user) => (dispatch) => {
     dispatch(swal({
         title: 'Delete',
@@ -82,6 +105,11 @@ export const remove = (server, user) => (dispatch) => {
     }));
 };
 
+/**
+ * Function called after successful user setup
+ * @param {object} user User object
+ * @param {object} serverId Id of server that user belongs to
+ */
 const setupSuccess = (user, serverId) => ({
     type: USER.SETUP_SUCCESS,
     payload: {
@@ -90,6 +118,10 @@ const setupSuccess = (user, serverId) => ({
     },
 });
 
+/**
+ * Function called after failed user setup
+ * @param {object} user User object
+ */
 const setupFailure = user => ({
     type: USER.SETUP_FAILURE,
     payload: {
@@ -97,6 +129,12 @@ const setupFailure = user => ({
     },
 });
 
+/**
+ * Function used to run user setup on destination server.
+ * @param {function} dispatch Redux dispatch function
+ * @param {object} server Server object
+ * @param {object} user User object
+ */
 const setupClientPromise = (dispatch, server, user) => new Promise((resolve, reject) => {
     let ssh;
     try {
@@ -111,6 +149,13 @@ const setupClientPromise = (dispatch, server, user) => new Promise((resolve, rej
             .catch(reject);
 });
 
+/**
+ * Function used to run user setup on destination server.
+ * @param {function} dispatch Redux dispatch function
+ * @param {object} server Server object
+ * @param {object} user User object
+ * @param {bool} changeServerProgress Indicated if serverSetupSuccess action should be called
+ */
 const setupClientPromiseResolve = (dispatch, server, user, changeServerProgress) => {
     dispatch({ type: USER.SETUP, payload: { server, user } });
     return setupClientPromise(dispatch, server, user)
@@ -133,11 +178,23 @@ const setupClientPromiseResolve = (dispatch, server, user, changeServerProgress)
         });
 };
 
+/**
+ * Function used to trigger setup of client on server
+ * @param {object} server Server object
+ * @param {object} user User object
+ */
 export const setupClient = (server, user) => (dispatch) => {
     dispatch({ type: SERVER.SETUP, payload: { server } });
     setupClientPromiseResolve(dispatch, server, user, true);
 };
 
+/**
+ * Wrapper function for running setup on all server users, one by one
+ * @param {function} dispatch Redux dispatch function
+ * @param {object} server Server object
+ * @param {object} users User object
+ * @returns {Promise.<T>}
+ */
 const setupAllClientsRecursive = (dispatch, server, users) => {
     const user = users[0];
     if (user) {
@@ -150,8 +207,8 @@ const setupAllClientsRecursive = (dispatch, server, users) => {
 
 /**
  * Function that runs OpenVPN setup on server for all clients recursively
- * @param {server} server Server object
- * @param {user[]} users List of users to setup on server
+ * @param {object} server Server object
+ * @param {object[]} users List of users to setup on server
  */
 export const setupAllClients = (server, users) => (dispatch) => {
     dispatch({ type: SERVER.SETUP, payload: { server } });
@@ -163,6 +220,11 @@ export const setupAllClients = (server, users) => (dispatch) => {
 };
 
 
+/**
+ * Function used to download user ovpn configuration file
+ * @param {object} server Server object
+ * @param {object} user User object
+ */
 export const downloadConfiguration = (server, user) => (dispatch) => {
     dispatch({ type: SERVER.SETUP, payload: { server } });
     let ssh;
@@ -186,7 +248,11 @@ export const downloadConfiguration = (server, user) => (dispatch) => {
     });
 };
 
-export const fetch = servers => ({
+/**
+ * Load users list to state
+ * @param {object[]} users List of users to add
+ */
+export const fetch = users => ({
     type: USER.FETCH,
-    payload: servers,
+    payload: users,
 });

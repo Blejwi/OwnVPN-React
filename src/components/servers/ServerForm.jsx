@@ -6,6 +6,11 @@ import ServerInformationFields from './fields/ServerInformationFields';
 import CertificateInformationFields from './fields/CertificateInformationFields';
 import VpnConfigurationFields from './fields/VpnConfigurationFields';
 
+/**
+ * Server edit and add form
+ * @param {object} props Attributes of form
+ * @returns {XML} Rendered view
+ */
 const ServerForm = (props) => {
     const {
         error,
@@ -38,6 +43,9 @@ const ServerForm = (props) => {
     );
 };
 
+/**
+ * Server edit and add form component
+ */
 export default reduxForm({
     form: 'server',
 })(ServerForm);

@@ -16,6 +16,12 @@ const showBoolean = (value) => {
     return 'No';
 };
 
+/**
+ * Server show component.
+ * Shows all important server configuration and statistics in one place
+ * @param {object} props Data and action function for view
+ * @returns {XML} Rendered component
+ */
 export default (props) => {
     const {
         server,

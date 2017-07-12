@@ -6,7 +6,14 @@ import { getFormSelector, getPreview } from '../../selectors/servers';
 import { DEFAULT_SERVER_CONFIG } from '../../constants/servers';
 import { validateServer } from '../../utils/validators';
 
+/**
+ * Container class for adding server
+ */
 class ServerAdd extends React.Component {
+
+    /**
+     * Function used to show OpenVPN configuration preview
+     */
     onPreview() {
         this.props.handlePreview(this.props.config);
     }

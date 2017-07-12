@@ -28,7 +28,17 @@ const clientKeysDir = '~/openvpn-ca/keys';
 const clientOutputDir = '~/client-configs/files';
 const ccdDir = '/etc/openvpn/ccd'; // it should be able to reassigned by server configuration
 
+/**
+ * Default SSH connection class
+ */
 export default class SSH {
+    /**
+     * Constructor function.
+     * Checks connection, creates SSH connection to server,
+     * check if sudo password is required to run commands
+     * @param {function} dispatch Redux dispatch function
+     * @param {object} server Server config object
+     */
     constructor(dispatch, server) {
         this.dispatch = dispatch;
         this.server = server;
@@ -57,6 +67,10 @@ export default class SSH {
         this.statistics = new SSHStats(this, dispatch);
     }
 
+    /**
+     * Check if commands ran on server needs sudo password
+     * @return {Promise}
+     */
     determineSudoPasswordNeeded() {
         return this.runCommand('sudo -n true').then(() => null).catch((e) => {
             if (e.stderr.indexOf('password is required') !== -1) {
@@ -70,10 +84,19 @@ export default class SSH {
         });
     }
 
+    /**
+     * Log function wrapper for logging module
+     * @param msg
+     * @param level
+     */
     log(msg, level) {
         this.dispatch(addLog(msg, level, 'SSH'));
     }
 
+    /**
+     * Function for setup of OpenVPN server
+     * @return {Promise}
+     */
     setupServer() {
         this.log('Starting setup_server', LOG.LEVEL.INFO);
 
@@ -100,6 +123,10 @@ export default class SSH {
         });
     }
 
+    /**
+     * Function for uploading config file on server and restarting OpenVPN to apply new config file
+     * @return {Promise}
+     */
     uploadConfig() {
         return new Promise((resolve, reject) => {
             this.connection
@@ -115,6 +142,13 @@ export default class SSH {
         });
     }
 
+    /**
+     * Function used for OpenVPN user setup
+     * @param {string} id User id
+     * @param {string} ipAddress User ip address
+     * @param {object} config User config
+     * @return {Promise}
+     */
     setupClient({ id, ipAddress, config }) {
         this.log('Starting setup_client', LOG.LEVEL.INFO);
 
@@ -173,6 +207,11 @@ export default class SSH {
         });
     }
 
+    /**
+     * Function checks if ovpn user file should be generated
+     * @param {object} response SSH command response
+     * @return {Promise}
+     */
     shouldRegenerateOvpn(response) {
         return new Promise((resolve, reject) => {
             setTimeout(() => this.dispatch(swal({
@@ -192,6 +231,11 @@ export default class SSH {
         });
     }
 
+    /**
+     * Function for deleting client files from server
+     * @param {string} id Id of client
+     * @return {Promise}
+     */
     deleteClientFiles({ id }) {
         return new Promise((resolve, reject) => {
             this.connection
@@ -209,6 +253,10 @@ export default class SSH {
         });
     }
 
+    /**
+     * Function showing confirm popup if user wants to regenerate server keys
+     * @return {Promise}
+     */
     generateServerKeys() {
         return this.runCommand(`${checkKeys}`, {}, false).then((response) => {
             if (response.code === 0) {
@@ -236,6 +284,10 @@ export default class SSH {
         });
     }
 
+    /**
+     * Function used for generating server keys
+     * @return {Promise}
+     */
     generateAllServerKeys() {
         return this.cleanAll()
             .then(() => this.buildCA())
@@ -244,18 +296,34 @@ export default class SSH {
             .then(() => this.buildHMAC());
     }
 
+    /**
+     * Function used for generating user keys
+     * @param {string} id Id of user
+     * @return {Promise}
+     */
     generateClientKey(id) {
         return this.runCommand(
             `${certBegin} && ${generateClientKey} ${id}`,
         );
     }
 
+    /**
+     * Function used to remove user from index file
+     * @param {string} id Id of user
+     * @return {Promise}
+     */
     removeCrtFromDB(id) {
         return this.runCommand(
             `sed -i '/CN=${id}/d' ${clientKeysDir}/index.txt`,
         );
     }
 
+    /**
+     * Generate OVPN user file
+     * @param {string} id Id of client
+     * @param {object} userConfig User config
+     * @return {Promise}
+     */
     generateClientConfigFiles(id, userConfig) {
         return this.runCommand(
             `cat /dev/null \
@@ -273,23 +341,45 @@ export default class SSH {
         );
     }
 
+    /**
+     * Function used to bind client IP
+     * @param {string} id Id of user
+     * @param {string} ipAddress IP address of user
+     * @return {Promise}
+     */
     bindClientIp(id, ipAddress) {
         return this.runCommand(
             `sudo mkdir -p ${ccdDir} && sudo touch ${ccdDir}/${id} && echo "${ipAddress} ${SSH.nextIpAddress(ipAddress)}" | sudo tee ${ccdDir}/${id}`,
         );
     }
 
+    /**
+     * Function for incrementing IP address
+     * @param {string} ipAddress IP address
+     * @return {string} IP address incremented by 1
+     */
     static nextIpAddress(ipAddress) {
         const sections = ipAddress.split('.');
         sections[3] = +(sections[3]) + 1;
         return sections.join('.');
     }
 
+    /**
+     * Default error handler
+     * @param {Error} e Error object
+     * @return {Error} Error object
+     */
     defaultError(e) {
         this.log(e, LOG.LEVEL.ERROR);
         return e;
     }
 
+    /**
+     * Default success function
+     * @param {object} response SSH command response
+     * @param {bool} errorOnNonZero Indicates if erro should be raised on non-zero bash response
+     * @return {object} Response object
+     */
     defaultSuccess(response, errorOnNonZero = true) {
         if (errorOnNonZero && response.code !== 0) {
             return Promise.reject(response);
@@ -304,6 +394,13 @@ export default class SSH {
         return response;
     }
 
+    /**
+     * Run command wrapper function. Adds sudo if required
+     * @param {string} command Command to be run
+     * @param {object} [params={}] Params for SSH command
+     * @param {bool} errorOnNonZero Indicates if erro should be raised on non-zero bash response
+     * @return {Promise}
+     */
     runCommand(command, params = {}, errorOnNonZero = true) {
         const logTime = (t0) => {
             const time = (performance.now() - t0) / 1000;
@@ -326,18 +423,34 @@ export default class SSH {
             .then(response => this.defaultSuccess(response, errorOnNonZero));
     }
 
+    /**
+     * Command used to list files in certificates directory
+     * @return {Promise}
+     */
     ls() {
         return this.runCommand(`ls -al ${certDirectory}`);
     }
 
+    /**
+     * Command used to run apt-get update command
+     * @return {Promise}
+     */
     aptGetUpdate() {
         return this.runCommand('sudo apt-get update');
     }
 
+    /**
+     * Command used to install openvpn and easy-rsa packages
+     * @return {Promise}
+     */
     aptGetInstall() {
         return this.runCommand('sudo apt-get install openvpn easy-rsa -y');
     }
 
+    /**
+     * Command used to created certificates directory
+     * @return {Promise}
+     */
     makeCADir() {
         return this.runCommand(`make-cadir ${certDirectory}`, {}, false).then((response) => {
             if (response.code === 0) {
@@ -350,10 +463,20 @@ export default class SSH {
         });
     }
 
+    /**
+     * Helper function for generate sed command to replace certificate variables in vars file
+     * @param {string} key Key of option
+     * @param {string} value Value to be set
+     * @return {string} SED command
+     */
     setCAVar(key, value) {
         return `sed -i 's/${key}=".*"/${key}="${value || ''}"/' ${varsFile}`;
     }
 
+    /**
+     * Function for setting certificate vars
+     * @return {Promise}
+     */
     configureCAVars() {
         const run = command => this.runCommand(command);
         const server = this.server;
@@ -367,6 +490,9 @@ export default class SSH {
             .then(() => run(this.setCAVar('KEY_OU', server.ou)));
     }
 
+    /**
+     * @ignore
+     */
     setCaCommonNameVar() {
         return this.runCommand(`cat ${varsFile}`).then((response) => {
             if (response.stdout.match(/^export KEY_CN=".*"/gm)) {
@@ -377,42 +503,70 @@ export default class SSH {
         });
     }
 
+    /**
+     * Function used for cleaning all certificates
+     * @return {Promise}
+     */
     cleanAll() {
         return this.runCommand(
             `${certBegin} && ${cleanAll}`,
         );
     }
 
+    /**
+     * Function used for creating CA directory
+     * @return {Promise}
+     */
     buildCA() {
         return this.runCommand(
             `${certBegin} && ${buildCa}`,
         );
     }
 
+    /**
+     * Function used for creating server key
+     * @return {Promise}
+     */
     buildKeyServer() {
         return this.runCommand(
             `${buildKeyServer}`,
         );
     }
 
+    /**
+     * Function used for generating Diffie-Hellman key-exchange parameters
+     * @return {Promise}
+     */
     buildDH() {
         return this.runCommand(
             `${buildDh}`,
         );
     }
 
+    /**
+     * Function used for generating HMAC key
+     * @return {Promise}
+     */
     buildHMAC() {
         return this.runCommand(
             `${buildHmac}`,
         );
     }
 
+    /**
+     * Function used for copying key files to /etc/openvpn directory
+     * @return {Promise}
+     */
     copyKeys() {
         return this.runCommand(
             `${copyKeys}`,
         );
     }
 
+    /**
+     * Enables IP forwarding in server OS
+     * @return {Promise}
+     */
     enableIpForward() {
         return this.runCommand(
             // eslint-disable-next-line no-useless-escape
@@ -420,6 +574,10 @@ export default class SSH {
         );
     }
 
+    /**
+     * Add NAT rule to UFW before.rules
+     * @return {Promise}
+     */
     configureFirewall() {
         let interfaceName = '';
         return this.runCommand('ip route | grep default').then((response) => {
@@ -446,11 +604,19 @@ export default class SSH {
             .then(() => this.runCommand('sudo ufw disable && sudo ufw --force enable')); // force is needed for non-interactive mode
     }
 
+    /**
+     * Creates client directories infrastrucutre
+     * @return {Promise}
+     */
     setupClientInfrastructure() {
         return this.runCommand(
             'mkdir -p ~/client-configs/files && chmod 700 ~/client-configs/files');
     }
 
+    /**
+     * Uploads server config
+     * @return {Promise}
+     */
     uploadServerConfig() {
         const configContent = this.generateServerConfig();
         return this.runCommand(
@@ -458,16 +624,30 @@ export default class SSH {
         );
     }
 
+    /**
+     * Generates server config
+     * @return {string}
+     */
     generateServerConfig() {
         return ConfigurationGenerator.generate(this.server.config);
     }
 
+    /**
+     * Generates client config
+     * @param {object} userConfig Client config
+     * @return {string} Generated OpenVPN client config
+     */
     generateClientConfig(userConfig) {
         const server = this.server;
         const config = this.server.config;
         return ConfigurationGenerator.generateUser(config, server, userConfig);
     }
 
+    /**
+     * Function used for downloading user ovpn file
+     * @param {string} id User id
+     * @return {Promise}
+     */
     downloadConfiguration({ id }) {
         return new Promise((resolve, reject) => {
             this.connection
@@ -492,6 +672,13 @@ export default class SSH {
         });
     }
 
+    /**
+     * Function used for choosing file where to save ovpn file
+     * @param {string} filePath Path to ovpn on server
+     * @param {string} id User id
+     * @param {function} reject Reject function
+     * @return {Promise}
+     */
     downloadConfigFile(filePath, id, reject) {
         return this.runCommand(`readlink -f ${filePath}`).then((response) => {
             const absoluteFilePath = response.stdout;
@@ -506,33 +693,63 @@ export default class SSH {
         }).catch(e => reject(e));
     }
 
+    /**
+     * Read config file from server
+     * @return {Promise}
+     */
     getConfigFromServer() {
         return this.catFile(confFile);
     }
 
+    /**
+     * Read content of file from server
+     * @param {string} path Path to file on server
+     * @return {Promise}
+     */
     catFile(path) {
         return this.connection.then(() => this.runCommand(`cat ${path}`));
     }
 
+    /**
+     * Function for rebootion destination server
+     * @return {Promise}
+     */
     reboot() {
         return this.runCommand('sudo reboot');
     }
 
+    /**
+     * Function used to start OpenVPN via systemctl
+     * @return {Promise}
+     */
     startVpn() {
         return this.runCommand('sudo systemctl start openvpn@server')
             .then(() => this.runCommand('sudo systemctl status openvpn@server'))
             .then(() => this.runCommand('sudo systemctl enable openvpn@server'));
     }
 
+    /**
+     * Function used to stop OpenVPN via systemctl
+     * @return {Promise}
+     */
     stopVpn() {
         return this.runCommand('sudo systemctl stop openvpn@server');
     }
 
+    /**
+     * Function used to restart OpenVPN via systemctl
+     * @return {Promise}
+     */
     restartVpn() {
         return this.runCommand('sudo systemctl restart openvpn@server')
             .then(() => this.runCommand('sudo systemctl status openvpn@server'));
     }
 
+    /**
+     * Function wrapper for running server actions
+     * @param {string} action Name of action, function of exact same name must exist in this class
+     * @return {Promise>}
+     */
     runAction(action) {
         return this.connection.then(() => this[action]());
     }

@@ -1,12 +1,23 @@
 import { map } from 'lodash';
 import { STATUS } from '../constants/servers';
 
+/**
+ * Class used for getting server statistics and status
+ */
 export default class SSHStats {
+    /**
+     * @param {SSH} ssh SSH class instance
+     * @param {function} dispatch Redux dispatch function
+     */
     constructor(ssh, dispatch) {
         this.dispatch = dispatch;
         this.ssh = ssh;
     }
 
+    /**
+     * Get OpenVPN status
+     * @return {Promise}
+     */
     getVpnStatus() {
         return new Promise((resolve, reject) => {
             this.ssh.connection
@@ -16,6 +27,10 @@ export default class SSHStats {
         });
     }
 
+    /**
+     * Get server machine status
+     * @return {Promise}
+     */
     getMachineStatus() {
         let details = '';
         return new Promise((resolve, reject) => {
@@ -34,6 +49,10 @@ export default class SSHStats {
         });
     }
 
+    /**
+     * Get OpenVPN statistics
+     * @return {Promise}
+     */
     getVpnStats() {
         const title = '<h5>OpenVPN - top</h5>';
         return this.ssh.runCommand('top -bn1 | top -bn 1 -d 0.01 | grep \'openvpn\\|^  PID\'')
@@ -41,6 +60,10 @@ export default class SSHStats {
             .catch(() => `${title}<pre>Could not get vpn details, check logs for details</pre>`);
     }
 
+    /**
+     * Get OS statistics
+     * @return {Promise}
+     */
     getSystemStats() {
         const title = '<h5>System details</h5>';
         return this.ssh.runCommand('top -bn 1 | head -n 5')
@@ -48,6 +71,10 @@ export default class SSHStats {
             .catch(() => `${title}<pre>Could not get system details, check logs for details</pre>`);
     }
 
+    /**
+     * Get memory usage statistics
+     * @return {Promise}
+     */
     getMemoryStats() {
         const title = '<h5>Memory</h5>';
         return this.ssh.runCommand('free -m')
@@ -55,6 +82,10 @@ export default class SSHStats {
             .catch(() => `${title}<pre>Could not get memory details, check logs for details</pre>`);
     }
 
+    /**
+     * Get users statistics from OpenVPN status file
+     * @return {Promise}
+     */
     getUsersStats() {
         return new Promise((resolve, reject) => {
             this.ssh.connection
@@ -76,6 +107,11 @@ export default class SSHStats {
         });
     }
 
+    /**
+     * Parse updated date from OpenVPN user statistics
+     * @param {object} response SSH command response
+     * @return {string} Last update date of statistics
+     */
     static getUpdated(response) {
         const reg = new RegExp(/Updated,(.*?)\n/i);
         const result = reg.exec(response.stdout);
@@ -85,6 +121,11 @@ export default class SSHStats {
         return '';
     }
 
+    /**
+     * Parse global statistics from OpenVPN statistics
+     * @param {object} response SSH command response
+     * @return {string} Global statistics data
+     */
     static getGlobalStats(response) {
         const reg = new RegExp(/GLOBAL STATS\n(.*?)\nEND/im);
         const result = reg.exec(response.stdout);
@@ -94,6 +135,11 @@ export default class SSHStats {
         return '';
     }
 
+    /**
+     * Parse routing table from OpenVPN statistics
+     * @param {object} response SSH command response
+     * @return {string} Routing table data
+     */
     getRoutingTable(response) {
         const reg = new RegExp(/(Virtual Address.*)\n(.*?)\nGLOBAL STATS/im);
         const result = reg.exec(response.stdout);
@@ -103,6 +149,11 @@ export default class SSHStats {
         return '';
     }
 
+    /**
+     * Parse client list from OpenVPN statistics
+     * @param {object} response SSH command response
+     * @return {string} Users list data
+     */
     getClientList(response) {
         const reg = new RegExp(/(Common Name.*)\n(.*?)\nROUTING TABLE/im);
         const result = reg.exec(response.stdout);
@@ -112,6 +163,9 @@ export default class SSHStats {
         return '';
     }
 
+    /**
+     * @ignore
+     */
     static getPart(headerContent = '', linesContent = '') {
         const headers = headerContent.split(',');
         const lines = map(linesContent.split('\n'), line => line.split(','));
@@ -125,6 +179,9 @@ export default class SSHStats {
         </table>`;
     }
 
+    /**
+     * @ignore
+     */
     resolveFunction(resolve, reject, level, description = '') {
         return this.ssh.runCommand('sudo systemctl status openvpn@server', {}, false)
             .then((r) => {
@@ -136,6 +193,12 @@ export default class SSHStats {
             }).catch(reject);
     }
 
+    /**
+     * Checks if OpenVPN is installed on server
+     * @param {function} resolve Resolve function
+     * @param {function} reject Reject function
+     * @return {Promise}
+     */
     isInstalled(resolve, reject) {
         return this.ssh.runCommand('openvpn', {}, false)
             .then((r) => {
@@ -150,6 +213,12 @@ export default class SSHStats {
             .catch(reject);
     }
 
+    /**
+     * Checks if OpenVPN is active
+     * @param {function} resolve Resolve function
+     * @param {function} reject Reject function
+     * @return {Promise}
+     */
     isActive(resolve, reject) {
         return this.ssh.runCommand('sudo systemctl is-active openvpn@server', {}, false)
             .then((r) => {
@@ -170,6 +239,12 @@ export default class SSHStats {
             .catch(reject);
     }
 
+    /**
+     * Checks if OpenVPN is status is failed
+     * @param {function} resolve Resolve function
+     * @param {function} reject Reject function
+     * @return {Promise}
+     */
     isFailed(resolve, reject) {
         return this.ssh.runCommand('sudo systemctl is-failed openvpn@server', {}, false)
             .then((r) => {
@@ -192,6 +267,12 @@ export default class SSHStats {
             }).catch(reject);
     }
 
+    /**
+     * Checks if OpenVPN is enabled on server
+     * @param {function} resolve Resolve function
+     * @param {function} reject Reject function
+     * @return {Promise}
+     */
     isEnabled(resolve, reject) {
         return this.ssh.runCommand('sudo systemctl is-enabled openvpn@server', {}, false)
             .then((r) => {

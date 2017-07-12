@@ -24,6 +24,15 @@ import {
 import * as HELP_MESSAGE from '../../../constants/help_messages';
 import LABELS from '../../../constants/labels';
 
+/**
+ * VPN configuration fields section
+ * @param {function} change Change function of redux-form
+ * @param {string} serverMode Server mode  config option
+ * @param {string} devMode Dev move config option
+ * @param {string} assignIp Assign IP  config option
+ * @param {string} allowSubnet allow subnet  config option
+ * @param {object} redirectGateway Redirect gateway config option
+ */
 export default ({ change, serverMode, devMode, allowSubnet, assignIp, redirectGateway }) => (
   <Segment vertical>
     <Header as="h2">VPN Configuration</Header>

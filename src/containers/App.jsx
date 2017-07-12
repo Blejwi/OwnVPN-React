@@ -16,12 +16,22 @@ import UserEdit from './../containers/users/UserEdit';
 import Home from './../containers/home/Home';
 import { isFileOpen } from './../selectors/authorization';
 
+/**
+ * Validation function. Required from user to have opened configuration file.
+ * Otherwise redirects user to login page.
+ * @param {RouterState} next next state
+ * @param {RedirectFunction} replace redirect function
+ */
 const requireFile = (next, replace) => {
     if (!isFileOpen(store.getState())) {
         replace('/login');
     }
 };
 
+/**
+ * Main application container.
+ * Includes state provider, SweetAlert, Toastr and routing
+ */
 export default () => (
   <Provider store={store}>
     <div>
