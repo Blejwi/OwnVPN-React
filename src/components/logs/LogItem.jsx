@@ -11,9 +11,18 @@ class LogItem extends React.Component {
      */
     constructor() {
         super();
+        /**
+         * Component's state
+         * @type {{collapsed: boolean}}
+         */
         this.state = {
             collapsed: true,
         };
+
+        /**
+         * User's click event timestamp
+         * @type {number}
+         */
         this.clickStart = 0;
     }
 

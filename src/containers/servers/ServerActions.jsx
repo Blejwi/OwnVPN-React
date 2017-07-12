@@ -4,7 +4,13 @@ import { Dropdown } from 'semantic-ui-react';
 import { map } from 'lodash';
 import { rebootServer, reuploadConfig, vpnAction } from '../../actions/servers';
 
-
+/**
+ * Displays available server actions
+ * @param {object} server Server's data
+ * @param {bool} setupInProgress Set if server's setup is in progress
+ * @param {object} props
+ * @constructor
+ */
 const ServerActions = ({ server, setupInProgress, ...props }) => {
     const items = [
         { title: 'Reboot server', onClick: () => props.handleRebootServer(server) },

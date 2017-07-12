@@ -1,5 +1,10 @@
 import { isString, isObject } from 'lodash';
 
+/**
+ * Transforms object to readable message
+ * @param params
+ * @returns {string}
+ */
 export const compileMessage = (...params) => {
     const parts = [];
 

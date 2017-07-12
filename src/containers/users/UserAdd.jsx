@@ -5,6 +5,11 @@ import { add } from '../../actions/users';
 import UserForm from '../../components/users/UserForm';
 import { validateUser } from '../../utils/validators';
 
+/**
+ * Container for adding user to server
+ * @param props
+ * @constructor
+ */
 const UserAdd = props => <UserForm {...props} />;
 
 const mapStateToProps = (state, ownProps) => ({

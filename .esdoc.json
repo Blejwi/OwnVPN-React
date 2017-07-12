@@ -2,7 +2,7 @@
   "source": "./src",
   "destination": "./doc",
   "includes": [".*\\.js", ".*\\.jsx"],
-  "excludes": ["constants"],
+  "excludes": ["constants", "reducers"],
   "index": "./README.md",
   "package": "./package.json",
   "experimentalProposal": {

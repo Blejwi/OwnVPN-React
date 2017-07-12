@@ -6,6 +6,9 @@ import { getServerStatus, getServerFetchStatus, getSetupInProgress } from '../..
 import ServerStatusItem from './ServerStatusItem';
 import { UPDATE_SERVER_STATUS_CACHE_TIME } from '../../../constants/servers';
 
+/**
+ * Server status container
+ */
 class ServerStatus extends React.Component {
     // Update server status only if there is no data fetched,
     // or last fetch is older than declared time
@@ -33,11 +36,19 @@ class ServerStatus extends React.Component {
         clearInterval(this.intervalId);
     }
 
+    /**
+     * Prepares function to update server's statistic
+     * @returns {*}
+     */
     updateServerStatus() {
         return this.props.updateStatus(this.props.server);
     }
 
-
+    /**
+     * Updates timer
+     * @param {object} props Container props
+     * @param {bool} force Updates timer even if server hasn't changed
+     */
     updateTimer(props, force = false) {
         if (force || props.server !== this.props.server) {
             if (ServerStatus.shouldUpdateStatus(props)) {
@@ -54,7 +65,8 @@ class ServerStatus extends React.Component {
     }
 
     render() {
-        const configDifferent = this.props.serverStatus.config && this.props.serverStatus.config.different;
+        const { serverStatus } = this.props;
+        const configDifferent = serverStatus.config && serverStatus.config.different;
         return (
           <div className="server-status">
             <Card.Group itemsPerRow="3">

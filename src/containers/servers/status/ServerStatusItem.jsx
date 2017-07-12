@@ -5,6 +5,12 @@ import moment from 'moment';
 import './ServerStatusItem.scss';
 import { STATUS } from '../../../constants/servers';
 
+/**
+ * Single server status item
+ * @param {bool} statusFetchInProgress Set if fetching server status is in progress
+ * @param {function} handleRefresh Handles refresh event
+ * @param {object} props Other props
+ */
 export default ({ statusFetchInProgress, handleRefresh, ...props }) => {
     let icon;
     let color;

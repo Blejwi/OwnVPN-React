@@ -8,6 +8,9 @@ import LoginWrapper from '../../components/authorization/LoginWrapper';
 import { getRecentFiles } from '../../selectors/authorization';
 import RecentFiles from '../../components/authorization/RecentFiles';
 
+/**
+ * Container class for Login Page
+ */
 class Login extends React.Component {
     componentDidMount() {
         this.props.fetchRecent();

@@ -10,6 +10,16 @@ import { required, minLength } from '../../utils/validators';
 import File from '../../components/form/File';
 import LoginWrapper from '../../components/authorization/LoginWrapper';
 
+/**
+ * Container for New File page
+ * @param {function} onSubmit Executed on submit
+ * @param {bool} submitting Set if form submitting is in action
+ * @param {bool} pristine Set if form is dirty
+ * @param {function} reset Resets form to original state
+ * @param {function} handleSubmit Handles submit event
+ * @param {function} change Handles change event
+ * @constructor
+ */
 const NewFile = ({ onSubmit, submitting, pristine, reset, handleSubmit, change }) => (
   <LoginWrapper header="Create new configuration file">
     <Header as="h1">New file</Header>
@@ -46,6 +56,7 @@ const NewFile = ({ onSubmit, submitting, pristine, reset, handleSubmit, change }
     </Form>
   </LoginWrapper>
 );
+
 
 const mapDispatchToProps = dispatch => ({
     onSubmit: (data) => {

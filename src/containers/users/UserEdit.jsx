@@ -6,6 +6,11 @@ import { edit } from '../../actions/users';
 import { getUser } from '../../selectors/users';
 import { validateUser } from '../../utils/validators';
 
+/**
+ * Container for editing user
+ * @param props
+ * @constructor
+ */
 const UserEdit = props => <UserForm {...props} />;
 
 const mapStateToProps = (state, ownProps) => {
