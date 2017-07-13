@@ -40,10 +40,24 @@ export default class SSH {
      * @param {object} server Server config object
      */
     constructor(dispatch, server) {
+        /**
+         * Redux dispatch funtion
+         */
         this.dispatch = dispatch;
+
+        /**
+         * Server that is being OwnVPN connected to.
+         */
         this.server = server;
+
+        /**
+         * NodeSSH instance used for handling ssh connection.
+         */
         this.ssh = new NodeSSH();
 
+        /**
+         * SSH connection config
+         */
         this.config = {
             host: server.host,
             port: server.port,
@@ -58,12 +72,21 @@ export default class SSH {
             this.config.password = server.password;
         }
 
+        /**
+         * Determines if commands requires sudo password
+         */
         this.sudoPasswordRequired = false;
 
+        /**
+         * Connection instance
+         */
         this.connection = this.ssh.connect(this.config)
             .catch(e => Promise.reject(this.defaultError(e)))
             .then(() => this.determineSudoPasswordNeeded());
 
+        /**
+         * Statistics module instance
+         */
         this.statistics = new SSHStats(this, dispatch);
     }
 

@@ -1,9 +1,15 @@
 import fs from 'fs';
 import CryptoJS from 'crypto-js';
 import $q from 'q';
-
+/**
+ * Encryption singleton instance reference is kept in this variable.
+ */
 let instance = null;
 
+/**
+ * Function used to delete Encryption singleton.
+ * Used in case of changing filepath of password.
+ */
 export const deleteInstance = () => {
     instance = null;
 };
@@ -24,7 +30,14 @@ export default class Encryption {
             return instance;
         }
 
+        /**
+         * Path to config file
+         */
         this.filepath = filepath;
+
+        /**
+         * Password used for config decryption
+         */
         this.encryptionKey = encryptionKey;
 
         if (runChecks) {

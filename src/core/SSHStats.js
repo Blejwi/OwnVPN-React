@@ -10,7 +10,14 @@ export default class SSHStats {
      * @param {function} dispatch Redux dispatch function
      */
     constructor(ssh, dispatch) {
+        /**
+         * Redux dispatch function
+         */
         this.dispatch = dispatch;
+
+        /**
+         * SSH class instance used for handling running commands
+         */
         this.ssh = ssh;
     }
 
@@ -164,7 +171,10 @@ export default class SSHStats {
     }
 
     /**
-     * @ignore
+     * Helper statistics function. Convert text format to HTML table
+     * @param {string} headerContent Header of table
+     * @param {string} linesContent Content of table
+     * @returns {string} HTML table
      */
     static getPart(headerContent = '', linesContent = '') {
         const headers = headerContent.split(',');
@@ -180,7 +190,11 @@ export default class SSHStats {
     }
 
     /**
-     * @ignore
+     * Default resolve function for statistics module
+     * @param {function} resolve Resolve function
+     * @param {function} reject Reject function
+     * @param {string} level Message level
+     * @param {string} description Status description content
      */
     resolveFunction(resolve, reject, level, description = '') {
         return this.ssh.runCommand('sudo systemctl status openvpn@server', {}, false)

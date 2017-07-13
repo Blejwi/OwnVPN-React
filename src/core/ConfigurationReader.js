@@ -4,6 +4,10 @@ import { MODE } from '../constants/servers';
  * Class used to parse OpenVPN configuration file to state object
  */
 export default class ConfigurationReader {
+    /**
+     * Config content class field.
+     */
+    content = null;
 
     /**
      * Function used to read value of field from config
