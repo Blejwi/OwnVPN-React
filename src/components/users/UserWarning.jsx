@@ -1,6 +1,10 @@
 import React from 'react';
 import { Message } from 'semantic-ui-react';
 
+/**
+ * User warning shown config option dev is not set to 'tun'
+ * @param {bool} show Indicates if warning should be shown
+ */
 export default ({ show }) => (
     show ? (
       <Message warning>

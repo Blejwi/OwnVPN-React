@@ -2,6 +2,11 @@ import React from 'react';
 import { Link } from 'react-router';
 import { TableRow, TableCell, Button, Popup, Icon, Loader } from 'semantic-ui-react';
 
+/**
+ * User list single item
+ * @param {object} props Data and action for component
+ * @return {XML} Rendered component
+ */
 export default (props) => {
     const {
         user,

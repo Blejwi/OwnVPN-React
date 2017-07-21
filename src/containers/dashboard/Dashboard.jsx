@@ -10,6 +10,11 @@ import './Dashboard.scss';
 import { clear, collapse } from '../../actions/logs';
 import { closeFile } from '../../actions/authorization';
 
+/**
+ * Dashboard that wraps whole content
+ * @param props
+ * @constructor
+ */
 // noinspection HtmlDeprecatedTag
 const Dashboard = props => (
   <Container fluid className="main">

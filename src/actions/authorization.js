@@ -11,6 +11,11 @@ import { fetch } from './servers';
 import { fetch as fetchUsers } from './users';
 import { compileMessage } from '../utils/messages';
 
+
+/**
+ * Save configuration to file
+ * @param {bool} closeFileOnSuccess If set, it redirects to login page and dispatch close action
+ */
 export const save = (closeFileOnSuccess = false) => (dispatch) => {
     const state = store.getState();
     // Get all necessary data from store
@@ -49,6 +54,10 @@ export const save = (closeFileOnSuccess = false) => (dispatch) => {
     });
 };
 
+/**
+ * Adds file to recent files list
+ * @param {string} filename File path
+ */
 export const addRecent = (filename) => {
     let previousConfigFiles = settings.get('recent_config_files') || [];
     previousConfigFiles.unshift(filename);
@@ -56,6 +65,11 @@ export const addRecent = (filename) => {
     settings.set('recent_config_files', previousConfigFiles);
 };
 
+/**
+ * Function used to load data from given file to state
+ * @param {object} file File state object
+ * @param {string} filename File path
+ */
 export const load = (file, filename) => (dispatch) => {
     // Try to open selected file and load it
     try {
@@ -82,6 +96,10 @@ export const load = (file, filename) => (dispatch) => {
     }
 };
 
+/**
+ * Function used for creating new configuration file
+ * @param {{filename: string, password: string}} file File details
+ */
 export const newFile = file => (dispatch) => {
     const encryption = new Encryption(file.filename, file.password, false);
 
@@ -99,6 +117,10 @@ export const newFile = file => (dispatch) => {
     });
 };
 
+/**
+ * Function used to open existing configuration file
+ * @param {string} inputFilename Path to configuration file
+ */
 export const openFilePassword = inputFilename => (dispatch) => {
     const file = {};
     const filename = [].concat(inputFilename)[0];
@@ -139,6 +161,9 @@ export const openFilePassword = inputFilename => (dispatch) => {
     }));
 };
 
+/**
+ * Opens dialog for choosing configuration file path
+ */
 export const openFile = () => (dispatch) => {
     remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
         properties: ['openFile'],
@@ -151,6 +176,9 @@ export const openFile = () => (dispatch) => {
     });
 };
 
+/**
+ * Fetch recently opened files
+ */
 export const fetchRecent = () => (dispatch) => {
     dispatch({
         type: AUTH.FETCH_RECENT,
@@ -159,6 +187,9 @@ export const fetchRecent = () => (dispatch) => {
 };
 
 
+/**
+ * Close currently opened file
+ */
 export const closeFile = () => (dispatch) => {
     dispatch(save(true));
     dispatch({

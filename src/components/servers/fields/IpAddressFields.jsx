@@ -6,6 +6,11 @@ import Input from '../../form/Input';
 import { ipAddress, required } from '../../../utils/validators';
 import LABELS from '../../../constants/labels';
 
+/**
+ * Function used for normalizing ip addresses
+ * @param {string} value IP address to normalize
+ * @returns {string} Normalized IP address
+ */
 export const normalizeIpAddress = (value) => {
     if (!value) {
         return value;
@@ -30,6 +35,13 @@ export const normalizeIpAddress = (value) => {
         .value();
 };
 
+/**
+ * IP address field
+ * @param {string} name Name of field
+ * @param {function} handleRemove Remove function for IP address
+ * @param {string} helpMessage Help message for field
+ * @param {bool} disabled If field is disabled
+ */
 export default ({ name, handleRemove, helpMessage, disabled }) => (
   <div className="field">
     <Field

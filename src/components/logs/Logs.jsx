@@ -5,6 +5,13 @@ import { Icon, List } from 'semantic-ui-react';
 import './Logs.scss';
 import LogItem from './LogItem';
 
+/**
+ * Displays logs
+ * @param {object[]} logs List of logs
+ * @param {bool} collapsed Set if logs should be collapsed
+ * @param {function} handleCollapse Handles collapse event
+ * @param {function} handleClear Handles clear event
+ */
 export default ({ logs, collapsed, handleCollapse, handleClear }) => (
   <div className="logs-container">
     <Icon

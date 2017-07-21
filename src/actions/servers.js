@@ -16,11 +16,19 @@ import ConfigurationGenerator from '../core/ConfigurationGenerator';
 import { compileMessage } from '../utils/messages';
 import { getServer } from '../selectors/servers';
 
+/**
+ * Load servers to state from param
+ * @param {object[]} servers List of servers to be loaded
+ */
 export const fetch = servers => ({
     type: SERVER.FETCH,
     payload: servers,
 });
 
+/**
+ * Function called on successful server add
+ * @param {object} server Server that was added
+ */
 const addSuccess = server => (dispatch) => {
     dispatch({
         type: SERVER.ADD_SUCCESS,
@@ -31,12 +39,20 @@ const addSuccess = server => (dispatch) => {
     dispatch(save());
 };
 
+/**
+ * Function adding server to list of servers
+ * @param {object} inputServer Server to be added
+ */
 export const add = inputServer => (dispatch) => {
     const server = { ...inputServer, id: uuid.v1() };
     dispatch(addSuccess(server));
     dispatch(push(`/server/show/${server.id}`));
 };
 
+/**
+ * Function called on successful server edit
+ * @param {object} server Server that was edited
+ */
 const editSuccess = server => (dispatch) => {
     dispatch({
         type: SERVER.EDIT_SUCCESS,
@@ -47,11 +63,19 @@ const editSuccess = server => (dispatch) => {
     dispatch(save());
 };
 
+/**
+ * Function editing existing server
+ * @param {object} server Server to be edited
+ */
 export const edit = server => (dispatch) => {
     dispatch(editSuccess(server));
     dispatch(push(`/server/show/${server.id}`));
 };
 
+/**
+ * Function called on successful server setup
+ * @param {object} server Server that was setup
+ */
 export const setupSuccess = server => ({
     type: SERVER.SETUP_SUCCESS,
     payload: {
@@ -59,6 +83,10 @@ export const setupSuccess = server => ({
     },
 });
 
+/**
+ * Function called on failed server setup
+ * @param {object} server Server that was setup
+ */
 export const setupFailure = server => ({
     type: SERVER.SETUP_FAILURE,
     payload: {
@@ -66,6 +94,11 @@ export const setupFailure = server => ({
     },
 });
 
+/**
+ * Function used to trigger setup of server.
+ * Connection via SSH is made to destination server and configuration of OpenVPN is processed.
+ * @param {object} server Server to be setup
+ */
 export const setup = server => (dispatch) => {
     let ssh;
     dispatch({ type: SERVER.SETUP, payload: { server } });
@@ -92,6 +125,10 @@ export const setup = server => (dispatch) => {
         });
 };
 
+/**
+ * Function called periodically or manually by user to refresh server status and statistics
+ * @param {string} id Id of server to be refreshed
+ */
 export const updateStatus = ({ id }) => (dispatch) => {
     const state = store.getState();
     const server = getServer(state, { params: { id } });
@@ -190,6 +227,10 @@ export const updateStatus = ({ id }) => (dispatch) => {
         .catch(() => dispatch({ type: SERVER.STATUS_CHANGE, payload }));
 };
 
+/**
+ * Function showing popup windows with configuration preview
+ * @param {string} config Configuration of OpenVPN server
+ */
 export const preview = config => (dispatch) => {
     dispatch(swal({
         title: 'Preview configuration',
@@ -198,6 +239,11 @@ export const preview = config => (dispatch) => {
     }));
 };
 
+/**
+ * Function used to open SSH terminal for user in OS.
+ * Available only on Linux platform.
+ * @param {object} server Server to be connected to
+ */
 export const handleSSHTerminal = server => (dispatch) => {
     if (os.platform() !== 'linux') {
         return;
@@ -217,6 +263,13 @@ export const handleSSHTerminal = server => (dispatch) => {
     }
 };
 
+/**
+ * Function showing preview of config with possibility of accepting and rejecting.
+ * After confirmation server config is updated in state.
+ * @param {object} server Server object
+ * @param {object} config OpenVPN configuration object
+ * @param {function} [callback=null] Callback function called after confirmation
+ */
 const confirmPreview = (server, config, callback = null) => (dispatch) => {
     setTimeout(() => dispatch(swal({
         title: 'Preview configuration',
@@ -245,6 +298,13 @@ const confirmPreview = (server, config, callback = null) => (dispatch) => {
     })), 200);
 };
 
+/**
+ * Function used to download OpenVPN configuration from server, parse it
+ * and update config object in state.
+ * Before update shows popup for user with confirm and decline options.
+ * @param {object} server Server to be updated
+ * @param {function} callback Function to be called after accepting changes
+ */
 export const loadConfigFromServer = (server, callback = null) => (dispatch) => {
     dispatch(swal({
         title: 'Config path',
@@ -286,6 +346,11 @@ export const loadConfigFromServer = (server, callback = null) => (dispatch) => {
     }));
 };
 
+/**
+ * Shows popup with textfield for user to paste OpenVPN config. Configuration is parsed and save
+ * in state
+ * @param {object} server Server to be updated
+ */
 export const loadConfigTextArea = server => (dispatch) => {
     dispatch(swal({
         title: 'Paste config',
@@ -314,7 +379,12 @@ export const loadConfigTextArea = server => (dispatch) => {
 
 // Server actions
 
-
+/**
+ * Function called on action failure
+ * @param {object} server Server object
+ * @param {string} action Action name
+ * @param {Error} error Error object
+ */
 const actionDefaultError = (server, action, error) => (dispatch) => {
     const message = `Failure during ${action} action`;
     dispatch(addLog(message, LOG.LEVEL.ERROR, 'SERVER'));
@@ -325,6 +395,11 @@ const actionDefaultError = (server, action, error) => (dispatch) => {
     return dispatch(setupFailure(server));
 };
 
+/**
+ * Wrapper function for running server actions
+ * @param {string} action Action name to be performed
+ * @param {object} server Server object
+ */
 const runAction = (action, server) => (dispatch) => {
     let ssh;
     dispatch({ type: SERVER.SETUP, payload: { server } });
@@ -339,6 +414,10 @@ const runAction = (action, server) => (dispatch) => {
     return ssh.runAction(action);
 };
 
+/**
+ * Reboot server action
+ * @param {object} server Server object
+ */
 export const rebootServer = server => (dispatch) => {
     const action = 'reboot';
 
@@ -354,6 +433,11 @@ export const rebootServer = server => (dispatch) => {
     });
 };
 
+/**
+ * Reboot server action
+ * @param {object} server Server object
+ * @param {string} action Action name to be performed
+ */
 export const vpnAction = (server, action) => (dispatch) => {
     const successMessage = `${capitalize(lowerCase(action))} command sent`;
 
@@ -363,6 +447,12 @@ export const vpnAction = (server, action) => (dispatch) => {
     }).catch(e => dispatch(actionDefaultError(server, action, e)));
 };
 
+/**
+ * Function used to upload server config.
+ * After uploading config restarts OpenVPN server to apply changes.
+ * @param {object} server Server object
+ * @param {function} [callback=null] Callback function called after successful upload
+ */
 export const reuploadConfig = (server, callback = null) => (dispatch) => {
     const successMessage = 'Config successfully uploaded and service restarted';
     const action = 'uploadConfig';

@@ -6,6 +6,11 @@ import { handleSSHTerminal, loadConfigFromServer, loadConfigTextArea, setup } fr
 import ServerShowContent from '../../components/servers/ServerShowContent';
 import { setupClient, remove, downloadConfiguration, setupAllClients } from '../../actions/users';
 
+/**
+ * Container for displaying single servers contents
+ * @param props
+ * @constructor
+ */
 const ServerShow = props => (
   <ServerShowContent {...props} />
 );

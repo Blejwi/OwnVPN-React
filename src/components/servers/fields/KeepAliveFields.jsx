@@ -4,6 +4,9 @@ import { Field } from 'redux-form';
 import Input from '../../form/Input';
 import { minValue, required } from '../../../utils/validators';
 
+/**
+ * Keep alive custom field
+ */
 export default () => (
   <Segment padded>
     <Header as="h5">Keep alive</Header>

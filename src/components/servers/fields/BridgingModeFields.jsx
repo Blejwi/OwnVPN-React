@@ -10,6 +10,11 @@ import { MODE } from '../../../constants/servers';
 
 const isOn = serverMode => serverMode === MODE.BRIDGE;
 
+/**
+ * Bridging mode custom field
+ * @param {function} change Change function
+ * @param {string} serverMode Server mode  config option
+ */
 export default ({ change, serverMode }) => (
   <Segment padded>
     <Header as="h5">{LABELS.ETHERNET_SERVER_MODE}</Header>

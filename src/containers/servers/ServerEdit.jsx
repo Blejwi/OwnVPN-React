@@ -5,6 +5,9 @@ import { getServer, getFormSelector, getPreview } from '../../selectors/servers'
 import ServerForm from '../../components/servers/ServerForm';
 import { validateServer } from '../../utils/validators';
 
+/**
+ * Container class for editing server
+ */
 class ServerEdit extends React.Component {
     onPreview() {
         this.props.handlePreview(this.props.config);

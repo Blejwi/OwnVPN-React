@@ -8,6 +8,10 @@ import LABELS from '../../../constants/labels';
 
 const isOn = (obj, key) => isUndefined(obj) || obj[key] === 'true';
 
+/**
+ * Redirect gateway custom field
+ * @param {object} redirectGateway Redirect gateway config option
+ */
 export default ({ redirectGateway }) => (
   <Segment padded>
     <Header as="h5">{LABELS.REDIRECT_GATEWAY}</Header>

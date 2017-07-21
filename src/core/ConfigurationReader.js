@@ -1,6 +1,19 @@
 import { MODE } from '../constants/servers';
 
+/**
+ * Class used to parse OpenVPN configuration file to state object
+ */
 export default class ConfigurationReader {
+    /**
+     * Config content class field.
+     */
+    content = null;
+
+    /**
+     * Function used to read value of field from config
+     * @param {string} key Configuration option name
+     * @return {string} Value of config option
+     */
     readProperty(key) {
         const regex = new RegExp(`^${key} (.*)$`, 'm');
         const matches = regex.exec(this.content);
@@ -12,11 +25,21 @@ export default class ConfigurationReader {
         return '';
     }
 
+    /**
+     * Checks if given config option was set in config file
+     * @param {string} key Configuration option name
+     * @return {boolean} True if option exists, False otherwise
+     */
     isPropertySet(key) {
         const regex = new RegExp(`^${key}$`, 'm');
         return regex.test(this.content);
     }
 
+    /**
+     * Function used to read boolean config options from config
+     * @param {string} key Configuration option name
+     * @return {string} '1' if option is set, '0' otherwise
+     */
     readBoolProperty(key) {
         if (this.readProperty(key).length > 0 || this.isPropertySet(key)) {
             return '1';
@@ -24,6 +47,11 @@ export default class ConfigurationReader {
         return '0';
     }
 
+    /**
+     * Function used to read ip/mask from config
+     * @param {string} key Configuration option name
+     * @return {{network: string, mask: string}}
+     */
     readIpAndMask(key) {
         const server = this.readProperty(key).split(' ');
 
@@ -33,6 +61,10 @@ export default class ConfigurationReader {
         };
     }
 
+    /**
+     * Function used to read routes config option from config file
+     * @return {object[]} List of Route config objects
+     */
     readRoutes() {
         const regex = /^push "route (.*) (.*)"$/mg;
         const routes = [];
@@ -55,6 +87,11 @@ export default class ConfigurationReader {
         return matches;
     }
 
+    /**
+     * Main function used to parse config file
+     * @param {string} content Config file content to be parsed
+     * @return {object} Parse config object
+     */
     read(content) {
         this.content = content;
         const config = {};

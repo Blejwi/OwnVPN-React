@@ -4,6 +4,11 @@ import { map } from 'lodash';
 import UserListItem from './UserListItem';
 import './UserList.scss';
 
+/**
+ * List of users
+ * @param props Data and actions for component
+ * @returns {XML} Rendered component
+ */
 export default (props) => {
     const {
         users,

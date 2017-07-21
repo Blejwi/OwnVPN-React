@@ -1,20 +1,43 @@
 import { isArray, isEmpty, isUndefined, forIn } from 'lodash';
 import { MODE } from '../constants/servers';
 
+/**
+ * Configuration generator class, used for generating configuration from state config object
+ */
 export default class ConfigurationGenerator {
+    /**
+     * Checks if field values is '1'
+     * @param field
+     * @return {boolean}
+     */
     static isOn(field) {
         return field === '1';
     }
 
+    /**
+     * Checks if field is set
+     * @param field
+     * @return {boolean}
+     */
     static isSet(field) {
-        return !isUndefined(field) && field;
+        return !isUndefined(field) && !!field;
     }
 
+    /**
+     * Adds ccd line
+     * @param {string[]} lines Config lines
+     * @param {object} route Route object
+     */
     static addCcdRoute(lines, route) {
         lines.push('client-config-dir ccd');
         lines.push(`route ${route.network} ${route.mask}`);
     }
 
+    /**
+     * Main generation function user for generating OpenVPN configuration file
+     * @param {object} config Config object of server
+     * @return {string} Generated OpenVPN config file content
+     */
     static generate(config) {
         const lines = [];
 
@@ -129,6 +152,13 @@ export default class ConfigurationGenerator {
         return lines.join('\n');
     }
 
+    /**
+     * Function used for generating OpenVPN user config
+     * @param {object} config Server config
+     * @param {object} server Server that user is connected to
+     * @param {object} userConfig User config
+     * @return {string} OpenVPN user configuration file content
+     */
     static generateUser(config, server, userConfig) {
         const lines = ['client'];
 
@@ -179,6 +209,12 @@ export default class ConfigurationGenerator {
         return lines.join('\n');
     }
 
+    /**
+     * Checks if server address is set
+     * @param {object} server Server object
+     * @param {object} config Config object
+     * @return {boolean}
+     */
     static isRemoteServerSet(server, config) {
         return (
             ConfigurationGenerator.isSet(server.host) &&
@@ -186,30 +222,55 @@ export default class ConfigurationGenerator {
         );
     }
 
+    /**
+     * Adds auth algorithm to config
+     * @param {string[]} lines Config lines
+     * @param {object} config Config object
+     */
     static addAuth(config, lines) {
         if (ConfigurationGenerator.isSet(config.auth_algorithm)) {
             lines.push(`auth ${config.auth_algorithm}`);
         }
     }
 
+    /**
+     * Adds mute option to config
+     * @param {string[]} lines Config lines
+     * @param {object} config Config object
+     */
     static addMute(config, lines) {
         if (ConfigurationGenerator.isSet(config.mute)) {
             lines.push(`mute ${config.mute}`);
         }
     }
 
+    /**
+     * Adds verb option to config
+     * @param {string[]} lines Config lines
+     * @param {object} config Config object
+     */
     static addVerb(config, lines) {
         if (ConfigurationGenerator.isSet(config.verb)) {
             lines.push(`verb ${config.verb}`);
         }
     }
 
+    /**
+     * Adds cipher option to config
+     * @param {string[]} lines Config lines
+     * @param {object} config Config object
+     */
     static addCipher(config, lines) {
         if (ConfigurationGenerator.isSet(config.cipher_algorithm)) {
             lines.push(`cipher ${config.cipher_algorithm}`);
         }
     }
 
+    /**
+     * Adds persist option to config
+     * @param {string[]} lines Config lines
+     * @param {object} config Config object
+     */
     static addPersist(config, lines) {
         if (ConfigurationGenerator.isOn(config.persist_key)) {
             lines.push('persist-key');
@@ -220,6 +281,11 @@ export default class ConfigurationGenerator {
         }
     }
 
+    /**
+     * Adds user and group options to config
+     * @param {string[]} lines Config lines
+     * @param {object} config Config object
+     */
     static addPrivilege(config, lines) {
         if (ConfigurationGenerator.isSet(config.user_privilege)) {
             lines.push(`user ${config.user_privilege}`);
@@ -230,18 +296,33 @@ export default class ConfigurationGenerator {
         }
     }
 
+    /**
+     * Adds proto option to config
+     * @param {string[]} lines Config lines
+     * @param {object} config Config object
+     */
     static addProto(config, lines) {
         if (ConfigurationGenerator.isSet(config.protocol)) {
             lines.push(`proto ${config.protocol}`);
         }
     }
 
+    /**
+     * Adds dev option to config
+     * @param {string[]} lines Config lines
+     * @param {object} config Config object
+     */
     static addDev(config, lines) {
         if (ConfigurationGenerator.isSet(config.dev)) {
             lines.push(`dev ${config.dev}`);
         }
     }
 
+    /**
+     * Adds redirect gateway option to config
+     * @param {string[]} lines Config lines
+     * @param {object} redirectGateway Redirect gateway config object
+     */
     static addRedirectGateway(lines, redirectGateway) {
         const options = [];
 

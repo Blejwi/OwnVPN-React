@@ -6,6 +6,9 @@ import { email } from '../../../utils/validators';
 import * as HELPER_MESSAGE from '../../../constants/help_messages';
 import LABELS from '../../../constants/labels';
 
+/**
+ * Certificate Information section
+ */
 export default () => (
   <Segment vertical>
     <Header as="h2">Certificate information</Header>

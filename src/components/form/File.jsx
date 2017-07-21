@@ -4,8 +4,18 @@ import { remote } from 'electron';
 import { isEmpty } from 'lodash';
 import Input from './Input';
 
+/**
+ * Clears file input
+ * @param {function} change Dispatches change action
+ * @param {string} name Input's name
+ */
 const clearFile = (change, name) => change(name, '');
 
+/**
+ * Opens dialog for selecting existing file
+ * @param {function} change Dispatches change action
+ * @param {string} name Input's name
+ */
 const selectFile = (change, name) => {
     remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
         properties: ['openFile'],
@@ -18,6 +28,11 @@ const selectFile = (change, name) => {
     });
 };
 
+/**
+ * Opens dialog for selecting file's destination
+ * @param {function} change Dispatches change action
+ * @param {string} name Input's name
+ */
 const saveFile = (change, name) => {
     remote.dialog.showSaveDialog(remote.getCurrentWindow(), (filename) => {
         if (filename) {
@@ -28,6 +43,12 @@ const saveFile = (change, name) => {
     });
 };
 
+/**
+ * Opens dialog for picking file
+ * @param {function} change Dispatches change action
+ * @param {string} name Input's name
+ * @param {bool} save Set if selected file needs to be created
+ */
 const filePicker = (change, name, save) => {
     if (save) {
         saveFile(change, name);
@@ -36,6 +57,12 @@ const filePicker = (change, name, save) => {
     }
 };
 
+/**
+ * Displays file input
+ * @param {function} change Dispatches change action
+ * @param {bool} save Set if selected file needs to be created
+ * @param {object} props Other input's attributes
+ */
 export default ({ change, save, ...props }) => (
   <Input
         {...props}

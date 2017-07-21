@@ -6,7 +6,10 @@ import Input from '../../form/Input';
 import File from '../../form/File';
 import { required, minValue, maxValue } from '../../../utils/validators';
 
-
+/**
+ * Server information section
+ * @param {function} change Change function of redux-form
+ */
 export default ({ change }) => (
   <Segment vertical>
     <Header as="h2">Server information</Header>
